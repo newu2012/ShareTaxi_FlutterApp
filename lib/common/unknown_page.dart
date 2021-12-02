@@ -5,6 +5,9 @@ class UnknownPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text('Произошло что-то страшное');
+    return Center(
+        child: Text('Произошло что-то страшное. Лучше вызывайте скорую.',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headline2));
   }
 }

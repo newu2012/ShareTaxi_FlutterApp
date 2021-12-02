@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'home.dart';
 import 'common/unknown_page.dart';
-import 'trip/trip.dart';
+import 'login/presentation/pages/signup_page.dart';
 import 'login/presentation/pages/login_page.dart';
+import 'trip/trip.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
@@ -34,7 +35,7 @@ class App extends StatelessWidget {
         return MaterialPageRoute(builder: (context) => const LoginPage());
       case '/signup':
         //  TODO Change to OnboardingPage()
-        return MaterialPageRoute(builder: (context) => const UnknownPage());
+        return MaterialPageRoute(builder: (context) => const SignupPage());
       case '/':
         //  TODO Change to OnboardingPage()
         return MaterialPageRoute(

@@ -19,40 +19,54 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  var _obfuscatePassword = true;
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'Email',
+    return Padding(
+      padding: const EdgeInsets.all(32.0),
+      child: Form(
+        key: _formKey,
+        child: ListView(
+          children: [
+            TextFormField(
+              decoration: const InputDecoration(
+                hintText: 'Email',
+              ),
+              validator: (String? value) {
+                if (value == null ||
+                    value.isEmpty)
+                  return 'Введите email';
+                if (!EmailValidator.validate(value))
+                  return 'Введите действительный email';
+                return null;
+              },
             ),
-            validator: (String? value) {
-              if (value == null ||
-                  value.isEmpty ||
-                  !EmailValidator.validate(value))
-                return 'Введите действительный email';
-              return null;
-            },
-          ),
-          TextFormField(
-            obscureText: true,
-            decoration: const InputDecoration(
-              hintText: 'Пароль',
+            TextFormField(
+              obscureText: _obfuscatePassword,
+              decoration: InputDecoration(
+                  hintText: 'Пароль',
+                  suffixIcon: IconButton(
+                      onPressed: () => setState(
+                          () => _obfuscatePassword = !_obfuscatePassword),
+                      icon: Icon(
+                        _obfuscatePassword
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Theme.of(context).primaryColor,
+                      ))),
+              validator: (String? value) {
+                if (value == null || value.isEmpty)
+                  return 'Введите пароль';
+                if (value.length < 6)
+                  return 'Введите пароль не менее 6 символов';
+                return null;
+              },
             ),
-            validator: (String? value) {
-              if (value == null || value.isEmpty || value.length < 6)
-                return 'Введите действительный пароль';
-              return null;
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
+            //  TODO write function ForgotPassword
+            TextButton(
+                onPressed: () => null, child: const Text('Забыли пароль?')),
+            ElevatedButton(
               onPressed: () {
                 // TODO replace with server authentication
                 if (_formKey.currentState!.validate()) {
@@ -61,8 +75,13 @@ class _LoginFormState extends State<LoginForm> {
               },
               child: const Text('Войти'),
             ),
-          ),
-        ],
+            ElevatedButton(
+              onPressed: () =>
+                  Navigator.pushReplacementNamed(context, '/signup'),
+              child: const Text('Зарегистрироваться'),
+            ),
+          ],
+        ),
       ),
     );
   }
