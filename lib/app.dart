@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'home.dart';
+import 'common/unknown_page.dart';
 import 'trip/trip.dart';
+import 'login/presentation/pages/login_page.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
+  // TODO remove trips placeholder
   static final trips = <Trip>[
     Trip('С Меги на Ботанику', 1, 4, 240,
         DateTime.now().add(const Duration(minutes: 30))),
@@ -14,14 +17,31 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO remove trips placeholder
-
     return MaterialApp(
-      theme: ThemeData.dark(),
-      home: Home(
-        title: 'Flutter Demo Home Page',
-        trips: trips,
-      ),
+      theme: ThemeData.light(),
+      initialRoute: '/login',
+      onGenerateRoute: (settings) => OnGenerateRoute(settings),
     );
+  }
+
+  static MaterialPageRoute OnGenerateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case '/onboarding':
+        //  TODO Change to OnboardingPage()
+        return MaterialPageRoute(builder: (context) => const UnknownPage());
+      case '/login':
+        //  TODO Change to OnboardingPage()
+        return MaterialPageRoute(builder: (context) => const LoginPage());
+      case '/signup':
+        //  TODO Change to OnboardingPage()
+        return MaterialPageRoute(builder: (context) => const UnknownPage());
+      case '/':
+        //  TODO Change to OnboardingPage()
+        return MaterialPageRoute(
+            builder: (context) => Home(trips: trips));
+
+      default:
+        return MaterialPageRoute(builder: (context) => const UnknownPage());
+    }
   }
 }

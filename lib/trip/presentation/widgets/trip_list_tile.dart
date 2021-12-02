@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../trip.dart';
+import '../../trip.dart';
 
 class TripListTile extends StatelessWidget {
   const TripListTile(Trip this.trip, {Key? key}) : super(key: key);
