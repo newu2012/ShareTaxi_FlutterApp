@@ -36,21 +36,24 @@ class _LoginFormState extends State<SignupForm> {
           children: [
             TextFormField(
               decoration: const InputDecoration(
-                hintText: 'Имя',
+                hintText: 'Имя*',
               ),
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (String? value) {
-                if (value == null || value.isEmpty || value.length < 2)
-                  return 'Введите Имя';
+                final name = value?.trim();
+                if (name == null || name.isEmpty) return 'Введите Имя';
                 return null;
               },
             ),
             const SizedBox(height: 8),
             TextFormField(
               decoration: const InputDecoration(
-                hintText: 'Фамилия',
+                hintText: 'Фамилия*',
               ),
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (String? value) {
-                if (value == null || value.isEmpty || value.length < 2)
+                final surname = value?.trim();
+                if (surname == null || surname.isEmpty)
                   return 'Введите Фамилию';
                 return null;
               },
@@ -58,13 +61,13 @@ class _LoginFormState extends State<SignupForm> {
             const SizedBox(height: 8),
             TextFormField(
               decoration: const InputDecoration(
-                hintText: 'Email',
+                hintText: 'Email*',
               ),
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (String? value) {
-                if (value == null ||
-                    value.isEmpty)
-                  return 'Введите email';
-                if (!EmailValidator.validate(value))
+                final email = value?.trim();
+                if (email == null || email.isEmpty) return 'Введите email';
+                if (!EmailValidator.validate(email))
                   return 'Введите действительный email';
                 return null;
               },
@@ -74,7 +77,7 @@ class _LoginFormState extends State<SignupForm> {
               controller: _passController,
               obscureText: _obfuscatePassword,
               decoration: InputDecoration(
-                  hintText: 'Пароль',
+                  hintText: 'Пароль*',
                   suffixIcon: IconButton(
                       onPressed: () {
                         setState(
@@ -86,10 +89,12 @@ class _LoginFormState extends State<SignupForm> {
                             : Icons.visibility_off,
                         color: Theme.of(context).primaryColor,
                       ))),
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (String? value) {
-                if (value == null || value.isEmpty)
+                final password = value?.trim();
+                if (password == null || password.isEmpty)
                   return 'Введите пароль';
-                if (value.length < 6)
+                if (password.length < 6)
                   return 'Введите пароль не менее 6 символов';
                 return null;
               },
@@ -99,7 +104,7 @@ class _LoginFormState extends State<SignupForm> {
               controller: _passConfirmController,
               obscureText: _obfuscateConfirmPassword,
               decoration: InputDecoration(
-                  hintText: 'Подтверждение пароля',
+                  hintText: 'Повторите пароль*',
                   suffixIcon: IconButton(
                       onPressed: () {
                         setState(() => _obfuscateConfirmPassword =
@@ -111,11 +116,13 @@ class _LoginFormState extends State<SignupForm> {
                             : Icons.visibility_off,
                         color: Theme.of(context).primaryColor,
                       ))),
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (String? value) {
-                if (value == null || value.isEmpty)
+                final password = value?.trim();
+                if (password == null || password.isEmpty)
                   return 'Введите подтверждение пароля';
-                if (value.length < 6) return 'Введён короткий пароль';
-                if (value == _passController.text) return 'Пароли отличаются';
+                if (password != _passController.text)
+                  return 'Пароли отличаются';
                 return null;
               },
             ),

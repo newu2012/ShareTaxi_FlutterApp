@@ -33,6 +33,7 @@ class _LoginFormState extends State<LoginForm> {
               decoration: const InputDecoration(
                 hintText: 'Email',
               ),
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (String? value) {
                 if (value == null ||
                     value.isEmpty)
@@ -55,6 +56,7 @@ class _LoginFormState extends State<LoginForm> {
                             : Icons.visibility_off,
                         color: Theme.of(context).primaryColor,
                       ))),
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (String? value) {
                 if (value == null || value.isEmpty)
                   return 'Введите пароль';
