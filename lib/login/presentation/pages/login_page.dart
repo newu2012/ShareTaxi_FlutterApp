@@ -35,10 +35,9 @@ class _LoginFormState extends State<LoginForm> {
               ),
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (String? value) {
-                if (value == null ||
-                    value.isEmpty)
-                  return 'Введите email';
-                if (!EmailValidator.validate(value))
+                final email = value?.trim();
+                if (email == null || email.isEmpty) return 'Введите email';
+                if (!EmailValidator.validate(email))
                   return 'Введите действительный email';
                 return null;
               },
@@ -58,9 +57,10 @@ class _LoginFormState extends State<LoginForm> {
                       ))),
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (String? value) {
-                if (value == null || value.isEmpty)
+                final password = value?.trim();
+                if (password == null || password.isEmpty)
                   return 'Введите пароль';
-                if (value.length < 6)
+                if (password.length < 6)
                   return 'Введите пароль не менее 6 символов';
                 return null;
               },

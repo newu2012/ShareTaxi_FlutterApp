@@ -1,4 +1,4 @@
-name: taxi_share_flutterapp
+name: share_taxi
 description: A new Flutter project.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -13,6 +13,9 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.4
   intl: ^0.17.0
+  google_maps_flutter: ^2.1.1
+  geolocator: ^8.0.0
+  flutter_polyline_points: ^1.0.0
 
   # additional packages, can be simply replaced by self-created widgets
   persistent_bottom_nav_bar: ^4.0.2

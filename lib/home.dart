@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import 'common/unknown_page.dart';
+import 'trip/presentation/widgets/google_map_widget.dart';
 import 'trip/trip.dart';
 import 'trip/Presentation/pages/trips_list_page.dart';
 
@@ -19,7 +20,7 @@ class Home extends StatelessWidget {
       controller: _tabController,
       screens: [
         TripsListPage(trips: trips),
-        TripsListPage(trips: trips),
+        const GoogleMapWidget(),
         const UnknownPage(),
         const UnknownPage()
       ],
