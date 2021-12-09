@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:provider/provider.dart';
+import 'package:share_taxi/common/data/user_dao.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -19,10 +21,20 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   var _obfuscatePassword = true;
 
   @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final userDao = Provider.of<UserDao>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Form(
@@ -33,6 +45,8 @@ class _LoginFormState extends State<LoginForm> {
               decoration: const InputDecoration(
                 hintText: 'Email',
               ),
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (String? value) {
                 final email = value?.trim();
@@ -55,6 +69,7 @@ class _LoginFormState extends State<LoginForm> {
                             : Icons.visibility_off,
                         color: Theme.of(context).primaryColor,
                       ))),
+              controller: _passwordController,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (String? value) {
                 final password = value?.trim();
@@ -72,6 +87,8 @@ class _LoginFormState extends State<LoginForm> {
               onPressed: () {
                 // TODO replace with server authentication
                 if (_formKey.currentState!.validate()) {
+                  userDao.login(_emailController.text.trim(),
+                      _passwordController.text.trim());
                   Navigator.pushReplacementNamed(context, '/');
                 }
               },

@@ -1,5 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:share_taxi/common/data/user_dao.dart';
 
 class SignupPage extends StatelessWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -20,6 +22,7 @@ class SignupForm extends StatefulWidget {
 class _LoginFormState extends State<SignupForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  final _emailController = TextEditingController();
   var firstPassword = '';
   final TextEditingController _passController = TextEditingController();
   var _obfuscatePassword = true;
@@ -27,7 +30,16 @@ class _LoginFormState extends State<SignupForm> {
   var _obfuscateConfirmPassword = true;
 
   @override
+  void dispose() {
+    _emailController.dispose();
+    _passController.dispose();
+    _passConfirmController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final userDao = Provider.of<UserDao>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Form(
@@ -63,6 +75,7 @@ class _LoginFormState extends State<SignupForm> {
               decoration: const InputDecoration(
                 hintText: 'Email*',
               ),
+              controller: _emailController,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (String? value) {
                 final email = value?.trim();
@@ -130,7 +143,9 @@ class _LoginFormState extends State<SignupForm> {
             ElevatedButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  Navigator.pushReplacementNamed(context, '/');
+                  userDao.signup(_emailController.text.trim(),
+                      _passController.text.trim());
+                  Navigator.pushReplacementNamed(context, '/login');
                 }
               },
               child: const Text('Зарегистрироваться'),
