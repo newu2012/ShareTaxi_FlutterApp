@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
-import 'common/unknown_page.dart';
+import 'chat/presentation/message_list.dart';
+import 'common/presentation/unknown_page.dart';
 import 'trip/presentation/widgets/google_map_widget.dart';
-import 'trip/trip.dart';
 import 'trip/Presentation/pages/trips_list_page.dart';
 
 class Home extends StatelessWidget {
-  Home({Key? key, required this.trips}) : super(key: key);
-  // TODO remove trips placeholder
-  final List<Trip> trips;
+  Home({Key? key}) : super(key: key);
   final PersistentTabController _tabController =
       PersistentTabController(initialIndex: 0);
 
@@ -19,9 +17,10 @@ class Home extends StatelessWidget {
       context,
       controller: _tabController,
       screens: [
-        TripsListPage(trips: trips),
+        const TripsListPage(),
         const GoogleMapWidget(),
-        const UnknownPage(),
+        const TripsListPage(),
+        // const MessageList(),
         const UnknownPage()
       ],
       items: _navBarsItems(),
