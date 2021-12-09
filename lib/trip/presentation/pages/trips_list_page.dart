@@ -73,7 +73,12 @@ class _TripsListPageState extends State<TripsListPage> {
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
     final trip = Trip.fromSnapshot(snapshot);
-    return TripListTile(trip);
+    return GestureDetector(
+      child: TripListTile(trip),
+      onTap: () => Navigator.pushNamed(
+          context, '/chat',
+          arguments: trip.reference?.id),
+    );
   }
 
   Future<void> _buildCreateTripModal(TripDao tripDao, UserDao userDao) {

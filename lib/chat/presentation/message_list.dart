@@ -9,7 +9,8 @@ import '../data/message_dao.dart';
 import '../../common/data/user_dao.dart';
 
 class MessageList extends StatefulWidget {
-  const MessageList({Key? key}) : super(key: key);
+  const MessageList({Key? key, required this.tripId}) : super(key: key);
+  final String? tripId;
 
   @override
   MessageListState createState() => MessageListState();
@@ -18,14 +19,14 @@ class MessageList extends StatefulWidget {
 class MessageListState extends State<MessageList> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  String? email;
+  String? userId;
 
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollToBottom());
     final messageDao = Provider.of<MessageDao>(context, listen: false);
     final userDao = Provider.of<UserDao>(context, listen: false);
-    email = userDao.email();
+    userId = userDao.userId();
 
     return Scaffold(
       body: Padding(
@@ -68,10 +69,11 @@ class MessageListState extends State<MessageList> {
   void _sendMessage(MessageDao messageDao) {
     if (_canSendMessage()) {
       final message = Message(
+        tripId: widget.tripId,
         text: _messageController.text,
         date: DateTime.now(),
         // TODO Change chatId dynamically
-        email: email,
+        userId: userId,
       );
       messageDao.saveMessage(message);
       _messageController.clear();
@@ -82,7 +84,7 @@ class MessageListState extends State<MessageList> {
   Widget _getMessageList(MessageDao messageDao) {
     return Expanded(
       child: StreamBuilder<QuerySnapshot>(
-        stream: messageDao.getMessageStream(),
+        stream: messageDao.getMessageStream(widget.tripId),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
             return const Center(child: LinearProgressIndicator());
@@ -109,7 +111,7 @@ class MessageListState extends State<MessageList> {
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
     final message = Message.fromSnapshot(snapshot);
-    return MessageWidget(message.text, message.date, message.email);
+    return MessageWidget(message.text, message.date, message.userId);
   }
 
   bool _canSendMessage() => _messageController.text.length > 0;

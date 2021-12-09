@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'chat/presentation/message_list.dart';
 import 'chat/data/message_dao.dart';
 import 'common/data/user_dao.dart';
 import 'home.dart';
@@ -44,13 +45,11 @@ class App extends StatelessWidget {
     if (!Provider.of<UserDao>(context, listen: false).isLoggedIn()) {
       switch (settings.name) {
         case '/onboarding':
-        //  TODO Change to OnboardingPage()
+          //  TODO Change to OnboardingPage()
           return MaterialPageRoute(builder: (context) => const UnknownPage());
         case '/login':
-        //  TODO Change to OnboardingPage()
           return MaterialPageRoute(builder: (context) => const LoginPage());
         case '/signup':
-        //  TODO Change to OnboardingPage()
           return MaterialPageRoute(builder: (context) => const SignupPage());
         default:
           return MaterialPageRoute(builder: (context) => const UnknownPage());
@@ -62,15 +61,16 @@ class App extends StatelessWidget {
         //  TODO Change to OnboardingPage()
         return MaterialPageRoute(builder: (context) => const UnknownPage());
       case '/login':
-        //  TODO Change to OnboardingPage()
         return MaterialPageRoute(builder: (context) => const LoginPage());
       case '/signup':
-        //  TODO Change to OnboardingPage()
         return MaterialPageRoute(builder: (context) => const SignupPage());
       case '/':
-        //  TODO Change to OnboardingPage()
         return MaterialPageRoute(builder: (context) => Home());
-
+      case '/chat':
+        return MaterialPageRoute(
+            builder: (context) => MessageList(
+                  tripId: settings.arguments as String?,
+                ));
       default:
         return MaterialPageRoute(builder: (context) => const UnknownPage());
     }

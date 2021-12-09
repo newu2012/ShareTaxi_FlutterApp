@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:provider/provider.dart';
-import 'package:share_taxi/common/data/user_dao.dart';
+
+import '../../../common/data/user_dao.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
