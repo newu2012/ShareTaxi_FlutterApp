@@ -9,7 +9,8 @@ class MessageDao {
     collection.add(message.toJson());
   }
 
-  Stream<QuerySnapshot> getMessageStream() {
-    return collection.snapshots();
+  Stream<QuerySnapshot> getMessageStream(String? tripId) {
+    return collection.where('tripId', isEqualTo: tripId)
+        .snapshots();
   }
 }
