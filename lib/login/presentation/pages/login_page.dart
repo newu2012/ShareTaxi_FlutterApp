@@ -35,7 +35,8 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    final userDao = Provider.of<FireUserDao>(context, listen: false);
+    final fireUserDao = Provider.of<FireUserDao>(context, listen: false);
+
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Form(
@@ -86,9 +87,8 @@ class _LoginFormState extends State<LoginForm> {
                 onPressed: () => null, child: const Text('Забыли пароль?')),
             ElevatedButton(
               onPressed: () {
-                // TODO replace with server authentication
                 if (_formKey.currentState!.validate()) {
-                  userDao.login(_emailController.text.trim(),
+                  fireUserDao.login(_emailController.text.trim(),
                       _passwordController.text.trim());
                   Navigator.pushReplacementNamed(context, '/');
                 }
