@@ -87,7 +87,7 @@ class MessageListState extends State<MessageList> {
         stream: messageDao.getMessageStream(widget.tripId),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
-            return const Center(child: LinearProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           return _buildList(context, snapshot.data!.docs);
         },
       ),
@@ -97,7 +97,7 @@ class MessageListState extends State<MessageList> {
   Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {
     return ListView(
         controller: _scrollController,
-        physics: const BouncingScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.only(top: 20.0),
         children: _messageList(context, snapshot));
   }
