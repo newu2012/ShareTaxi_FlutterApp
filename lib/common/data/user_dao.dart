@@ -39,4 +39,8 @@ class UserDao extends ChangeNotifier {
   Stream<QuerySnapshot> getUserStream() {
     return collection.snapshots();
   }
+  
+  Future<User> getUserByUid(String? uid) async {
+    return User.fromSnapshot(await collection.doc(uid).get());
+  }
 }
