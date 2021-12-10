@@ -25,8 +25,8 @@ class MessageListState extends State<MessageList> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollToBottom());
     final messageDao = Provider.of<MessageDao>(context, listen: false);
-    final userDao = Provider.of<FireUserDao>(context, listen: false);
-    userId = userDao.userId();
+    final fireUserDao = Provider.of<FireUserDao>(context, listen: false);
+    userId = fireUserDao.userId();
 
     return Scaffold(
       body: Padding(

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../common/data/fire_user_dao.dart';
+import '../../common/data/user.dart';
+import '../../common/data/user_dao.dart';
 
 class MessageWidget extends StatelessWidget {
   final String message;
@@ -15,6 +16,8 @@ class MessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userDao = Provider.of<UserDao>(context, listen: false);
+
     return Padding(
         padding: const EdgeInsets.only(left: 1, top: 5, right: 1, bottom: 2),
         child: Column(
@@ -24,10 +27,19 @@ class MessageWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 4),
                 child: Align(
                     alignment: Alignment.topRight,
-                    child: Text(
-                      userId!,
-                      style: const TextStyle(color: Colors.grey),
-                    )),
+                    child: FutureBuilder(
+                        future: userDao.getUserByUid(userId),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            final user = (snapshot.data as User);
+                            return Text(
+                              '${user.firstName} ${user.lastName}',
+                              style: const TextStyle(color: Colors.grey),
+                            );
+                          } else {
+                            return const CircularProgressIndicator();
+                          }
+                        })),
               ),
             ],
             Container(
