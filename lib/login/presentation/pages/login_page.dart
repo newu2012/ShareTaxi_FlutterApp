@@ -97,7 +97,7 @@ class _LoginFormState extends State<LoginForm> {
             ),
             ElevatedButton(
               onPressed: () =>
-                  Navigator.pushReplacementNamed(context, '/signup'),
+                  Navigator.pushNamed(context, '/signup'),
               child: const Text('Зарегистрироваться'),
             ),
           ],

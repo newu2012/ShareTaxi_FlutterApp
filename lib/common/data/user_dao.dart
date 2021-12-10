@@ -1,59 +1,42 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
+import 'fire_user_dao.dart';
+import 'user.dart';
+
 class UserDao extends ChangeNotifier {
-  final auth = FirebaseAuth.instance;
+  final CollectionReference collection =
+      FirebaseFirestore.instance.collection('user');
 
-  bool isLoggedIn() {
-    return auth.currentUser != null;
-  }
-
-  String? userId() {
-    return auth.currentUser?.uid;
-  }
-
-  String? email() {
-    return auth.currentUser?.email;
-  }
-
-  void signup(String email, String password) async {
+  Future<String> createUser(User user, String password) async {
+    var userId;
     try {
-      await auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      notifyListeners();
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-      }
+      userId = await FireUserDao().signup(user.email, password);
+      saveUser(user, userId);
+      return userId;
     } catch (e) {
       print(e);
+      rethrow;
     }
   }
 
-  void login(String email, String password) async {
+  void saveUser(User user, String userId) async {
     try {
-      await auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      notifyListeners();
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-      }
+      collection.doc(userId).get().then((value) async {
+        if (value.exists) {
+          print('User already exists');
+          return;
+        } else {
+          return (await collection.doc(userId).set(user.toJson()));
+        }
+      });
     } catch (e) {
       print(e);
+      rethrow;
     }
   }
 
-  void logout() async {
-    await auth.signOut();
-    notifyListeners();
+  Stream<QuerySnapshot> getUserStream() {
+    return collection.snapshots();
   }
 }
