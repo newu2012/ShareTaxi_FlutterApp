@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:provider/provider.dart';
 
-import '../../../common/data/user_dao.dart';
+import '../../../common/data/fire_user_dao.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -35,7 +35,7 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    final userDao = Provider.of<UserDao>(context, listen: false);
+    final userDao = Provider.of<FireUserDao>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Form(

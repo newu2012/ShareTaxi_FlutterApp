@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'message_widget.dart';
 import '../data/message.dart';
 import '../data/message_dao.dart';
-import '../../common/data/user_dao.dart';
+import '../../common/data/fire_user_dao.dart';
 
 class MessageList extends StatefulWidget {
   const MessageList({Key? key, required this.tripId}) : super(key: key);
@@ -25,7 +25,7 @@ class MessageListState extends State<MessageList> {
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollToBottom());
     final messageDao = Provider.of<MessageDao>(context, listen: false);
-    final userDao = Provider.of<UserDao>(context, listen: false);
+    final userDao = Provider.of<FireUserDao>(context, listen: false);
     userId = userDao.userId();
 
     return Scaffold(
@@ -70,7 +70,7 @@ class MessageListState extends State<MessageList> {
     if (_canSendMessage()) {
       final message = Message(
         tripId: widget.tripId,
-        text: _messageController.text,
+        text: _messageController.text.trim(),
         date: DateTime.now(),
         // TODO Change chatId dynamically
         userId: userId,
