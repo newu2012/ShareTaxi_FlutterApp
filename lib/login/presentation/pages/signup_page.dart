@@ -2,7 +2,8 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../common/data/fire_user_dao.dart';
+import '../../../common/data/user.dart';
+import '../../../common/data/user_dao.dart';
 
 class SignupPage extends StatelessWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -23,6 +24,8 @@ class SignupForm extends StatefulWidget {
 class _LoginFormState extends State<SignupForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
   var firstPassword = '';
   final TextEditingController _passController = TextEditingController();
@@ -32,6 +35,8 @@ class _LoginFormState extends State<SignupForm> {
 
   @override
   void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     _emailController.dispose();
     _passController.dispose();
     _passConfirmController.dispose();
@@ -40,7 +45,7 @@ class _LoginFormState extends State<SignupForm> {
 
   @override
   Widget build(BuildContext context) {
-    final userDao = Provider.of<FireUserDao>(context, listen: false);
+    final userDao = Provider.of<UserDao>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Form(
@@ -51,6 +56,7 @@ class _LoginFormState extends State<SignupForm> {
               decoration: const InputDecoration(
                 hintText: 'Имя*',
               ),
+              controller: _firstNameController,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (String? value) {
                 final name = value?.trim();
@@ -63,6 +69,7 @@ class _LoginFormState extends State<SignupForm> {
               decoration: const InputDecoration(
                 hintText: 'Фамилия*',
               ),
+              controller: _lastNameController,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (String? value) {
                 final surname = value?.trim();
@@ -144,9 +151,15 @@ class _LoginFormState extends State<SignupForm> {
             ElevatedButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  userDao.signup(_emailController.text.trim(),
+                  final userId = userDao.createUser(
+                      User(
+                          email: _emailController.text.trim(),
+                          firstName: _firstNameController.text.trim(),
+                          lastName: _lastNameController.text.trim()),
                       _passController.text.trim());
-                  Navigator.pushReplacementNamed(context, '/login');
+                  userId.then((value) {
+                    Navigator.pushReplacementNamed(context, '/login');
+                  });
                 }
               },
               child: const Text('Зарегистрироваться'),

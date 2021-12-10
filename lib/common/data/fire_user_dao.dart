@@ -16,13 +16,14 @@ class FireUserDao extends ChangeNotifier {
     return auth.currentUser?.email;
   }
 
-  void signup(String email, String password) async {
+  Future<String?> signup(String email, String password) async {
     try {
-      await auth.createUserWithEmailAndPassword(
+      final userCredentials = await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       notifyListeners();
+      return userCredentials.user?.uid;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
