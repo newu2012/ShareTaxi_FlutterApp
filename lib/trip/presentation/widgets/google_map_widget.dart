@@ -21,25 +21,27 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-          future: _getCurrentLocation(),
-          builder: (context, AsyncSnapshot<Position> position) {
-            if (position.hasData) {
-              final pos = position.data as Position;
+      body: Center(
+        child: FutureBuilder(
+            future: _getCurrentLocation(),
+            builder: (context, AsyncSnapshot<Position> position) {
+              if (position.hasData) {
+                final pos = position.data as Position;
 
-              return GoogleMap(
-                onMapCreated: _onMapCreated,
-                markers: _createMarker(),
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(pos.latitude, pos.longitude),
-                  zoom: 17.0,
-                ),
-                myLocationEnabled: true,
-              );
-            } else {
-              return const CircularProgressIndicator();
-            }
-          }),
+                return GoogleMap(
+                  onMapCreated: _onMapCreated,
+                  markers: _createMarker(),
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(pos.latitude, pos.longitude),
+                    zoom: 17.0,
+                  ),
+                  myLocationEnabled: true,
+                );
+              } else {
+                return const CircularProgressIndicator();
+              }
+            }),
+      ),
     );
   }
 
