@@ -75,13 +75,12 @@ class _TripsListPageState extends State<TripsListPage> {
     final trip = Trip.fromSnapshot(snapshot);
     return GestureDetector(
       child: TripListTile(trip),
-      onTap: () => Navigator.pushNamed(
-          context, '/chat',
-          arguments: trip.reference?.id),
+      onTap: () =>
+          Navigator.pushNamed(context, '/chat', arguments: trip.reference?.id),
     );
   }
 
-  Future<void> _buildCreateTripModal(TripDao tripDao, FireUserDao userDao) {
+  Future<void> _buildCreateTripModal(TripDao tripDao, FireUserDao fireUserDao) {
     final _formKey = GlobalKey<FormState>();
     final _titleController = TextEditingController();
     final _timeController = TextEditingController();
@@ -128,8 +127,10 @@ class _TripsListPageState extends State<TripsListPage> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           tripDao.saveTrip(Trip(
-                            creatorId: userDao.userId(),
+                            creatorId: fireUserDao.userId(),
                             title: _titleController.text,
+                            fromPoint: const GeoPoint(56.84, 60.65),
+                            toPoint: const GeoPoint(56.85, 60.6),
                             costOverall: int.parse(_costController.text),
                             departureTime: DateTime.now().add(Duration(
                                 minutes: int.parse(_timeController.text))),

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -52,9 +51,7 @@ class MessageListState extends State<MessageList> {
                   ),
                 ),
                 IconButton(
-                    icon: Icon(_canSendMessage()
-                        ? CupertinoIcons.arrow_right_circle_fill
-                        : CupertinoIcons.arrow_right_circle),
+                    icon: const Icon(Icons.arrow_right),
                     onPressed: () {
                       _sendMessage(messageDao);
                     })
@@ -72,7 +69,6 @@ class MessageListState extends State<MessageList> {
         tripId: widget.tripId,
         text: _messageController.text.trim(),
         date: DateTime.now(),
-        // TODO Change chatId dynamically
         userId: userId,
       );
       messageDao.saveMessage(message);
