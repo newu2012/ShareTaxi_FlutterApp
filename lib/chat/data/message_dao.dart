@@ -3,14 +3,13 @@ import 'message.dart';
 
 class MessageDao {
   final CollectionReference collection =
-      FirebaseFirestore.instance.collection('messages');
+      FirebaseFirestore.instance.collection('message');
 
   void saveMessage(Message message) {
     collection.add(message.toJson());
   }
 
   Stream<QuerySnapshot> getMessageStream(String? tripId) {
-    return collection.where('tripId', isEqualTo: tripId)
-        .snapshots();
+    return collection.where('tripId', isEqualTo: tripId).snapshots();
   }
 }

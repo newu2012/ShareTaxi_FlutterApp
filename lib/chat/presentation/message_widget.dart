@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+import '../../common/data/fire_user_dao.dart';
 
 class MessageWidget extends StatelessWidget {
   final String message;
   final DateTime date;
-  final String? email;
+  final String? userId;
 
-  const MessageWidget(this.message, this.date, this.email, {Key? key})
+  const MessageWidget(this.message, this.date, this.userId, {Key? key})
       : super(key: key);
 
   @override
@@ -16,13 +19,13 @@ class MessageWidget extends StatelessWidget {
         padding: const EdgeInsets.only(left: 1, top: 5, right: 1, bottom: 2),
         child: Column(
           children: [
-            if (email != null) ...[
+            if (userId != null) ...[
               Padding(
                 padding: const EdgeInsets.only(top: 4),
                 child: Align(
                     alignment: Alignment.topRight,
                     child: Text(
-                      email!,
+                      userId!,
                       style: const TextStyle(color: Colors.grey),
                     )),
               ),

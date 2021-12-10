@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import '../../../common/data/user_dao.dart';
+import '../../../common/data/fire_user_dao.dart';
 import '../../data/trip_dao.dart';
 import '../widgets/trip_list_tile.dart';
 import '../../data/trip.dart';
@@ -21,7 +21,7 @@ class _TripsListPageState extends State<TripsListPage> {
   @override
   Widget build(BuildContext context) {
     final tripDao = Provider.of<TripDao>(context, listen: false);
-    final userDao = Provider.of<UserDao>(context, listen: false);
+    final userDao = Provider.of<FireUserDao>(context, listen: false);
 
     return Scaffold(
       body: Padding(
@@ -36,7 +36,7 @@ class _TripsListPageState extends State<TripsListPage> {
     );
   }
 
-  Widget _createTripButton(TripDao tripDao, UserDao userDao) {
+  Widget _createTripButton(TripDao tripDao, FireUserDao userDao) {
     return ElevatedButton(
         onPressed: () => _buildCreateTripModal(tripDao, userDao),
         child: const Text('Create trip'));
@@ -81,7 +81,7 @@ class _TripsListPageState extends State<TripsListPage> {
     );
   }
 
-  Future<void> _buildCreateTripModal(TripDao tripDao, UserDao userDao) {
+  Future<void> _buildCreateTripModal(TripDao tripDao, FireUserDao userDao) {
     final _formKey = GlobalKey<FormState>();
     final _titleController = TextEditingController();
     final _timeController = TextEditingController();
