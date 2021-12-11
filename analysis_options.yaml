@@ -20,6 +20,56 @@ analyzer:
     #This is added as an error to make viewing code on the web easier
     lines_longer_than_80_chars: error
     prefer_single_quotes: error
+  plugins:
+    - dart_code_metrics
+
+dart_code_metrics:
+  anti-patterns:
+    - long-method
+    - long-parameter-list
+  metrics:
+    cyclomatic-complexity: 20
+    maintainability-index: 50
+    maximum-nesting: 5
+    number-of-parameters: 5
+    source-lines-of-code: 50
+    technical-debt:
+      threshold: 1
+      todo-cost: 4
+      ignore-cost: 8
+      ignore-for-file-cost: 16
+      as-dynamic-cost: 16
+      deprecated-annotations-cost: 2
+      file-nullsafety-migration-cost: 2
+      unit-type: "hours"
+  metrics-exclude:
+    - test/src/analyzer_plugin/**
+    - test/src/analyzers/**
+    - test/src/cli/**
+    - test/src/config_builder/**
+    - test/src/helpers/**
+    - test/src/reporters/**
+    - test/src/utils/**
+    - test/resources/*
+    - test/*
+  rules:
+    - avoid-unused-parameters
+    - avoid-unnecessary-type-assertions
+    - avoid-unnecessary-type-casts
+    - binary-expression-operand-order
+    - double-literal-format
+    - newline-before-return
+    - no-boolean-literal-compare
+    - no-empty-block
+    - no-equal-then-else
+    - no-object-declaration
+    - prefer-conditional-expressions
+    - prefer-first
+    - prefer-last
+    - prefer-match-file-name:
+        exclude:
+          - test/**
+    - prefer-trailing-comma
 
 linter:
   rules:
