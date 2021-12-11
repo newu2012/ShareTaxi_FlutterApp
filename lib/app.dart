@@ -46,7 +46,9 @@ class App extends StatelessWidget {
   }
 
   static MaterialPageRoute OnGenerateRoute(
-      BuildContext context, RouteSettings settings) {
+    BuildContext context,
+    RouteSettings settings,
+  ) {
     if (!Provider.of<FireUserDao>(context, listen: false).isLoggedIn()) {
       switch (settings.name) {
         case '/onboarding':
@@ -73,9 +75,10 @@ class App extends StatelessWidget {
         return MaterialPageRoute(builder: (context) => Home());
       case '/chat':
         return MaterialPageRoute(
-            builder: (context) => MessageList(
-                  tripId: settings.arguments as String?,
-                ));
+          builder: (context) => MessageList(
+            tripId: settings.arguments as String?,
+          ),
+        );
       default:
         return MaterialPageRoute(builder: (context) => const UnknownPage());
     }

@@ -51,10 +51,11 @@ class MessageListState extends State<MessageList> {
                   ),
                 ),
                 IconButton(
-                    icon: const Icon(Icons.arrow_right),
-                    onPressed: () {
-                      _sendMessage(messageDao);
-                    })
+                  icon: const Icon(Icons.arrow_right),
+                  onPressed: () {
+                    _sendMessage(messageDao);
+                  },
+                ),
               ],
             ),
           ],
@@ -71,9 +72,11 @@ class MessageListState extends State<MessageList> {
         date: DateTime.now(),
         userId: userId,
       );
-      messageDao.saveMessage(message);
-      _messageController.clear();
-      setState(() {});
+
+      setState(() {
+        messageDao.saveMessage(message);
+        _messageController.clear();
+      });
     }
   }
 
@@ -84,29 +87,34 @@ class MessageListState extends State<MessageList> {
         builder: (context, snapshot) {
           if (!snapshot.hasData)
             return const Center(child: CircularProgressIndicator());
-          return _buildList(context, snapshot.data!.docs);
+
+          return _buildList(snapshot.data!.docs);
         },
       ),
     );
   }
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {
+  Widget _buildList(List<DocumentSnapshot>? snapshot) {
     return ListView(
-        controller: _scrollController,
-        physics: const ClampingScrollPhysics(),
-        padding: const EdgeInsets.only(top: 20.0),
-        children: _messageList(context, snapshot));
+      controller: _scrollController,
+      physics: const ClampingScrollPhysics(),
+      padding: const EdgeInsets.only(top: 20.0),
+      children: _messageList(snapshot),
+    );
   }
 
   List<Widget> _messageList(
-      BuildContext context, List<DocumentSnapshot>? snapshot) {
+    List<DocumentSnapshot>? snapshot,
+  ) {
     snapshot!.sort((a, b) =>
         Message.fromSnapshot(a).date.compareTo(Message.fromSnapshot(b).date));
-    return snapshot.map((data) => _buildListItem(context, data)).toList();
+
+    return snapshot.map((data) => _buildListItem(data)).toList();
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
+  Widget _buildListItem(DocumentSnapshot snapshot) {
     final message = Message.fromSnapshot(snapshot);
+
     return MessageWidget(message.text, message.date, message.userId);
   }
 

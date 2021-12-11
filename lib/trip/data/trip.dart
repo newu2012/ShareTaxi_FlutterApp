@@ -13,16 +13,17 @@ class Trip {
 
   DocumentReference? reference;
 
-  Trip(
-      {required this.creatorId,
-      required this.title,
-      required this.fromPoint,
-      required this.toPoint,
-      required this.currentCompanions,
-      required this.maximumCompanions,
-      required this.costOverall,
-      required this.departureTime,
-      this.reference});
+  Trip({
+    required this.creatorId,
+    required this.title,
+    required this.fromPoint,
+    required this.toPoint,
+    required this.currentCompanions,
+    required this.maximumCompanions,
+    required this.costOverall,
+    required this.departureTime,
+    this.reference,
+  });
 
   factory Trip.fromJson(Map<dynamic, dynamic> json) => Trip(
         creatorId: json['creatorId'] as String,
@@ -49,6 +50,7 @@ class Trip {
   factory Trip.fromSnapshot(DocumentSnapshot snapshot) {
     final trip = Trip.fromJson(snapshot.data() as Map<String, dynamic>);
     trip.reference = snapshot.reference;
+
     return trip;
   }
 }

@@ -21,7 +21,7 @@ class Home extends StatelessWidget {
         const GoogleMapWidget(),
         const TripsListPage(),
         // const MessageList(),
-        const UnknownPage()
+        const UnknownPage(),
       ],
       items: _navBarsItems(context),
       navBarStyle: NavBarStyle.style3,

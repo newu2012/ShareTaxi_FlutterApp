@@ -55,22 +55,26 @@ class _LoginFormState extends State<LoginForm> {
                 if (email == null || email.isEmpty) return 'Введите email';
                 if (!EmailValidator.validate(email))
                   return 'Введите действительный email';
+
                 return null;
               },
             ),
             TextFormField(
               obscureText: _obfuscatePassword,
               decoration: InputDecoration(
-                  hintText: 'Пароль',
-                  suffixIcon: IconButton(
-                      onPressed: () => setState(
-                          () => _obfuscatePassword = !_obfuscatePassword),
-                      icon: Icon(
-                        _obfuscatePassword
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Theme.of(context).primaryColor,
-                      ))),
+                hintText: 'Пароль',
+                suffixIcon: IconButton(
+                  onPressed: () => setState(
+                    () => _obfuscatePassword = !_obfuscatePassword,
+                  ),
+                  icon: Icon(
+                    _obfuscatePassword
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              ),
               controller: _passwordController,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (String? value) {
@@ -79,25 +83,29 @@ class _LoginFormState extends State<LoginForm> {
                   return 'Введите пароль';
                 if (password.length < 6)
                   return 'Введите пароль не менее 6 символов';
+
                 return null;
               },
             ),
             //  TODO write function ForgotPassword
             TextButton(
-                onPressed: () => null, child: const Text('Забыли пароль?')),
+              onPressed: () => null,
+              child: const Text('Забыли пароль?'),
+            ),
             ElevatedButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  fireUserDao.login(_emailController.text.trim(),
-                      _passwordController.text.trim());
+                  fireUserDao.login(
+                    _emailController.text.trim(),
+                    _passwordController.text.trim(),
+                  );
                   Navigator.pushReplacementNamed(context, '/');
                 }
               },
               child: const Text('Войти'),
             ),
             ElevatedButton(
-              onPressed: () =>
-                  Navigator.pushNamed(context, '/signup'),
+              onPressed: () => Navigator.pushNamed(context, '/signup'),
               child: const Text('Зарегистрироваться'),
             ),
           ],
