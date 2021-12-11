@@ -13,6 +13,7 @@ class UserDao extends ChangeNotifier {
     try {
       userId = await FireUserDao().signup(user.email, password);
       saveUser(user, userId);
+
       return userId;
     } catch (e) {
       print(e);
@@ -25,9 +26,10 @@ class UserDao extends ChangeNotifier {
       collection.doc(userId).get().then((value) async {
         if (value.exists) {
           print('User already exists');
+
           return;
         } else {
-          return (await collection.doc(userId).set(user.toJson()));
+          return (collection.doc(userId).set(user.toJson()));
         }
       });
     } catch (e) {
@@ -39,7 +41,7 @@ class UserDao extends ChangeNotifier {
   Stream<QuerySnapshot> getUserStream() {
     return collection.snapshots();
   }
-  
+
   Future<User> getUserByUid(String? uid) async {
     return User.fromSnapshot(await collection.doc(uid).get());
   }

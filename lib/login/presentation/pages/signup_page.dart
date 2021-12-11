@@ -46,6 +46,7 @@ class _LoginFormState extends State<SignupForm> {
   @override
   Widget build(BuildContext context) {
     final userDao = Provider.of<UserDao>(context, listen: false);
+
     return Padding(
       padding: const EdgeInsets.all(32.0),
       child: Form(
@@ -61,6 +62,7 @@ class _LoginFormState extends State<SignupForm> {
               validator: (String? value) {
                 final name = value?.trim();
                 if (name == null || name.isEmpty) return 'Введите Имя';
+
                 return null;
               },
             ),
@@ -75,6 +77,7 @@ class _LoginFormState extends State<SignupForm> {
                 final surname = value?.trim();
                 if (surname == null || surname.isEmpty)
                   return 'Введите Фамилию';
+
                 return null;
               },
             ),
@@ -90,6 +93,7 @@ class _LoginFormState extends State<SignupForm> {
                 if (email == null || email.isEmpty) return 'Введите email';
                 if (!EmailValidator.validate(email))
                   return 'Введите действительный email';
+
                 return null;
               },
             ),
@@ -98,18 +102,21 @@ class _LoginFormState extends State<SignupForm> {
               controller: _passController,
               obscureText: _obfuscatePassword,
               decoration: InputDecoration(
-                  hintText: 'Пароль*',
-                  suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(
-                            () => _obfuscatePassword = !_obfuscatePassword);
-                      },
-                      icon: Icon(
-                        _obfuscatePassword
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Theme.of(context).primaryColor,
-                      ))),
+                hintText: 'Пароль*',
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(
+                      () => _obfuscatePassword = !_obfuscatePassword,
+                    );
+                  },
+                  icon: Icon(
+                    _obfuscatePassword
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              ),
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (String? value) {
                 final password = value?.trim();
@@ -117,6 +124,7 @@ class _LoginFormState extends State<SignupForm> {
                   return 'Введите пароль';
                 if (password.length < 6)
                   return 'Введите пароль не менее 6 символов';
+
                 return null;
               },
             ),
@@ -125,18 +133,20 @@ class _LoginFormState extends State<SignupForm> {
               controller: _passConfirmController,
               obscureText: _obfuscateConfirmPassword,
               decoration: InputDecoration(
-                  hintText: 'Повторите пароль*',
-                  suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() => _obfuscateConfirmPassword =
-                            !_obfuscateConfirmPassword);
-                      },
-                      icon: Icon(
-                        _obfuscateConfirmPassword
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Theme.of(context).primaryColor,
-                      ))),
+                hintText: 'Повторите пароль*',
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() =>
+                        _obfuscateConfirmPassword = !_obfuscateConfirmPassword);
+                  },
+                  icon: Icon(
+                    _obfuscateConfirmPassword
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              ),
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (String? value) {
                 final password = value?.trim();
@@ -144,6 +154,7 @@ class _LoginFormState extends State<SignupForm> {
                   return 'Введите подтверждение пароля';
                 if (password != _passController.text)
                   return 'Пароли отличаются';
+
                 return null;
               },
             ),
@@ -152,11 +163,13 @@ class _LoginFormState extends State<SignupForm> {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   final userId = userDao.createUser(
-                      User(
-                          email: _emailController.text.trim(),
-                          firstName: _firstNameController.text.trim(),
-                          lastName: _lastNameController.text.trim()),
-                      _passController.text.trim());
+                    User(
+                      email: _emailController.text.trim(),
+                      firstName: _firstNameController.text.trim(),
+                      lastName: _lastNameController.text.trim(),
+                    ),
+                    _passController.text.trim(),
+                  );
                   userId.then((value) {
                     Navigator.pushReplacementNamed(context, '/login');
                   });

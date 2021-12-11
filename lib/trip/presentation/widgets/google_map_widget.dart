@@ -23,24 +23,25 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
     return Scaffold(
       body: Center(
         child: FutureBuilder(
-            future: _getCurrentLocation(),
-            builder: (context, AsyncSnapshot<Position> position) {
-              if (position.hasData) {
-                final pos = position.data as Position;
+          future: _getCurrentLocation(),
+          builder: (context, AsyncSnapshot<Position> position) {
+            if (position.hasData) {
+              final pos = position.data as Position;
 
-                return GoogleMap(
-                  onMapCreated: _onMapCreated,
-                  markers: _createMarker(),
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(pos.latitude, pos.longitude),
-                    zoom: 17.0,
-                  ),
-                  myLocationEnabled: true,
-                );
-              } else {
-                return const CircularProgressIndicator();
-              }
-            }),
+              return GoogleMap(
+                onMapCreated: _onMapCreated,
+                markers: _createMarker(),
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(pos.latitude, pos.longitude),
+                  zoom: 17.0,
+                ),
+                myLocationEnabled: true,
+              );
+            } else {
+              return const CircularProgressIndicator();
+            }
+          },
+        ),
       ),
     );
   }
@@ -81,6 +82,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
     // continue accessing the position of the device.
     final pos = await Geolocator.getCurrentPosition();
     _position = pos;
+
     return pos;
   }
 
@@ -88,10 +90,12 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
     return <Marker>{
       Marker(
         markerId: const MarkerId('current'),
-        position: LatLng(_position.latitude,
-            _position.longitude),
+        position: LatLng(
+          _position.latitude,
+          _position.longitude,
+        ),
         icon: BitmapDescriptor.defaultMarker,
-      )
+      ),
     };
   }
 }

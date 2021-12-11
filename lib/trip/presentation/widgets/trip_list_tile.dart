@@ -45,30 +45,32 @@ class TripListTile extends StatelessWidget {
               Text(DateFormat('HH:mm').format(trip.departureTime)),
             ],
           ),
-              FutureBuilder(
-                future: userDao.getUserByUid(FireUserDao().userId()),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final user = snapshot.data as User;
-                    return Row(
-                      children: [
-                        DistanceFromPoint(user: user, point: trip.fromPoint),
-                        DistanceToPoint(user: user, point: trip.toPoint),
-                      ],
-                    );
-                  } else {
-                    return const LinearProgressIndicator();
-                  }
-                },
-              ),
-            ],
+          FutureBuilder(
+            future: userDao.getUserByUid(FireUserDao().userId()),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final user = snapshot.data as User;
+
+                return Row(
+                  children: [
+                    DistanceFromPoint(user: user, point: trip.fromPoint),
+                    DistanceToPoint(user: user, point: trip.toPoint),
+                  ],
+                );
+              } else {
+                return const LinearProgressIndicator();
+              }
+            },
           ),
+        ],
+      ),
     );
   }
 }
 
 double _calculateMeterDistance(LatLng p1, LatLng p2) {
   const distance = Distance();
+
   return distance(p1, p2);
 }
 
@@ -82,8 +84,9 @@ class DistanceFromPoint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final meterDistance = _calculateMeterDistance(
-        LatLng(user.fromPoint!.latitude, user.fromPoint!.longitude),
-        LatLng(point.latitude, point.longitude));
+      LatLng(user.fromPoint!.latitude, user.fromPoint!.longitude),
+      LatLng(point.latitude, point.longitude),
+    );
 
     return Row(
       children: [
@@ -107,8 +110,9 @@ class DistanceToPoint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final meterDistance = _calculateMeterDistance(
-        LatLng(user.toPoint!.latitude, user.toPoint!.longitude),
-        LatLng(point.latitude, point.longitude));
+      LatLng(user.toPoint!.latitude, user.toPoint!.longitude),
+      LatLng(point.latitude, point.longitude),
+    );
 
     return Row(
       children: [

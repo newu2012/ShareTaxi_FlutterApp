@@ -20,15 +20,16 @@ class MessageWidget extends StatelessWidget {
     final fireUserDao = Provider.of<FireUserDao>(context, listen: false);
 
     return Padding(
-        padding: const EdgeInsets.only(left: 1, top: 5, right: 1, bottom: 2),
-        child: FutureBuilder(
-            future: userDao.getUserByUid(userId),
-            builder: (context, userSnapshot) {
-              if (userSnapshot.hasData) {
-                return _buildMessage(userSnapshot.data as User, fireUserDao);
-              } else
-                return const LinearProgressIndicator();
-            }));
+      padding: const EdgeInsets.only(left: 1, top: 5, right: 1, bottom: 2),
+      child: FutureBuilder(
+        future: userDao.getUserByUid(userId),
+        builder: (context, userSnapshot) {
+          return userSnapshot.hasData
+              ? _buildMessage(userSnapshot.data as User, fireUserDao)
+              : const LinearProgressIndicator();
+        },
+      ),
+    );
   }
 
   Widget _buildMessage(User messageCreator, FireUserDao fireUserDao) {
@@ -44,7 +45,8 @@ class MessageWidget extends StatelessWidget {
         Column(
           children: [
             _buildMessageCreatorText(
-                '${messageCreator.firstName} ${messageCreator.lastName}'),
+              '${messageCreator.firstName} ${messageCreator.lastName}',
+            ),
             _buildMessageText(),
             _buildMessageDate(),
           ],
@@ -62,7 +64,8 @@ class MessageWidget extends StatelessWidget {
         Column(
           children: [
             _buildMessageCreatorText(
-                '${messageCreator.firstName} ${messageCreator.lastName}'),
+              '${messageCreator.firstName} ${messageCreator.lastName}',
+            ),
             _buildMessageText(),
             _buildMessageDate(),
           ],
@@ -87,7 +90,9 @@ class MessageWidget extends StatelessWidget {
   Widget _buildMessageText() {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50.0), color: Colors.white),
+        borderRadius: BorderRadius.circular(50.0),
+        color: Colors.white,
+      ),
       child: Text(message),
     );
   }
@@ -96,11 +101,12 @@ class MessageWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 4),
       child: Align(
-          alignment: Alignment.topRight,
-          child: Text(
-            DateFormat('yyyy-MM-dd, kk:mma').format(date).toString(),
-            style: const TextStyle(color: Colors.grey),
-          )),
+        alignment: Alignment.topRight,
+        child: Text(
+          DateFormat('yyyy-MM-dd, kk:mma').format(date).toString(),
+          style: const TextStyle(color: Colors.grey),
+        ),
+      ),
     );
   }
 

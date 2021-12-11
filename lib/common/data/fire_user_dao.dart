@@ -23,6 +23,7 @@ class FireUserDao extends ChangeNotifier {
         password: password,
       );
       notifyListeners();
+
       return userCredentials.user?.uid;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
