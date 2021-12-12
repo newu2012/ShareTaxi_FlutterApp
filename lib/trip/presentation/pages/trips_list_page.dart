@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/data/fire_user_dao.dart';
 import '../../data/trip_dao.dart';
-import '../widgets/trip_list_tile.dart';
+import '../widgets/widgets.dart';
 import '../../data/trip.dart';
 
 class TripsListPage extends StatefulWidget {
@@ -38,7 +37,7 @@ class _TripsListPageState extends State<TripsListPage> {
 
   Widget _createTripButton(TripDao tripDao, FireUserDao userDao) {
     return ElevatedButton(
-      onPressed: () => _buildCreateTripModal(tripDao, userDao),
+      onPressed: () => _buildTripModal(tripDao, userDao),
       child: const Text('Create trip'),
     );
   }
@@ -87,10 +86,8 @@ class _TripsListPageState extends State<TripsListPage> {
     );
   }
 
-  Future<void> _buildCreateTripModal(TripDao tripDao, FireUserDao fireUserDao) {
+  Future<void> _buildTripModal(TripDao tripDao, FireUserDao fireUserDao) {
     final _formKey = GlobalKey<FormState>();
-    final _fromPointController = TextEditingController();
-    final _toPointController = TextEditingController();
     final _titleController = TextEditingController();
     final _timeController = TextEditingController();
     final _costController = TextEditingController();
@@ -107,8 +104,6 @@ class _TripsListPageState extends State<TripsListPage> {
               child: CreateTripListView(
                 tripDao: tripDao,
                 fireUserDao: fireUserDao,
-                fromPointController: _fromPointController,
-                toPointController: _toPointController,
                 titleController: _titleController,
                 timeController: _timeController,
                 costController: _costController,
@@ -127,16 +122,12 @@ class CreateTripListView extends StatelessWidget {
     Key? key,
     required TripDao tripDao,
     required FireUserDao fireUserDao,
-    required TextEditingController fromPointController,
-    required TextEditingController toPointController,
     required TextEditingController titleController,
     required TextEditingController timeController,
     required TextEditingController costController,
     required GlobalKey<FormState> formKey,
   })  : _tripDao = tripDao,
         _fireUserDao = fireUserDao,
-        _fromPointController = fromPointController,
-        _toPointController = toPointController,
         _titleController = titleController,
         _timeController = timeController,
         _costController = costController,
@@ -146,8 +137,6 @@ class CreateTripListView extends StatelessWidget {
   final TripDao _tripDao;
   final FireUserDao _fireUserDao;
 
-  final TextEditingController _fromPointController;
-  final TextEditingController _toPointController;
   final TextEditingController _titleController;
   final TextEditingController _timeController;
   final TextEditingController _costController;
@@ -159,49 +148,19 @@ class CreateTripListView extends StatelessWidget {
       children: [
         TextFormField(
           decoration: const InputDecoration(
-            hintText: 'Откуда хотим поехать',
-          ),
-          keyboardType: TextInputType.number,
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.digitsOnly,
-          ],
-          controller: _fromPointController,
-        ),
-        TextFormField(
-          decoration: const InputDecoration(
-            hintText: 'Куда хотим поехать',
-          ),
-          keyboardType: TextInputType.number,
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.digitsOnly,
-          ],
-          controller: _toPointController,
-        ),
-        TextFormField(
-          decoration: const InputDecoration(
             hintText: 'Название поездки',
           ),
           controller: _titleController,
         ),
-        TextFormField(
-          decoration: const InputDecoration(
-            hintText: 'Через сколько минут',
-          ),
-          keyboardType: TextInputType.number,
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.digitsOnly,
-          ],
+        DigitsOnlyFormField(
           controller: _timeController,
+          hint: 'Через сколько минут',
+          ifEmptyOrNull: 'Количество минут от 0 до 1440',
         ),
-        TextFormField(
-          decoration: const InputDecoration(
-            hintText: 'Сколько стоит',
-          ),
-          keyboardType: TextInputType.number,
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.digitsOnly,
-          ],
+        DigitsOnlyFormField(
           controller: _costController,
+          hint: 'Сколько стоит',
+          ifEmptyOrNull: 'Ожидаемая стоимость поездки для одного человека',
         ),
         CreateTripButton(
           formKey: _formKey,
@@ -212,56 +171,6 @@ class CreateTripListView extends StatelessWidget {
           fireUserDao: _fireUserDao,
         ),
       ],
-    );
-  }
-}
-
-class CreateTripButton extends StatelessWidget {
-  const CreateTripButton({
-    Key? key,
-    required GlobalKey<FormState> formKey,
-    required TextEditingController titleController,
-    required TextEditingController costController,
-    required TextEditingController timeController,
-    required TripDao tripDao,
-    required FireUserDao fireUserDao,
-  })  : _formKey = formKey,
-        _titleController = titleController,
-        _costController = costController,
-        _timeController = timeController,
-        _tripDao = tripDao,
-        _fireUserDao = fireUserDao,
-        super(key: key);
-
-  final TripDao _tripDao;
-  final FireUserDao _fireUserDao;
-
-  final GlobalKey<FormState> _formKey;
-  final TextEditingController _titleController;
-  final TextEditingController _costController;
-  final TextEditingController _timeController;
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        if (_formKey.currentState!.validate()) {
-          _tripDao.saveTrip(Trip(
-            creatorId: _fireUserDao.userId(),
-            title: _titleController.text,
-            fromPoint: const GeoPoint(56.84, 60.65),
-            toPoint: const GeoPoint(56.85, 60.6),
-            costOverall: int.parse(_costController.text),
-            departureTime: DateTime.now().add(Duration(
-              minutes: int.parse(_timeController.text),
-            )),
-            currentCompanions: 1,
-            maximumCompanions: 4,
-          ));
-          Navigator.pop(context);
-        }
-      },
-      child: const Text('Создать поездку'),
     );
   }
 }
