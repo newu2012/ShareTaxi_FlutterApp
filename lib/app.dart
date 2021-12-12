@@ -6,7 +6,7 @@ import 'chat/data/message_dao.dart';
 import 'common/data/fire_user_dao.dart';
 import 'common/data/user_dao.dart';
 import 'home.dart';
-import 'common/presentation/unknown_page.dart';
+import 'common/presentation/pages/unknown_page.dart';
 import 'login/presentation/pages/signup_page.dart';
 import 'login/presentation/pages/login_page.dart';
 import 'trip/data/trip_dao.dart';

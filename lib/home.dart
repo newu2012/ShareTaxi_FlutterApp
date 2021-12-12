@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import 'app.dart';
-import 'common/presentation/unknown_page.dart';
+import 'common/presentation/pages/unknown_page.dart';
 import 'trip/presentation/widgets/google_map_widget.dart';
 import 'trip/Presentation/pages/trips_list_page.dart';
 
