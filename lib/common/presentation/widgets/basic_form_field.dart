@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../logic/validators.dart';
+import '../../../login/logic/validators.dart';
 
 class BasicFormField extends StatelessWidget {
   const BasicFormField({

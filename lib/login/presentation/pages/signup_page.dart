@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../common/presentation/widgets/widgets.dart';
 import '../widgets/widgets.dart';
-import '../../../common/data/user.dart';
 import '../../../common/data/user_dao.dart';
 
 class SignupPage extends StatelessWidget {
