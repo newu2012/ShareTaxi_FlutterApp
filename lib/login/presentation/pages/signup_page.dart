@@ -1,7 +1,7 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/widgets.dart';
 import '../../../common/data/user.dart';
 import '../../../common/data/user_dao.dart';
 
@@ -27,11 +27,8 @@ class _LoginFormState extends State<SignupForm> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
-  var firstPassword = '';
-  final TextEditingController _passController = TextEditingController();
-  var _obfuscatePassword = true;
-  final TextEditingController _passConfirmController = TextEditingController();
-  var _obfuscateConfirmPassword = true;
+  final _passController = TextEditingController();
+  final _passConfirmController = TextEditingController();
 
   @override
   void dispose() {
@@ -47,138 +44,36 @@ class _LoginFormState extends State<SignupForm> {
   Widget build(BuildContext context) {
     final userDao = Provider.of<UserDao>(context, listen: false);
 
-    return Padding(
-      padding: const EdgeInsets.all(32.0),
-      child: Form(
-        key: _formKey,
-        child: ListView(
-          children: [
-            TextFormField(
-              decoration: const InputDecoration(
-                hintText: 'Имя*',
-              ),
-              controller: _firstNameController,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (String? value) {
-                final name = value?.trim();
-                if (name == null || name.isEmpty) return 'Введите Имя';
-
-                return null;
-              },
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              decoration: const InputDecoration(
-                hintText: 'Фамилия*',
-              ),
-              controller: _lastNameController,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (String? value) {
-                final surname = value?.trim();
-                if (surname == null || surname.isEmpty)
-                  return 'Введите Фамилию';
-
-                return null;
-              },
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              decoration: const InputDecoration(
-                hintText: 'Email*',
-              ),
-              controller: _emailController,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (String? value) {
-                final email = value?.trim();
-                if (email == null || email.isEmpty) return 'Введите email';
-                if (!EmailValidator.validate(email))
-                  return 'Введите действительный email';
-
-                return null;
-              },
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _passController,
-              obscureText: _obfuscatePassword,
-              decoration: InputDecoration(
-                hintText: 'Пароль*',
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(
-                      () => _obfuscatePassword = !_obfuscatePassword,
-                    );
-                  },
-                  icon: Icon(
-                    _obfuscatePassword
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-              ),
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (String? value) {
-                final password = value?.trim();
-                if (password == null || password.isEmpty)
-                  return 'Введите пароль';
-                if (password.length < 6)
-                  return 'Введите пароль не менее 6 символов';
-
-                return null;
-              },
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _passConfirmController,
-              obscureText: _obfuscateConfirmPassword,
-              decoration: InputDecoration(
-                hintText: 'Повторите пароль*',
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(() =>
-                        _obfuscateConfirmPassword = !_obfuscateConfirmPassword);
-                  },
-                  icon: Icon(
-                    _obfuscateConfirmPassword
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-              ),
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (String? value) {
-                final password = value?.trim();
-                if (password == null || password.isEmpty)
-                  return 'Введите подтверждение пароля';
-                if (password != _passController.text)
-                  return 'Пароли отличаются';
-
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  final userId = userDao.createUser(
-                    User(
-                      email: _emailController.text.trim(),
-                      firstName: _firstNameController.text.trim(),
-                      lastName: _lastNameController.text.trim(),
-                    ),
-                    _passController.text.trim(),
-                  );
-                  userId.then((value) {
-                    Navigator.pushReplacementNamed(context, '/login');
-                  });
-                }
-              },
-              child: const Text('Зарегистрироваться'),
-            ),
-          ],
-        ),
+    return Form(
+      key: _formKey,
+      child: ListView(
+        padding: const EdgeInsets.all(32.0),
+        children: [
+          BasicFormField(
+            controller: _firstNameController,
+            hint: 'Имя',
+            ifEmptyOrNull: 'Введите Имя',
+          ),
+          BasicFormField(
+            controller: _lastNameController,
+            hint: 'Фамилия',
+            ifEmptyOrNull: 'Введите Фамилию',
+          ),
+          EmailFormField(emailController: _emailController),
+          PasswordFormField(passwordController: _passController),
+          PasswordConfirmFormField(
+            passwordController: _passController,
+            passwordConfirmController: _passConfirmController,
+          ),
+          SignUpButton(
+            formKey: _formKey,
+            userDao: userDao,
+            emailController: _emailController,
+            firstNameController: _firstNameController,
+            lastNameController: _lastNameController,
+            passController: _passController,
+          ),
+        ],
       ),
     );
   }
