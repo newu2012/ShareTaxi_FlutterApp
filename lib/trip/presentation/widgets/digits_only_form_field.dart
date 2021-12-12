@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-import '../../logic/validators.dart';
+import '../../../common/logic/validators.dart';
 
-class BasicFormField extends StatelessWidget {
-  const BasicFormField({
+class DigitsOnlyFormField extends StatelessWidget {
+  const DigitsOnlyFormField({
     Key? key,
     required TextEditingController controller,
     required String? hint,
@@ -24,6 +25,10 @@ class BasicFormField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: _hint,
       ),
+      keyboardType: TextInputType.number,
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.digitsOnly,
+      ],
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (value) => Validators.basicValidator(value, _ifEmptyOrNull),
     );

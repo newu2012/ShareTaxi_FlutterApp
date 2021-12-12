@@ -3,6 +3,7 @@ analyzer:
     - build/**
     - lib/**.chopper.dart
     - lib/**.g.dart
+    - lib/**widgets.dart
   errors:
     missing_return: error
     dead_code: error
