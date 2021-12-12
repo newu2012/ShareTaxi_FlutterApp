@@ -30,42 +30,42 @@ class Home extends StatelessWidget {
 
   List<PersistentBottomNavBarItem> _navBarsItems(BuildContext context) {
     return [
-      PersistentBottomNavBarItem(
-        icon: const Icon(Icons.home),
-        title: ('Главная'),
-        activeColorPrimary: Colors.deepPurple,
-        inactiveColorPrimary: Colors.grey,
-        routeAndNavigatorSettings: RouteAndNavigatorSettings(
-          onGenerateRoute: (settings) => App.OnGenerateRoute(context, settings),
-        ),
+      _shareTaxiBottomNavBarItem(
+        context,
+        const Icon(Icons.home),
+        'Главная',
       ),
-      PersistentBottomNavBarItem(
-        icon: const Icon(Icons.local_taxi),
-        title: ('Новая поездка'),
-        activeColorPrimary: Colors.deepPurple,
-        inactiveColorPrimary: Colors.grey,
-        routeAndNavigatorSettings: RouteAndNavigatorSettings(
-          onGenerateRoute: (settings) => App.OnGenerateRoute(context, settings),
-        ),
+      _shareTaxiBottomNavBarItem(
+        context,
+        const Icon(Icons.local_taxi),
+        'Новая поездка',
       ),
-      PersistentBottomNavBarItem(
-        icon: const Icon(Icons.chat),
-        title: ('Чаты'),
-        activeColorPrimary: Colors.deepPurple,
-        inactiveColorPrimary: Colors.grey,
-        routeAndNavigatorSettings: RouteAndNavigatorSettings(
-          onGenerateRoute: (settings) => App.OnGenerateRoute(context, settings),
-        ),
+      _shareTaxiBottomNavBarItem(
+        context,
+        const Icon(Icons.chat),
+        'Чаты',
       ),
-      PersistentBottomNavBarItem(
-        icon: const Icon(Icons.account_circle),
-        title: ('Профиль'),
-        activeColorPrimary: Colors.deepPurple,
-        inactiveColorPrimary: Colors.grey,
-        routeAndNavigatorSettings: RouteAndNavigatorSettings(
-          onGenerateRoute: (settings) => App.OnGenerateRoute(context, settings),
-        ),
+      _shareTaxiBottomNavBarItem(
+        context,
+        const Icon(Icons.account_circle),
+        'Профиль',
       ),
     ];
+  }
+
+  PersistentBottomNavBarItem _shareTaxiBottomNavBarItem(
+    BuildContext context,
+    Icon icon,
+    String title,
+  ) {
+    return PersistentBottomNavBarItem(
+      icon: icon,
+      title: title,
+      activeColorPrimary: Colors.deepPurple,
+      inactiveColorPrimary: Colors.grey,
+      routeAndNavigatorSettings: RouteAndNavigatorSettings(
+        onGenerateRoute: (settings) => App.OnGenerateRoute(context, settings),
+      ),
+    );
   }
 }
