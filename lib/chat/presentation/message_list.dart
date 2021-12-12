@@ -33,35 +33,39 @@ class MessageListState extends State<MessageList> {
         child: Column(
           children: [
             _getMessageList(messageDao),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: TextField(
-                      keyboardType: TextInputType.text,
-                      controller: _messageController,
-                      onSubmitted: (input) {
-                        _sendMessage(messageDao);
-                      },
-                      decoration:
-                          const InputDecoration(hintText: 'Enter new message'),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.arrow_right),
-                  onPressed: () {
-                    _sendMessage(messageDao);
-                  },
-                ),
-              ],
-            ),
+            buildSendMessageRow(messageDao),
           ],
         ),
       ),
     );
+  }
+
+  Row buildSendMessageRow(MessageDao messageDao) {
+    return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: TextField(
+                    keyboardType: TextInputType.text,
+                    controller: _messageController,
+                    onSubmitted: (input) {
+                      _sendMessage(messageDao);
+                    },
+                    decoration:
+                        const InputDecoration(hintText: 'Введите текст'),
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.arrow_right),
+                onPressed: () {
+                  _sendMessage(messageDao);
+                },
+              ),
+            ],
+          );
   }
 
   void _sendMessage(MessageDao messageDao) {
