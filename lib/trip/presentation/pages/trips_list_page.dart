@@ -81,6 +81,7 @@ class _TripsListPageState extends State<TripsListPage> {
 
     return GestureDetector(
       child: TripListTile(trip),
+      behavior: HitTestBehavior.translucent,
       onTap: () =>
           Navigator.pushNamed(context, '/chat', arguments: trip.reference?.id),
     );
