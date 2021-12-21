@@ -3,7 +3,6 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import 'app.dart';
 import 'common/presentation/pages/unknown_page.dart';
-import 'trip/presentation/widgets/google_map_widget.dart';
 import 'trip/Presentation/pages/trips_list_page.dart';
 
 class Home extends StatelessWidget {
@@ -18,13 +17,11 @@ class Home extends StatelessWidget {
       controller: _tabController,
       screens: [
         const TripsListPage(),
-        const GoogleMapWidget(),
-        const TripsListPage(),
-        // const MessageList(),
+        const TripsListPage(), // TODO Change to const ChatsPage(),
         const UnknownPage(),
       ],
       items: _navBarsItems(context),
-      navBarStyle: NavBarStyle.style3,
+      navBarStyle: NavBarStyle.style1,
     );
   }
 
@@ -34,11 +31,6 @@ class Home extends StatelessWidget {
         context,
         const Icon(Icons.home),
         'Главная',
-      ),
-      _shareTaxiBottomNavBarItem(
-        context,
-        const Icon(Icons.local_taxi),
-        'Новая поездка',
       ),
       _shareTaxiBottomNavBarItem(
         context,
