@@ -20,6 +20,8 @@ class _CreateTripFormState extends State<CreateTripForm> {
   final _timeController = TextEditingController();
   final _costController = TextEditingController();
 
+  var _maximumCompanions = 4;
+
   @override
   void dispose() {
     _titleController.dispose();
@@ -34,8 +36,6 @@ class _CreateTripFormState extends State<CreateTripForm> {
   Widget build(BuildContext context) {
     final _tripDao = Provider.of<TripDao>(context, listen: false);
     final _fireUserDao = Provider.of<FireUserDao>(context, listen: false);
-
-    var _maximumCompanions = 4;
 
     return Form(
       key: _formKey,
