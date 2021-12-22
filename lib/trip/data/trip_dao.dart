@@ -16,4 +16,8 @@ class TripDao extends ChangeNotifier {
         .where('departureTime', isGreaterThanOrEqualTo: DateTime.now())
         .snapshots();
   }
+
+  Stream<DocumentSnapshot<Object?>> getTripStreamById(String id) {
+    return collection.doc(id).snapshots();
+  }
 }
