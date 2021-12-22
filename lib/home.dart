@@ -22,6 +22,7 @@ class Home extends StatelessWidget {
       ],
       items: _navBarsItems(context),
       navBarStyle: NavBarStyle.style1,
+      resizeToAvoidBottomInset: true,
     );
   }
 
