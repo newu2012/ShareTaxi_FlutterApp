@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -35,6 +37,10 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
                 zoom: 17.0,
               ),
               myLocationEnabled: true,
+              gestureRecognizers: Set()
+                ..add(Factory<EagerGestureRecognizer>(
+                  () => EagerGestureRecognizer(),
+                )),
             );
           } else {
             return const CircularProgressIndicator();
