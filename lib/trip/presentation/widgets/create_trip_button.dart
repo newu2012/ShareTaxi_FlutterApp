@@ -12,14 +12,14 @@ class CreateTripButton extends StatelessWidget {
     required TextEditingController titleController,
     required TextEditingController costController,
     required int maximumCompanions,
-    required TextEditingController timeController,
+    required DateTime departureTime,
     required TripDao tripDao,
     required FireUserDao fireUserDao,
   })  : _formKey = formKey,
         _titleController = titleController,
         _costController = costController,
         _maximumCompanions = maximumCompanions,
-        _timeController = timeController,
+        _departureTime = departureTime,
         _tripDao = tripDao,
         _fireUserDao = fireUserDao,
         super(key: key);
@@ -31,7 +31,7 @@ class CreateTripButton extends StatelessWidget {
   final TextEditingController _titleController;
   final TextEditingController _costController;
   final int _maximumCompanions;
-  final TextEditingController _timeController;
+  final DateTime _departureTime;
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +46,7 @@ class CreateTripButton extends StatelessWidget {
             fromPoint: const GeoPoint(56.84, 60.65),
             toPoint: const GeoPoint(56.85, 60.6),
             costOverall: int.parse(_costController.text),
-            departureTime: DateTime.now().add(Duration(
-              minutes: int.parse(_timeController.text),
-            )),
+            departureTime: _departureTime,
             currentCompanions: 1,
             maximumCompanions: _maximumCompanions,
           ));
