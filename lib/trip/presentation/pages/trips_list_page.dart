@@ -28,16 +28,17 @@ class _TripsListPageState extends State<TripsListPage> {
         child: Column(
           children: [
             _getTripList(tripDao),
-            _createTripButton(tripDao, userDao),
+            _createTripButton(),
           ],
         ),
       ),
     );
   }
 
-  Widget _createTripButton(TripDao tripDao, FireUserDao userDao) {
+  Widget _createTripButton() {
     return ElevatedButton(
-      onPressed: () => _buildTripModal(tripDao, userDao),
+      onPressed: () => Navigator.pushNamed(context, '/createTrip'),
+      // onPressed: () => _buildTripModal(tripDao, userDao),
       child: const Text('Create trip'),
     );
   }
@@ -84,94 +85,6 @@ class _TripsListPageState extends State<TripsListPage> {
       behavior: HitTestBehavior.translucent,
       onTap: () =>
           Navigator.pushNamed(context, '/chat', arguments: trip.reference?.id),
-    );
-  }
-
-  Future<void> _buildTripModal(TripDao tripDao, FireUserDao fireUserDao) {
-    final _formKey = GlobalKey<FormState>();
-    final _titleController = TextEditingController();
-    final _timeController = TextEditingController();
-    final _costController = TextEditingController();
-
-    return showModalBottomSheet<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return SizedBox(
-          height: 300,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Form(
-              key: _formKey,
-              child: CreateTripListView(
-                tripDao: tripDao,
-                fireUserDao: fireUserDao,
-                titleController: _titleController,
-                timeController: _timeController,
-                costController: _costController,
-                formKey: _formKey,
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class CreateTripListView extends StatelessWidget {
-  const CreateTripListView({
-    Key? key,
-    required TripDao tripDao,
-    required FireUserDao fireUserDao,
-    required TextEditingController titleController,
-    required TextEditingController timeController,
-    required TextEditingController costController,
-    required GlobalKey<FormState> formKey,
-  })  : _tripDao = tripDao,
-        _fireUserDao = fireUserDao,
-        _titleController = titleController,
-        _timeController = timeController,
-        _costController = costController,
-        _formKey = formKey,
-        super(key: key);
-
-  final TripDao _tripDao;
-  final FireUserDao _fireUserDao;
-
-  final TextEditingController _titleController;
-  final TextEditingController _timeController;
-  final TextEditingController _costController;
-  final GlobalKey<FormState> _formKey;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        TextFormField(
-          decoration: const InputDecoration(
-            hintText: 'Название поездки',
-          ),
-          controller: _titleController,
-        ),
-        DigitsOnlyFormField(
-          controller: _timeController,
-          hint: 'Через сколько минут',
-          ifEmptyOrNull: 'Количество минут от 0 до 1440',
-        ),
-        DigitsOnlyFormField(
-          controller: _costController,
-          hint: 'Сколько стоит',
-          ifEmptyOrNull: 'Ожидаемая стоимость поездки для одного человека',
-        ),
-        CreateTripButton(
-          formKey: _formKey,
-          titleController: _titleController,
-          costController: _costController,
-          timeController: _timeController,
-          tripDao: _tripDao,
-          fireUserDao: _fireUserDao,
-        ),
-      ],
     );
   }
 }

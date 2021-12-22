@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'trip/presentation/pages/pages.dart';
 import 'chat/presentation/message_list.dart';
 import 'chat/data/message_dao.dart';
 import 'common/data/fire_user_dao.dart';
@@ -73,6 +74,8 @@ class App extends StatelessWidget {
         return MaterialPageRoute(builder: (context) => const SignupPage());
       case '/':
         return MaterialPageRoute(builder: (context) => Home());
+      case '/createTrip':
+        return MaterialPageRoute(builder: (context) => const CreateTripPage());
       case '/chat':
         return MaterialPageRoute(
           builder: (context) => MessageList(

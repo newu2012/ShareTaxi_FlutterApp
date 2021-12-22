@@ -11,12 +11,14 @@ class CreateTripButton extends StatelessWidget {
     required GlobalKey<FormState> formKey,
     required TextEditingController titleController,
     required TextEditingController costController,
+    required int maximumCompanions,
     required TextEditingController timeController,
     required TripDao tripDao,
     required FireUserDao fireUserDao,
   })  : _formKey = formKey,
         _titleController = titleController,
         _costController = costController,
+        _maximumCompanions = maximumCompanions,
         _timeController = timeController,
         _tripDao = tripDao,
         _fireUserDao = fireUserDao,
@@ -28,14 +30,17 @@ class CreateTripButton extends StatelessWidget {
   final GlobalKey<FormState> _formKey;
   final TextEditingController _titleController;
   final TextEditingController _costController;
+  final int _maximumCompanions;
   final TextEditingController _timeController;
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
+        Future<String> tripId;
+
         if (_formKey.currentState!.validate()) {
-          _tripDao.saveTrip(Trip(
+          tripId = _tripDao.saveTrip(Trip(
             creatorId: _fireUserDao.userId(),
             title: _titleController.text,
             fromPoint: const GeoPoint(56.84, 60.65),
@@ -45,9 +50,14 @@ class CreateTripButton extends StatelessWidget {
               minutes: int.parse(_timeController.text),
             )),
             currentCompanions: 1,
-            maximumCompanions: 4,
+            maximumCompanions: _maximumCompanions,
           ));
-          Navigator.pop(context);
+
+          tripId.then((value) => Navigator.pushReplacementNamed(
+                context,
+                '/chat',
+                arguments: value,
+              ));
         }
       },
       child: const Text('Создать поездку'),
