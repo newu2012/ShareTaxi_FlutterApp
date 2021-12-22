@@ -5,17 +5,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'message_widget.dart';
 import '../data/message.dart';
 import '../data/message_dao.dart';
+import '../../trip/data/trip_dao.dart';
+import '../../trip/data/trip.dart';
 import '../../common/data/fire_user_dao.dart';
 
-class MessageList extends StatefulWidget {
-  const MessageList({Key? key, required this.tripId}) : super(key: key);
-  final String? tripId;
+class ChatPage extends StatefulWidget {
+  const ChatPage({Key? key, required this.tripId}) : super(key: key);
+  final String tripId;
 
   @override
-  MessageListState createState() => MessageListState();
+  ChatPageState createState() => ChatPageState();
 }
 
-class MessageListState extends State<MessageList> {
+class ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   String? userId;
@@ -25,9 +27,22 @@ class MessageListState extends State<MessageList> {
     WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollToBottom());
     final messageDao = Provider.of<MessageDao>(context, listen: false);
     final fireUserDao = Provider.of<FireUserDao>(context, listen: false);
+    final tripDao = Provider.of<TripDao>(context, listen: false);
     userId = fireUserDao.userId();
 
     return Scaffold(
+      appBar: AppBar(
+        title: StreamBuilder<DocumentSnapshot<Object?>>(
+          stream: tripDao.getTripStreamById(widget.tripId),
+          builder: (context, snapshot) {
+            return snapshot.hasData
+                ? Text(Trip.fromSnapshot(snapshot.data!).title)
+                : const Text('');
+          },
+        ),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 111, 108, 217),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -42,30 +57,29 @@ class MessageListState extends State<MessageList> {
 
   Row buildSendMessageRow(MessageDao messageDao) {
     return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: TextField(
-                    keyboardType: TextInputType.text,
-                    controller: _messageController,
-                    onSubmitted: (input) {
-                      _sendMessage(messageDao);
-                    },
-                    decoration:
-                        const InputDecoration(hintText: 'Введите текст'),
-                  ),
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.arrow_right),
-                onPressed: () {
-                  _sendMessage(messageDao);
-                },
-              ),
-            ],
-          );
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: TextField(
+              keyboardType: TextInputType.text,
+              controller: _messageController,
+              onSubmitted: (input) {
+                _sendMessage(messageDao);
+              },
+              decoration: const InputDecoration(hintText: 'Введите текст'),
+            ),
+          ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.arrow_right),
+          onPressed: () {
+            _sendMessage(messageDao);
+          },
+        ),
+      ],
+    );
   }
 
   void _sendMessage(MessageDao messageDao) {
