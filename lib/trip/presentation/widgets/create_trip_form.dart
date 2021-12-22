@@ -17,17 +17,16 @@ class _CreateTripFormState extends State<CreateTripForm> {
   final _titleController = TextEditingController();
   final _fromPointController = TextEditingController();
   final _toPointController = TextEditingController();
-  final _timeController = TextEditingController();
   final _costController = TextEditingController();
 
   var _maximumCompanions = 4;
+  var _departureTime = DateTime.now();
 
   @override
   void dispose() {
     _titleController.dispose();
     _fromPointController.dispose();
     _toPointController.dispose();
-    _timeController.dispose();
     _costController.dispose();
     super.dispose();
   }
@@ -41,7 +40,7 @@ class _CreateTripFormState extends State<CreateTripForm> {
       key: _formKey,
       child: SizedBox(
         height: 600,
-        child: ListView(
+        child: Column(
           children: [
             TextFormField(
               decoration: const InputDecoration(
@@ -75,6 +74,7 @@ class _CreateTripFormState extends State<CreateTripForm> {
                 const Text('Количество человек'),
                 SizedBox(
                   width: 85,
+                  //padding: const EdgeInsets.symmetric(vertical: 8),
                   child: DropdownButtonFormField(
                     isExpanded: true,
                     value: 4,
@@ -99,10 +99,44 @@ class _CreateTripFormState extends State<CreateTripForm> {
                 ),
               ],
             ),
-            DigitsOnlyFormField(
-              controller: _timeController,
-              hint: 'Через сколько минут',
-              ifEmptyOrNull: 'Количество минут от 0 до 1440',
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Время отправления'),
+                GestureDetector(
+                  onTap: () async {
+                    final pickedTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay(
+                        hour: _departureTime.hour,
+                        minute: _departureTime.minute,
+                      ),
+                    );
+                    if (pickedTime != null) {
+                      setState(() {
+                        final time = DateTime.now();
+                        _departureTime = DateTime(
+                          time.year,
+                          time.month,
+                          time.day,
+                          pickedTime.hour,
+                          pickedTime.minute,
+                        );
+                      });
+                    }
+                  },
+                  child: Card(
+                    color: const Color.fromRGBO(111, 108, 217, 35),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        '${_departureTime.hour}:${_departureTime.minute}',
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             DigitsOnlyFormField(
               controller: _costController,
@@ -114,7 +148,7 @@ class _CreateTripFormState extends State<CreateTripForm> {
               titleController: _titleController,
               costController: _costController,
               maximumCompanions: _maximumCompanions,
-              timeController: _timeController,
+              departureTime: _departureTime,
               tripDao: _tripDao,
               fireUserDao: _fireUserDao,
             ),
