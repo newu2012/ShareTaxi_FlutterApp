@@ -43,6 +43,7 @@ class _CreateTripFormState extends State<CreateTripForm> {
         child: Column(
           children: [
             TextFormField(
+              textCapitalization: TextCapitalization.sentences,
               decoration: const InputDecoration(
                 hintText: 'Название поездки',
               ),
@@ -125,16 +126,7 @@ class _CreateTripFormState extends State<CreateTripForm> {
                       });
                     }
                   },
-                  child: Card(
-                    color: const Color.fromRGBO(111, 108, 217, 35),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        '${_departureTime.hour}:${_departureTime.minute}',
-                        style: const TextStyle(fontSize: 20),
-                      ),
-                    ),
-                  ),
+                  child: DepartureTimeCard(departureTime: _departureTime),
                 ),
               ],
             ),
@@ -153,6 +145,31 @@ class _CreateTripFormState extends State<CreateTripForm> {
               fireUserDao: _fireUserDao,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class DepartureTimeCard extends StatelessWidget {
+  const DepartureTimeCard({
+    Key? key,
+    required DateTime departureTime,
+  })  : _departureTime = departureTime,
+        super(key: key);
+
+  final DateTime _departureTime;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: const Color.fromRGBO(111, 108, 217, 35),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          '${_departureTime.hour}:'
+          '${_departureTime.minute.toString().padLeft(2, '0')}',
+          style: const TextStyle(fontSize: 20),
         ),
       ),
     );
