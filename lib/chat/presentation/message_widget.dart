@@ -2,27 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../data/message.dart';
 import '../../common/data/fire_user_dao.dart';
 import '../../common/data/user.dart';
 import '../../common/data/user_dao.dart';
 
 class MessageWidget extends StatelessWidget {
-  final String message;
-  final DateTime date;
-  final String? userId;
+  final Message message;
 
-  const MessageWidget(this.message, this.date, this.userId, {Key? key})
-      : super(key: key);
+  const MessageWidget(this.message, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final userDao = Provider.of<UserDao>(context, listen: false);
     final fireUserDao = Provider.of<FireUserDao>(context, listen: false);
 
+    if (message.isSystem)
+      return Center(
+        child: FutureBuilder(
+          future: UserDao().getUserByUid(message.args!.first),
+          builder: (context, value) => value.hasData
+              ? _buildSystemMessage(context, value.data as User)
+              : const LinearProgressIndicator(),
+        ),
+      );
+
     return Padding(
       padding: const EdgeInsets.only(left: 1, top: 5, right: 1, bottom: 2),
       child: FutureBuilder(
-        future: userDao.getUserByUid(userId),
+        future: userDao.getUserByUid(message.userId),
         builder: (context, userSnapshot) {
           return userSnapshot.hasData
               ? _buildMessage(userSnapshot.data as User, fireUserDao)
@@ -32,8 +40,34 @@ class MessageWidget extends StatelessWidget {
     );
   }
 
+  Widget _buildSystemMessage(BuildContext context, User user) {
+    return Row(
+      children: [
+        TextButton(
+          onPressed: () => Navigator.pushNamed(
+            context,
+            '/user',
+            arguments: message.args!.first,
+          ),
+          child: Text(
+            '${user.firstName} ${user.lastName} ',
+            style: const TextStyle(
+              color: Color.fromARGB(255, 111, 108, 217),
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+        ),
+        Text(
+          '${message.text}',
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+      ],
+    );
+  }
+
   Widget _buildMessage(User messageCreator, FireUserDao fireUserDao) {
-    return fireUserDao.userId() == userId
+    return fireUserDao.userId() == message.userId
         ? _buildCurrentUserMessage(messageCreator)
         : _buildAnotherUserMessage(messageCreator);
   }
@@ -93,7 +127,7 @@ class MessageWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(50.0),
         color: Colors.white,
       ),
-      child: Text(message),
+      child: Text(message.text),
     );
   }
 
@@ -103,7 +137,7 @@ class MessageWidget extends StatelessWidget {
       child: Align(
         alignment: Alignment.topRight,
         child: Text(
-          DateFormat('yyyy-MM-dd, kk:mma').format(date).toString(),
+          DateFormat('yyyy-MM-dd, kk:mma').format(message.date).toString(),
           style: const TextStyle(color: Colors.grey),
         ),
       ),
