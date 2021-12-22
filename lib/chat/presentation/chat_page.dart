@@ -44,32 +44,29 @@ class ChatPageState extends State<ChatPage> {
         backgroundColor: const Color.fromARGB(255, 111, 108, 217),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           children: [
             _getMessageList(messageDao),
-            buildSendMessageRow(messageDao),
+            _buildSendMessageRow(messageDao),
           ],
         ),
       ),
     );
   }
 
-  Row buildSendMessageRow(MessageDao messageDao) {
+  Row _buildSendMessageRow(MessageDao messageDao) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Flexible(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: TextField(
-              keyboardType: TextInputType.text,
-              controller: _messageController,
-              onSubmitted: (input) {
-                _sendMessage(messageDao);
-              },
-              decoration: const InputDecoration(hintText: 'Введите текст'),
-            ),
+          child: TextField(
+            keyboardType: TextInputType.text,
+            controller: _messageController,
+            onSubmitted: (input) {
+              _sendMessage(messageDao);
+            },
+            decoration: const InputDecoration(hintText: 'Отправить сообщение'),
           ),
         ),
         IconButton(
@@ -116,7 +113,6 @@ class ChatPageState extends State<ChatPage> {
     return ListView(
       controller: _scrollController,
       physics: const ClampingScrollPhysics(),
-      padding: const EdgeInsets.only(top: 20.0),
       children: _messageList(snapshot),
     );
   }
@@ -133,7 +129,7 @@ class ChatPageState extends State<ChatPage> {
   Widget _buildListItem(DocumentSnapshot snapshot) {
     final message = Message.fromSnapshot(snapshot);
 
-    return MessageWidget(message.text, message.date, message.userId);
+    return MessageWidget(message);
   }
 
   bool _canSendMessage() => _messageController.text.length > 0;

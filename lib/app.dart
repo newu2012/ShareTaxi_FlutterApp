@@ -82,6 +82,12 @@ class App extends StatelessWidget {
             tripId: settings.arguments as String,
           ),
         );
+      // case '/user':
+      //   return MaterialPageRoute(
+      //     builder: (context) => UserProfilePage(
+      //       userId: settings.arguments as String,
+      //     ),
+      //   );
       default:
         return MaterialPageRoute(builder: (context) => const UnknownPage());
     }

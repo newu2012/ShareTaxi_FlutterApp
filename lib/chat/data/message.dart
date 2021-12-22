@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Message {
@@ -5,6 +7,9 @@ class Message {
   final String text;
   final DateTime date;
   final String? userId;
+  final bool isSystem;
+
+  final List<dynamic>? args;
 
   DocumentReference? reference;
 
@@ -13,6 +18,8 @@ class Message {
     required this.date,
     required this.tripId,
     this.userId,
+    this.isSystem = false,
+    this.args,
     this.reference,
   });
 
@@ -21,6 +28,8 @@ class Message {
         text: json['text'] as String,
         date: DateTime.parse(json['date'] as String),
         userId: json['userId'] as String?,
+        isSystem: json['isSystem'] as bool,
+        args: json['args'] as List<dynamic>?,
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -28,6 +37,8 @@ class Message {
         'date': date.toString(),
         'text': text,
         'userId': userId,
+        'isSystem': isSystem,
+        'args': args,
       };
 
   factory Message.fromSnapshot(DocumentSnapshot snapshot) {
