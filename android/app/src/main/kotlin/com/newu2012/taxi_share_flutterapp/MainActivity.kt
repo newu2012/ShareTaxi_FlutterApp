@@ -1,4 +1,4 @@
-package com.newu2012.taxi_share_flutterapp
+package com.newu2012.share_taxi
 
 import io.flutter.embedding.android.FlutterActivity
 
