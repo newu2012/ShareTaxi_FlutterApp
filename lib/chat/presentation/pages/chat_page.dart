@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'message_widget.dart';
-import '../data/message.dart';
-import '../data/message_dao.dart';
-import '../../trip/data/trip_dao.dart';
-import '../../trip/data/trip.dart';
-import '../../common/data/fire_user_dao.dart';
+import '../widgets/message_widget.dart';
+import '../../data/message.dart';
+import '../../data/message_dao.dart';
+import '../../../trip/data/trip_dao.dart';
+import '../../../trip/data/trip.dart';
+import '../../../common/data/fire_user_dao.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key, required this.tripId}) : super(key: key);
