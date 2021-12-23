@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../data/message.dart';
-import '../../common/data/fire_user_dao.dart';
-import '../../common/data/user.dart';
-import '../../common/data/user_dao.dart';
+import '../../data/message.dart';
+import '../../../common/data/fire_user_dao.dart';
+import '../../../common/data/user.dart';
+import '../../../common/data/user_dao.dart';
 
 class MessageWidget extends StatelessWidget {
   final Message message;
@@ -41,7 +41,9 @@ class MessageWidget extends StatelessWidget {
   }
 
   Widget _buildSystemMessage(BuildContext context, User user) {
-    return Row(
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      alignment: WrapAlignment.center,
       children: [
         TextButton(
           onPressed: () => Navigator.pushNamed(
@@ -50,7 +52,7 @@ class MessageWidget extends StatelessWidget {
             arguments: message.args!.first,
           ),
           child: Text(
-            '${user.firstName} ${user.lastName} ',
+            '${user.firstName} ${user.lastName}',
             style: const TextStyle(
               color: Color.fromARGB(255, 111, 108, 217),
               fontWeight: FontWeight.bold,

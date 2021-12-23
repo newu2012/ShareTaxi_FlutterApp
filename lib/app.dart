@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'trip/presentation/pages/pages.dart';
-import 'chat/presentation/chat_page.dart';
+import 'chat/presentation/pages/chat_page.dart';
 import 'chat/data/message_dao.dart';
 import 'common/data/fire_user_dao.dart';
 import 'common/data/user_dao.dart';
