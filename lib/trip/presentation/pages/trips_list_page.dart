@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
-import '../../../common/data/fire_user_dao.dart';
+import '../../../chat/presentation/pages/chat_page.dart';
 import '../../data/trip_dao.dart';
 import '../widgets/widgets.dart';
 import '../../data/trip.dart';
@@ -20,7 +21,6 @@ class _TripsListPageState extends State<TripsListPage> {
   @override
   Widget build(BuildContext context) {
     final tripDao = Provider.of<TripDao>(context, listen: false);
-    final userDao = Provider.of<FireUserDao>(context, listen: false);
 
     return Scaffold(
       body: Padding(
@@ -83,8 +83,10 @@ class _TripsListPageState extends State<TripsListPage> {
     return GestureDetector(
       child: TripListTile(trip),
       behavior: HitTestBehavior.translucent,
-      onTap: () =>
-          Navigator.pushNamed(context, '/chat', arguments: trip.reference?.id),
+      onTap: () => pushNewScreen(
+        context,
+        screen: ChatPage(tripId: trip.reference!.id),
+      ),
     );
   }
 }
