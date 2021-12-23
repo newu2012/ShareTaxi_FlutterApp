@@ -3,7 +3,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import 'app.dart';
 import 'common/presentation/pages/unknown_page.dart';
-import 'trip/Presentation/pages/trips_list_page.dart';
+import 'trip/presentation/pages/pages.dart';
 
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
@@ -16,13 +16,14 @@ class Home extends StatelessWidget {
       context,
       controller: _tabController,
       screens: [
-        const TripsListPage(),
-        const TripsListPage(), // TODO Change to const ChatsPage(),
+        const MainPage(),
+        const TripsListPage(), // TODO Change to const ChatsListPage(),
         const UnknownPage(),
       ],
       items: _navBarsItems(context),
       navBarStyle: NavBarStyle.style1,
       resizeToAvoidBottomInset: true,
+      hideNavigationBar: true,
     );
   }
 
