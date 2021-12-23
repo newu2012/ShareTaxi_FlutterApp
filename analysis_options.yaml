@@ -24,6 +24,7 @@ analyzer:
   plugins:
     - dart_code_metrics
 
+#Terminal_Runner_Function   flutter pub run dart_code_metrics:metrics lib --reporter=html
 dart_code_metrics:
   anti-patterns:
     - long-method
