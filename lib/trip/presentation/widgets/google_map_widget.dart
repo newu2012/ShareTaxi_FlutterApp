@@ -14,7 +14,7 @@ class GoogleMapWidget extends StatefulWidget {
 class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   late GoogleMapController _mapController;
   late Position _position;
-  final LatLng _center = const LatLng(56.84084, 69.65093);
+  final LatLng _center = const LatLng(56.843, 69.645);
 
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
