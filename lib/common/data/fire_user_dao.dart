@@ -30,27 +30,31 @@ class FireUserDao extends ChangeNotifier {
         print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
         print('The account already exists for that email.');
+      } else {
+        print(e);
       }
-    } catch (e) {
-      print(e);
+      rethrow;
     }
   }
 
-  void login(String email, String password) async {
+  Future<User?> login(String email, String password) async {
     try {
-      await auth.signInWithEmailAndPassword(
+      final userCredentials = await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
       notifyListeners();
+
+      return userCredentials.user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
         print('The account already exists for that email.');
+      } else {
+        print(e);
+        rethrow;
       }
-    } catch (e) {
-      print(e);
     }
   }
 
