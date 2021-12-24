@@ -19,6 +19,7 @@ dependencies:
   firebase_storage: ^10.2.4
   google_maps_flutter: ^2.1.1
   geolocator: ^8.0.1
+  geocoding: ^2.0.1
   latlong2: ^0.8.1
   flutter_polyline_points: ^1.0.0
   material_design_icons_flutter: ^5.0.6595
