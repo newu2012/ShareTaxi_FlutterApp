@@ -61,6 +61,19 @@ class _MainPageState extends State<MainPage> {
                       border: InputBorder.none,
                       contentPadding:
                           const EdgeInsets.only(left: 15.0, top: 15.0),
+                      prefixIcon: SizedBox(
+                        width: 64,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.location_on),
+                              const Text('От'),
+                            ],
+                          ),
+                        ),
+                      ),
+                      prefixIconColor: const Color.fromARGB(255, 111, 108, 217),
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.search),
                         onPressed: () =>
@@ -74,7 +87,9 @@ class _MainPageState extends State<MainPage> {
                       });
                     },
                   ),
-                  const Divider(),
+                  const Divider(
+                    height: 1,
+                  ),
                   TextField(
                     onSubmitted: (value) => searchAndNavigate,
                     onEditingComplete: () =>
@@ -85,6 +100,19 @@ class _MainPageState extends State<MainPage> {
                       border: InputBorder.none,
                       contentPadding:
                           const EdgeInsets.only(left: 15.0, top: 15.0),
+                      prefixIcon: SizedBox(
+                        width: 64,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.location_on),
+                              const Text('До'),
+                            ],
+                          ),
+                        ),
+                      ),
+                      prefixIconColor: const Color.fromARGB(255, 255, 174, 3),
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.search),
                         onPressed: () =>
@@ -148,7 +176,7 @@ class _MainPageState extends State<MainPage> {
         _markers.last.position.longitude,
       );
       final scale = radius / 500;
-      zoomLevel = (16 - log(scale * 1.2) / log(2));
+      zoomLevel = (16 - log(scale * 1.5) / log(2));
     }
     print(zoomLevel);
 
