@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../common/data/user.dart';
 import '../../../common/data/user_dao.dart';
+import 'widgets.dart';
 
 class SignUpButton extends StatelessWidget {
   const SignUpButton({
@@ -41,7 +42,15 @@ class SignUpButton extends StatelessWidget {
           );
           userId.then((value) {
             Navigator.pushReplacementNamed(context, '/login');
-          });
+          }).catchError(
+            (e) {
+              ScaffoldMessenger.of(context)
+                ..removeCurrentMaterialBanner()
+                ..showMaterialBanner(
+                  FormErrorMaterialBanner.getBanner(context, e.toString()),
+                );
+            },
+          );
         }
       },
       child: const Text('Зарегистрироваться'),

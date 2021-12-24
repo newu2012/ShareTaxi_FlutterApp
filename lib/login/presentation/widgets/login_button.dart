@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'widgets.dart';
 import '../../../common/data/fire_user_dao.dart';
 
 class LogInButton extends StatelessWidget {
@@ -24,11 +25,25 @@ class LogInButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: () {
         if (_formKey.currentState!.validate()) {
-          fireUserDao.login(
+          final user = fireUserDao.login(
             _emailController.text.trim(),
             _passwordController.text.trim(),
           );
-          Navigator.pushReplacementNamed(context, '/');
+          user
+              .then(
+            (value) => {
+              if (value != null) Navigator.pushReplacementNamed(context, '/'),
+            },
+          )
+              .catchError(
+            (e) {
+              ScaffoldMessenger.of(context)
+                ..removeCurrentMaterialBanner()
+                ..showMaterialBanner(
+                  FormErrorMaterialBanner.getBanner(context, e.toString()),
+                );
+            },
+          );
         }
       },
       child: const Text('Войти'),

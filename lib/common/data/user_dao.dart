@@ -9,10 +9,9 @@ class UserDao extends ChangeNotifier {
       FirebaseFirestore.instance.collection('user');
 
   Future<String> createUser(User user, String password) async {
-    var userId;
     try {
-      userId = await FireUserDao().signup(user.email, password);
-      saveUser(user, userId);
+      final userId = await FireUserDao().signup(user.email, password);
+      saveUser(user, userId!);
 
       return userId;
     } catch (e) {
