@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -47,11 +48,12 @@ class _MainPageState extends State<MainPage> {
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
-                color: Colors.white,
+                color: Colors.white.withAlpha(200),
               ),
               child: Column(
                 children: [
                   TextField(
+                    focusNode: focus,
                     onSubmitted: (value) => searchAndNavigate,
                     onEditingComplete: () =>
                         searchAndNavigate(fromPointAddress, 'fromPoint'),
@@ -130,8 +132,58 @@ class _MainPageState extends State<MainPage> {
               ),
             ),
           ),
-          //
-          // TODO BottomSheet
+          Positioned(
+            bottom: 0,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(32),
+                ),
+              ),
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: () => Navigator.pushNamed(context, '/trips'),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.search),
+                        const Text('Поиск попутчиков'),
+                      ],
+                    ),
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () =>
+                        Navigator.pushNamed(context, '/createTrip'),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.add),
+                        const Text('Создать поездку'),
+                      ],
+                    ),
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
