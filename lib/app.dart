@@ -74,6 +74,8 @@ class App extends StatelessWidget {
         return MaterialPageRoute(builder: (context) => const SignupPage());
       case '/':
         return MaterialPageRoute(builder: (context) => Home());
+      case '/trips':
+        return MaterialPageRoute(builder: (context) => const TripsListPage());
       case '/createTrip':
         return MaterialPageRoute(builder: (context) => const CreateTripPage());
       case '/chat':
