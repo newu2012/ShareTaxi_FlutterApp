@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -53,7 +52,6 @@ class _MainPageState extends State<MainPage> {
               child: Column(
                 children: [
                   TextField(
-                    focusNode: focus,
                     onSubmitted: (value) => searchAndNavigate,
                     onEditingComplete: () =>
                         searchAndNavigate(fromPointAddress, 'fromPoint'),
