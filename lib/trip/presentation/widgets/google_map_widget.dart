@@ -1,11 +1,16 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
+
+import '../../logic/map_controller.dart';
 
 class GoogleMapWidget extends StatefulWidget {
-  const GoogleMapWidget({Key? key}) : super(key: key);
+  GoogleMapWidget({Key? key}) : super(key: key);
 
   @override
   _GoogleMapWidgetState createState() => _GoogleMapWidgetState();
@@ -13,11 +18,16 @@ class GoogleMapWidget extends StatefulWidget {
 
 class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   late GoogleMapController _mapController;
-  late Position _position;
-  final LatLng _center = const LatLng(56.843, 69.645);
+  var _markers;
 
   void _onMapCreated(GoogleMapController controller) {
-    _mapController = controller;
+    setState(() {
+      Provider.of<MapController>(context, listen: false).mapController =
+          controller;
+      _markers = Provider.of<MapController>(context, listen: false).markers;
+      _mapController = controller;
+      _moveCamera();
+    });
   }
 
   @override
@@ -28,10 +38,12 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
         builder: (context, AsyncSnapshot<Position> position) {
           if (position.hasData) {
             final pos = position.data as Position;
+            _markers =
+                Provider.of<MapController>(context, listen: false).markers;
 
             return GoogleMap(
               onMapCreated: _onMapCreated,
-              markers: _createMarker(),
+              markers: _markers ?? {},
               initialCameraPosition: CameraPosition(
                 target: LatLng(pos.latitude, pos.longitude),
                 zoom: 17.0,
@@ -84,22 +96,37 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
 
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
-    final pos = await Geolocator.getCurrentPosition();
-    _position = pos;
-
-    return pos;
+    return Geolocator.getCurrentPosition();
   }
 
-  Set<Marker> _createMarker() {
-    return <Marker>{
-      Marker(
-        markerId: const MarkerId('current'),
-        position: LatLng(
-          _position.latitude,
-          _position.longitude,
-        ),
-        icon: BitmapDescriptor.defaultMarker,
-      ),
-    };
+  void _moveCamera() {
+    LatLng target;
+    target = _markers.length == 2
+        ? LatLng(
+            (_markers.first.position.latitude +
+                    _markers.last.position.latitude) /
+                2,
+            (_markers.first.position.longitude +
+                    _markers.last.position.longitude) /
+                2,
+          )
+        : _markers.first.position;
+
+    var zoomLevel = 12.0;
+    if (_markers.length == 2) {
+      final radius = GeolocatorPlatform.instance.distanceBetween(
+        _markers.first.position.latitude,
+        _markers.first.position.longitude,
+        _markers.last.position.latitude,
+        _markers.last.position.longitude,
+      );
+      final scale = radius / 500;
+      zoomLevel = (16 - log(scale * 1.5) / log(2)) - 1;
+    }
+
+    _mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      target: target,
+      zoom: zoomLevel,
+    )));
   }
 }
