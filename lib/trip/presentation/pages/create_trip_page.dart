@@ -25,7 +25,7 @@ class _CreateTripPageState extends State<CreateTripPage> {
             Expanded(
               child: ListView(
                 children: [
-                  const SizedBox(
+                  SizedBox(
                     child: GoogleMapWidget(),
                     height: 170,
                   ),

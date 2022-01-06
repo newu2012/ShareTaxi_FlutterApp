@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../../logic/map_controller.dart';
+import '../widgets/google_map_widget.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -31,14 +35,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          GoogleMap(
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: const CameraPosition(
-              target: LatLng(56.843, 69.645),
-              zoom: 10.0,
-            ),
-            markers: _markers,
-          ),
+          GoogleMapWidget(),
           Positioned(
             top: 30.0,
             right: 15.0,
@@ -192,7 +189,6 @@ class _MainPageState extends State<MainPage> {
         (await GeocodingPlatform.instance.locationFromAddress(address))
             .map((e) => LatLng(e.latitude, e.longitude));
 
-    print(locations.first);
     setState(() {
       if (pointName == 'fromPoint')
         fromPointMarker = _createMarker(locations.first, pointName);
@@ -215,7 +211,6 @@ class _MainPageState extends State<MainPage> {
                 2,
           )
         : _markers.first.position;
-    print(target);
 
     var zoomLevel = 12.0;
     if (_markers.length == 2) {
@@ -228,18 +223,13 @@ class _MainPageState extends State<MainPage> {
       final scale = radius / 500;
       zoomLevel = (16 - log(scale * 1.5) / log(2));
     }
-    print(zoomLevel);
 
+    mapController =
+        Provider.of<MapController>(context, listen: false).mapController;
     mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
       target: target,
       zoom: zoomLevel,
     )));
-  }
-
-  void _onMapCreated(controller) {
-    setState(() {
-      mapController = controller;
-    });
   }
 
   Marker _createMarker(LatLng position, String pointName) {

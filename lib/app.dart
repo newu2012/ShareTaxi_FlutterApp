@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'trip/logic/map_controller.dart';
 import 'trip/presentation/pages/pages.dart';
 import 'chat/presentation/pages/chat_page.dart';
 import 'chat/data/message_dao.dart';
@@ -34,6 +35,9 @@ class App extends StatelessWidget {
         Provider<MessageDao>(
           lazy: false,
           create: (_) => MessageDao(),
+        ),
+        ChangeNotifierProvider<MapController>(
+          create: (_) => MapController(),
         ),
       ],
       child: Consumer<FireUserDao>(
