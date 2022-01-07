@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import '../../logic/map_controller.dart';
 
 class GoogleMapWidget extends StatefulWidget {
-  GoogleMapWidget({Key? key}) : super(key: key);
+  const GoogleMapWidget({Key? key}) : super(key: key);
 
   @override
   _GoogleMapWidgetState createState() => _GoogleMapWidgetState();
@@ -18,14 +18,16 @@ class GoogleMapWidget extends StatefulWidget {
 
 class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   late GoogleMapController _mapController;
-  var _markers;
+  late Set<Marker> _markers;
 
   void _onMapCreated(GoogleMapController controller) {
     setState(() {
-      Provider.of<MapController>(context, listen: false).mapController =
-          controller;
-      _markers = Provider.of<MapController>(context, listen: false).markers;
       _mapController = controller;
+      _markers = Provider.of<MapController>(context, listen: false).markers;
+
+      print(_mapController);
+      print(_markers);
+
       _moveCamera();
     });
   }
@@ -43,7 +45,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
 
             return GoogleMap(
               onMapCreated: _onMapCreated,
-              markers: _markers ?? {},
+              markers: _markers,
               initialCameraPosition: CameraPosition(
                 target: LatLng(pos.latitude, pos.longitude),
                 zoom: 17.0,
@@ -100,33 +102,42 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   }
 
   void _moveCamera() {
-    LatLng target;
-    target = _markers.length == 2
-        ? LatLng(
-            (_markers.first.position.latitude +
-                    _markers.last.position.latitude) /
-                2,
-            (_markers.first.position.longitude +
-                    _markers.last.position.longitude) /
-                2,
-          )
-        : _markers.first.position;
+    try {
+      if (_markers.isEmpty) return;
+      setState(() {
+        _markers = Provider.of<MapController>(context, listen: false).markers;
+      });
 
-    var zoomLevel = 12.0;
-    if (_markers.length == 2) {
-      final radius = GeolocatorPlatform.instance.distanceBetween(
-        _markers.first.position.latitude,
-        _markers.first.position.longitude,
-        _markers.last.position.latitude,
-        _markers.last.position.longitude,
-      );
-      final scale = radius / 500;
-      zoomLevel = (16 - log(scale * 1.5) / log(2)) - 1;
+      final target = _markers.length == 2
+          ? LatLng(
+              (_markers.first.position.latitude +
+                      _markers.last.position.latitude) /
+                  2,
+              (_markers.first.position.longitude +
+                      _markers.last.position.longitude) /
+                  2,
+            )
+          : _markers.first.position;
+
+      var zoomLevel = 12.0;
+      if (_markers.length == 2) {
+        final radius = GeolocatorPlatform.instance.distanceBetween(
+          _markers.first.position.latitude,
+          _markers.first.position.longitude,
+          _markers.last.position.latitude,
+          _markers.last.position.longitude,
+        );
+        final scale = radius / 500;
+        zoomLevel = (16 - log(scale * 1.5) / log(2)) - 1;
+      }
+
+      _mapController
+          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: target,
+        zoom: zoomLevel,
+      )));
+    } on Exception catch (e) {
+      print(e);
     }
-
-    _mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: target,
-      zoom: zoomLevel,
-    )));
   }
 }
