@@ -39,183 +39,224 @@ class _MainPageState extends State<MainPage> {
       print(_markers);
 
       _moveCamera();
-    });}
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Center(
-            child: FutureBuilder(
-              future: _getCurrentLocation(),
-              builder: (context, AsyncSnapshot<Position> position) {
-                if (position.hasData) {
-                  final pos = position.data as Position;
+      body: SafeArea(
+        child: Stack(
+          children: <Widget>[
+            Center(
+              child: FutureBuilder(
+                future: _getCurrentLocation(),
+                builder: (context, AsyncSnapshot<Position> position) {
+                  if (position.hasData) {
+                    final pos = position.data as Position;
 
-                  return GoogleMap(
-                    onMapCreated: _onMapCreated,
-                    markers: _markers,
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(pos.latitude, pos.longitude),
-                      zoom: 17.0,
-                    ),
-                    myLocationEnabled: true,
-                    gestureRecognizers: Set()
-                      ..add(Factory<EagerGestureRecognizer>(
-                        () => EagerGestureRecognizer(),
-                      )),
-                  );
-                } else {
-                  return const CircularProgressIndicator();
-                }
-              },
-            ),
-          ),
-          Positioned(
-            top: 30.0,
-            right: 15.0,
-            left: 15.0,
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-                color: Colors.white.withAlpha(200),
-              ),
-              child: Column(
-                children: [
-                  TextField(
-                    onSubmitted: (value) => searchAndNavigate,
-                    onEditingComplete: () =>
-                        searchAndNavigate(fromPointAddress, 'fromPoint'),
-                    textInputAction: TextInputAction.search,
-                    decoration: InputDecoration(
-                      hintText: 'Откуда поедем',
-                      border: InputBorder.none,
-                      contentPadding:
-                          const EdgeInsets.only(left: 15.0, top: 15.0),
-                      prefixIcon: SizedBox(
-                        width: 64,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.location_on),
-                              const Text('От'),
-                            ],
-                          ),
-                        ),
+                    return GoogleMap(
+                      onMapCreated: _onMapCreated,
+                      markers: _markers,
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(pos.latitude, pos.longitude),
+                        zoom: 17.0,
                       ),
-                      prefixIconColor: const Color.fromARGB(255, 111, 108, 217),
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.search),
-                        onPressed: () =>
-                            searchAndNavigate(fromPointAddress, 'fromPoint'),
-                        iconSize: 30.0,
-                      ),
-                    ),
-                    onChanged: (val) {
-                      setState(() {
-                        fromPointAddress = val;
-                      });
-                    },
-                  ),
-                  const Divider(
-                    height: 1,
-                  ),
-                  TextField(
-                    onSubmitted: (value) => searchAndNavigate,
-                    onEditingComplete: () =>
-                        searchAndNavigate(toPointAddress, 'toPoint'),
-                    textInputAction: TextInputAction.search,
-                    decoration: InputDecoration(
-                      hintText: 'Куда поедем',
-                      border: InputBorder.none,
-                      contentPadding:
-                          const EdgeInsets.only(left: 15.0, top: 15.0),
-                      prefixIcon: SizedBox(
-                        width: 64,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.location_on),
-                              const Text('До'),
-                            ],
-                          ),
-                        ),
-                      ),
-                      prefixIconColor: const Color.fromARGB(255, 255, 174, 3),
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.search),
-                        onPressed: () =>
-                            searchAndNavigate(toPointAddress, 'toPoint'),
-                        iconSize: 30.0,
-                      ),
-                    ),
-                    onChanged: (val) {
-                      setState(() {
-                        toPointAddress = val;
-                      });
-                    },
-                  ),
-                ],
+                      myLocationEnabled: true,
+                      gestureRecognizers: Set()
+                        ..add(Factory<EagerGestureRecognizer>(
+                          () => EagerGestureRecognizer(),
+                        )),
+                    );
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
               ),
             ),
-          ),
-          Positioned(
-            bottom: 0,
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              width: MediaQuery.of(context).size.width,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(32),
+            Positioned(
+              top: 30.0,
+              right: 15.0,
+              left: 15.0,
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.white.withAlpha(200),
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 15,
+                      offset: const Offset(0, 1),
+                      color: Colors.black.withAlpha(35),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    TextField(
+                      onSubmitted: (value) => searchAndNavigate,
+                      onEditingComplete: () =>
+                          searchAndNavigate(fromPointAddress, 'fromPoint'),
+                      textInputAction: TextInputAction.search,
+                      decoration: InputDecoration(
+                        hintText: 'Откуда поедем',
+                        border: InputBorder.none,
+                        contentPadding:
+                            const EdgeInsets.only(left: 15.0, top: 15.0),
+                        prefixIcon: SizedBox(
+                          width: 64,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.location_on),
+                                const Text('От'),
+                              ],
+                            ),
+                          ),
+                        ),
+                        prefixIconColor:
+                            const Color.fromARGB(255, 111, 108, 217),
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.search),
+                          onPressed: () =>
+                              searchAndNavigate(fromPointAddress, 'fromPoint'),
+                          iconSize: 30.0,
+                        ),
+                      ),
+                      onChanged: (val) {
+                        setState(() {
+                          fromPointAddress = val;
+                        });
+                      },
+                    ),
+                    const Divider(
+                      height: 1,
+                    ),
+                    TextField(
+                      onSubmitted: (value) => searchAndNavigate,
+                      onEditingComplete: () =>
+                          searchAndNavigate(toPointAddress, 'toPoint'),
+                      textInputAction: TextInputAction.search,
+                      decoration: InputDecoration(
+                        hintText: 'Куда поедем',
+                        border: InputBorder.none,
+                        contentPadding:
+                            const EdgeInsets.only(left: 15.0, top: 15.0),
+                        prefixIcon: SizedBox(
+                          width: 64,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.location_on),
+                                const Text('До'),
+                              ],
+                            ),
+                          ),
+                        ),
+                        prefixIconColor: const Color.fromARGB(255, 255, 174, 3),
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.search),
+                          onPressed: () =>
+                              searchAndNavigate(toPointAddress, 'toPoint'),
+                          iconSize: 30.0,
+                        ),
+                      ),
+                      onChanged: (val) {
+                        setState(() {
+                          toPointAddress = val;
+                        });
+                      },
+                    ),
+                  ],
                 ),
               ),
-              child: Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: () => Navigator.pushNamed(context, '/trips'),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.search),
-                        const Text('Поиск попутчиков'),
-                      ],
+            ),
+            Positioned(
+              bottom: 0,
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(32),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 15,
+                      offset: const Offset(0, 1),
+                      color: Colors.black.withAlpha(35),
                     ),
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        if (fromPointMarker == null || toPointMarker == null)
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text('Введите оба адреса'),
+                          ));
+                        else
+                          Navigator.pushNamed(context, '/trips');
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.search),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          const Text('Поиск попутчиков'),
+                        ],
+                      ),
+                      style: ButtonStyle(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () =>
-                        Navigator.pushNamed(context, '/createTrip'),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.add),
-                        const Text('Создать поездку'),
-                      ],
-                    ),
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (fromPointMarker == null || toPointMarker == null)
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text('Введите оба адреса'),
+                          ));
+                        else
+                          Navigator.pushNamed(context, '/createTrip');
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.add),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          const Text('Создать поездку'),
+                        ],
+                      ),
+                      style: ButtonStyle(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -263,10 +304,15 @@ class _MainPageState extends State<MainPage> {
             .map((e) => LatLng(e.latitude, e.longitude));
 
     setState(() {
-      if (pointName == 'fromPoint')
+      if (pointName == 'fromPoint') {
         fromPointMarker = _createMarker(locations.first, pointName);
-      else if (pointName == 'toPoint')
+        Provider.of<MapController>(context, listen: false).fromPointAddress =
+            address;
+      } else if (pointName == 'toPoint') {
         toPointMarker = _createMarker(locations.first, pointName);
+        Provider.of<MapController>(context, listen: false).toPointAddress =
+            address;
+      }
     });
 
     Provider.of<MapController>(context, listen: false).markers = _markers;

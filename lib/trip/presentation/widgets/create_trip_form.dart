@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../logic/map_controller.dart';
 import 'widgets.dart';
 import '../../data/trip_dao.dart';
 import '../../../common/data/fire_user_dao.dart';
@@ -21,6 +22,15 @@ class _CreateTripFormState extends State<CreateTripForm> {
 
   var _maximumCompanions = 4;
   var _departureTime = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    _fromPointController.text =
+        Provider.of<MapController>(context, listen: false).fromPointAddress;
+    _toPointController.text =
+        Provider.of<MapController>(context, listen: false).toPointAddress;
+  }
 
   @override
   void dispose() {
@@ -50,6 +60,7 @@ class _CreateTripFormState extends State<CreateTripForm> {
               controller: _titleController,
             ),
             TextFormField(
+              readOnly: true,
               decoration: const InputDecoration(
                 prefixIcon: Icon(
                   Icons.location_on,
@@ -60,6 +71,7 @@ class _CreateTripFormState extends State<CreateTripForm> {
               controller: _fromPointController,
             ),
             TextFormField(
+              readOnly: true,
               decoration: const InputDecoration(
                 prefixIcon: Icon(
                   Icons.location_on,

@@ -42,7 +42,19 @@ class App extends StatelessWidget {
       ],
       child: Consumer<FireUserDao>(
         builder: (context1, userDao, child) => MaterialApp(
-          theme: ThemeData.light(),
+          theme: ThemeData(
+            primaryColor: const Color.fromARGB(255, 111, 108, 217),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                primary: const Color.fromARGB(255, 111, 108, 217),
+              ),
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                primary: const Color.fromARGB(255, 111, 108, 217),
+              ),
+            ),
+          ),
           initialRoute: '/login',
           onGenerateRoute: (settings) => OnGenerateRoute(context1, settings),
         ),
