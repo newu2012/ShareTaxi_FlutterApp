@@ -58,23 +58,21 @@ class _TripsListPageState extends State<TripsListPage> {
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {
-    return ListView(
-      controller: _scrollController,
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.only(top: 20.0),
-      children: _tripList(context, snapshot),
-    );
-  }
-
-  List<Widget> _tripList(
-    BuildContext context,
-    List<DocumentSnapshot>? snapshot,
-  ) {
     snapshot!.sort((a, b) => Trip.fromSnapshot(a)
         .departureTime
         .compareTo(Trip.fromSnapshot(b).departureTime));
+    final tripsFromSnapshot = snapshot
+        .map((data) => _buildListItem(context, data)).toList();
 
-    return snapshot.map((data) => _buildListItem(context, data)).toList();
+    return ListView.separated(
+      itemCount: tripsFromSnapshot.length,
+      controller: _scrollController,
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.only(top: 20.0),
+      itemBuilder: (context1, i) =>
+          tripsFromSnapshot[i],
+      separatorBuilder: (context, index) => const Divider(),
+    );
   }
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {

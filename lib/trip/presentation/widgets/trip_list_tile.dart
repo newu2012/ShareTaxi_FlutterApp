@@ -20,7 +20,7 @@ class TripListTile extends StatelessWidget {
     final userDao = Provider.of<UserDao>(context, listen: false);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -28,39 +28,31 @@ class TripListTile extends StatelessWidget {
             trip.title,
             style: const TextStyle(fontSize: 19),
           ),
-          Row(
-            children: [
-              const Icon(Icons.people),
-              Text('${trip.currentCompanions}/${trip.maximumCompanions}'),
-              const SizedBox(
-                width: 16,
-              ),
-              const Icon(Icons.paid),
-              Text('${trip.costOverall}/${trip.oneUserCost}'),
-            ],
-          ),
+          DistanceAndAddresses(userDao: userDao, trip: trip),
           Row(
             children: [
               const Icon(Icons.schedule),
-              Text(DateFormat('HH:mm').format(trip.departureTime)),
+              const SizedBox(
+                width: 4,
+              ),
+              Text('${DateFormat('HH:mm').format(trip.departureTime)} выезд'),
+              const SizedBox(
+                width: 12,
+              ),
+              const Icon(Icons.people),
+              const SizedBox(
+                width: 4,
+              ),
+              Text('${trip.currentCompanions}/${trip.maximumCompanions}'),
+              const SizedBox(
+                width: 12,
+              ),
+              const Icon(Icons.payments),
+              const SizedBox(
+                width: 4,
+              ),
+              Text('${trip.costOverall}/${trip.oneUserCost} руб.'),
             ],
-          ),
-          FutureBuilder(
-            future: userDao.getUserByUid(FireUserDao().userId()),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                final user = snapshot.data as User;
-
-                return Row(
-                  children: [
-                    DistanceFromPoint(user: user, point: trip.fromPoint),
-                    DistanceToPoint(user: user, point: trip.toPoint),
-                  ],
-                );
-              } else {
-                return const LinearProgressIndicator();
-              }
-            },
           ),
         ],
       ),
@@ -74,6 +66,49 @@ double _calculateMeterDistance(LatLng p1, LatLng p2) {
   return distance(p1, p2);
 }
 
+class DistanceAndAddresses extends StatelessWidget {
+  const DistanceAndAddresses({
+    Key? key,
+    required this.userDao,
+    required this.trip,
+  }) : super(key: key);
+
+  final UserDao userDao;
+  final Trip trip;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: userDao.getUserByUid(FireUserDao().userId()),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final user = snapshot.data as User;
+
+          return Column(
+            children: [
+              Row(
+                children: [
+                  DistanceFromPoint(user: user, point: trip.fromPoint),
+                  Text(trip.fromPointAddress),
+                ],
+              ),
+              Row(
+                children: [
+                  DistanceToPoint(user: user, point: trip.toPoint),
+                  Text(trip.toPointAddress),
+                ],
+              ),
+            ],
+          );
+        } else {
+          return const LinearProgressIndicator();
+        }
+      },
+    );
+  }
+}
+
+//  TODO Сделать общий класс вместо Distance...
 class DistanceFromPoint extends StatelessWidget {
   final GeoPoint point;
   final User user;
@@ -91,6 +126,9 @@ class DistanceFromPoint extends StatelessWidget {
     return Row(
       children: [
         const Icon(MdiIcons.carArrowLeft),
+        const SizedBox(
+          width: 4,
+        ),
         SizedBox(
           width: 50,
           child: Text('${meterDistance}'),
@@ -117,6 +155,9 @@ class DistanceToPoint extends StatelessWidget {
     return Row(
       children: [
         const Icon(MdiIcons.carArrowRight),
+        const SizedBox(
+          width: 4,
+        ),
         SizedBox(
           width: 50,
           child: Text('${meterDistance}'),
