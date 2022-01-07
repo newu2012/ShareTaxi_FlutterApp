@@ -1,13 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import '../../logic/map_controller.dart';
 
-import '../../../common/data/fire_user_dao.dart';
-import '../../../common/data/user.dart';
-import '../../../common/data/user_dao.dart';
 import '../../data/trip.dart';
 
 class TripListTile extends StatelessWidget {
@@ -17,8 +15,6 @@ class TripListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userDao = Provider.of<UserDao>(context, listen: false);
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -28,7 +24,7 @@ class TripListTile extends StatelessWidget {
             trip.title,
             style: const TextStyle(fontSize: 19),
           ),
-          DistanceAndAddresses(userDao: userDao, trip: trip),
+          DistanceAndAddresses(trip: trip),
           Row(
             children: [
               const Icon(Icons.schedule),
@@ -60,6 +56,21 @@ class TripListTile extends StatelessWidget {
   }
 }
 
+Future<int> getDistance(String fromAddress, String toAddress) async {
+  final fromLocation =
+      (await GeocodingPlatform.instance.locationFromAddress(fromAddress))
+          .map((e) => LatLng(e.latitude, e.longitude))
+          .first;
+  final toLocation =
+      (await GeocodingPlatform.instance.locationFromAddress(toAddress))
+          .map((e) => LatLng(e.latitude, e.longitude))
+          .first;
+
+  final distance = (_calculateMeterDistance(fromLocation, toLocation)).toInt();
+
+  return distance;
+}
+
 double _calculateMeterDistance(LatLng p1, LatLng p2) {
   const distance = Distance();
 
@@ -69,60 +80,53 @@ double _calculateMeterDistance(LatLng p1, LatLng p2) {
 class DistanceAndAddresses extends StatelessWidget {
   const DistanceAndAddresses({
     Key? key,
-    required this.userDao,
     required this.trip,
   }) : super(key: key);
 
-  final UserDao userDao;
   final Trip trip;
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: userDao.getUserByUid(FireUserDao().userId()),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final user = snapshot.data as User;
-
-          return Column(
-            children: [
-              Row(
-                children: [
-                  DistanceFromPoint(user: user, point: trip.fromPoint),
-                  Text(trip.fromPointAddress),
-                ],
-              ),
-              Row(
-                children: [
-                  DistanceToPoint(user: user, point: trip.toPoint),
-                  Text(trip.toPointAddress),
-                ],
-              ),
-            ],
-          );
-        } else {
-          return const LinearProgressIndicator();
-        }
-      },
+    return Column(
+      children: [
+        Row(
+          children: [
+            DistanceFromPoint(
+              fromPoint: Provider.of<MapController>(context, listen: false)
+                  .fromPointAddress,
+              toPoint: trip.fromPointAddress,
+            ),
+            Text(trip.fromPointAddress),
+          ],
+        ),
+        Row(
+          children: [
+            DistanceToPoint(
+              fromPoint: Provider.of<MapController>(context, listen: false)
+                  .toPointAddress,
+              toPoint: trip.toPointAddress,
+            ),
+            Text(trip.toPointAddress),
+          ],
+        ),
+      ],
     );
   }
 }
 
 //  TODO Сделать общий класс вместо Distance...
 class DistanceFromPoint extends StatelessWidget {
-  final GeoPoint point;
-  final User user;
+  final String fromPoint;
+  final String toPoint;
 
-  const DistanceFromPoint({Key? key, required this.user, required this.point})
-      : super(key: key);
+  const DistanceFromPoint({
+    Key? key,
+    required this.fromPoint,
+    required this.toPoint,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final meterDistance = _calculateMeterDistance(
-      LatLng(user.fromPoint!.latitude, user.fromPoint!.longitude),
-      LatLng(point.latitude, point.longitude),
-    );
-
     return Row(
       children: [
         const Icon(MdiIcons.carArrowLeft),
@@ -130,8 +134,11 @@ class DistanceFromPoint extends StatelessWidget {
           width: 4,
         ),
         SizedBox(
-          width: 50,
-          child: Text('${meterDistance}'),
+          width: 60,
+          child: FutureBuilder(
+            future: getDistance(fromPoint, toPoint),
+            builder: (_, snapshot) => Text('${snapshot.data} м.'),
+          ),
         ),
       ],
     );
@@ -139,28 +146,29 @@ class DistanceFromPoint extends StatelessWidget {
 }
 
 class DistanceToPoint extends StatelessWidget {
-  final GeoPoint point;
-  final User user;
+  final String fromPoint;
+  final String toPoint;
 
-  const DistanceToPoint({Key? key, required this.user, required this.point})
-      : super(key: key);
+  const DistanceToPoint({
+    Key? key,
+    required this.fromPoint,
+    required this.toPoint,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final meterDistance = _calculateMeterDistance(
-      LatLng(user.toPoint!.latitude, user.toPoint!.longitude),
-      LatLng(point.latitude, point.longitude),
-    );
-
     return Row(
       children: [
-        const Icon(MdiIcons.carArrowRight),
+        const Icon(MdiIcons.carArrowLeft),
         const SizedBox(
           width: 4,
         ),
         SizedBox(
-          width: 50,
-          child: Text('${meterDistance}'),
+          width: 60,
+          child: FutureBuilder(
+            future: getDistance(fromPoint, toPoint),
+            builder: (_, snapshot) => Text('${snapshot.data} м.'),
+          ),
         ),
       ],
     );
