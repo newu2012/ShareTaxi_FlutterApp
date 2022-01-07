@@ -150,6 +150,8 @@ class _CreateTripFormState extends State<CreateTripForm> {
             CreateTripButton(
               formKey: _formKey,
               titleController: _titleController,
+              fromPointAddress: _fromPointController.text,
+              toPointAddress: _toPointController.text,
               costController: _costController,
               maximumCompanions: _maximumCompanions,
               departureTime: _departureTime,

@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Trip {
   final String? creatorId;
   final String title;
+  final String fromPointAddress;
+  final String toPointAddress;
   final GeoPoint fromPoint;
   final GeoPoint toPoint;
   final int currentCompanions;
@@ -16,6 +18,8 @@ class Trip {
   Trip({
     required this.creatorId,
     required this.title,
+    required this.fromPointAddress,
+    required this.toPointAddress,
     required this.fromPoint,
     required this.toPoint,
     required this.currentCompanions,
@@ -28,6 +32,8 @@ class Trip {
   factory Trip.fromJson(Map<dynamic, dynamic> json) => Trip(
         creatorId: json['creatorId'] as String,
         title: json['title'] as String,
+        fromPointAddress: json['fromPointAddress'] as String,
+        toPointAddress: json['toPointAddress'] as String,
         fromPoint: json['fromPoint'] as GeoPoint,
         toPoint: json['toPoint'] as GeoPoint,
         currentCompanions: json['currentCompanions'] as int,
@@ -39,6 +45,8 @@ class Trip {
   Map<String, dynamic> toJson() => <String, dynamic>{
         'creatorId': creatorId,
         'title': title,
+        'fromPointAddress': fromPointAddress,
+        'toPointAddress': toPointAddress,
         'fromPoint': fromPoint,
         'toPoint': toPoint,
         'currentCompanions': currentCompanions,

@@ -10,6 +10,8 @@ class CreateTripButton extends StatelessWidget {
     Key? key,
     required GlobalKey<FormState> formKey,
     required TextEditingController titleController,
+    required String fromPointAddress,
+    required String toPointAddress,
     required TextEditingController costController,
     required int maximumCompanions,
     required DateTime departureTime,
@@ -17,6 +19,8 @@ class CreateTripButton extends StatelessWidget {
     required FireUserDao fireUserDao,
   })  : _formKey = formKey,
         _titleController = titleController,
+        _fromPointAddress = fromPointAddress,
+        _toPointAddress = toPointAddress,
         _costController = costController,
         _maximumCompanions = maximumCompanions,
         _departureTime = departureTime,
@@ -29,6 +33,8 @@ class CreateTripButton extends StatelessWidget {
 
   final GlobalKey<FormState> _formKey;
   final TextEditingController _titleController;
+  final String _fromPointAddress;
+  final String _toPointAddress;
   final TextEditingController _costController;
   final int _maximumCompanions;
   final DateTime _departureTime;
@@ -43,6 +49,8 @@ class CreateTripButton extends StatelessWidget {
           tripId = _tripDao.saveTrip(Trip(
             creatorId: _fireUserDao.userId(),
             title: _titleController.text,
+            fromPointAddress: _fromPointAddress,
+            toPointAddress: _toPointAddress,
             fromPoint: const GeoPoint(56.84, 60.65),
             toPoint: const GeoPoint(56.85, 60.6),
             costOverall: int.parse(_costController.text),
