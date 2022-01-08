@@ -21,7 +21,9 @@ class _CreateTripFormState extends State<CreateTripForm> {
   final _costController = TextEditingController();
 
   var _maximumCompanions = 4;
-  var _departureTime = DateTime.now();
+  var _departureTime = DateTime.now().add(
+    const Duration(minutes: 30),
+  );
 
   @override
   void initState() {
@@ -48,16 +50,20 @@ class _CreateTripFormState extends State<CreateTripForm> {
 
     return Form(
       key: _formKey,
-      child: SizedBox(
-        height: 600,
         child: Column(
           children: [
+            const SizedBox(
+              height: 8,
+            ),
             TextFormField(
               textCapitalization: TextCapitalization.sentences,
               decoration: const InputDecoration(
                 hintText: 'Название поездки',
               ),
               controller: _titleController,
+            ),
+            const SizedBox(
+              height: 8,
             ),
             TextFormField(
               readOnly: true,
@@ -70,6 +76,9 @@ class _CreateTripFormState extends State<CreateTripForm> {
               ),
               controller: _fromPointController,
             ),
+            const SizedBox(
+              height: 8,
+            ),
             TextFormField(
               readOnly: true,
               decoration: const InputDecoration(
@@ -81,10 +90,18 @@ class _CreateTripFormState extends State<CreateTripForm> {
               ),
               controller: _toPointController,
             ),
+            const SizedBox(
+              height: 8,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Количество человек'),
+                const Text(
+                  'Количество человек',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                  ),
+                ),
                 SizedBox(
                   width: 85,
                   //padding: const EdgeInsets.symmetric(vertical: 8),
@@ -112,14 +129,23 @@ class _CreateTripFormState extends State<CreateTripForm> {
                 ),
               ],
             ),
+            const SizedBox(
+              height: 8,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Время отправления'),
+                const Text(
+                  'Время отправления',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                  ),
+                ),
                 GestureDetector(
                   onTap: () async {
                     final pickedTime = await showTimePicker(
                       context: context,
+                      initialEntryMode: TimePickerEntryMode.input,
                       initialTime: TimeOfDay(
                         hour: _departureTime.hour,
                         minute: _departureTime.minute,
@@ -142,10 +168,16 @@ class _CreateTripFormState extends State<CreateTripForm> {
                 ),
               ],
             ),
+            const SizedBox(
+              height: 8,
+            ),
             DigitsOnlyFormField(
               controller: _costController,
               hint: 'Сколько стоит',
               ifEmptyOrNull: 'Ожидаемая стоимость поездки для одного человека',
+            ),
+            const SizedBox(
+              height: 8,
             ),
             CreateTripButton(
               formKey: _formKey,
@@ -160,7 +192,6 @@ class _CreateTripFormState extends State<CreateTripForm> {
             ),
           ],
         ),
-      ),
     );
   }
 }
@@ -178,12 +209,19 @@ class DepartureTimeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: const Color.fromRGBO(111, 108, 217, 35),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
         child: Text(
           '${_departureTime.hour}:'
           '${_departureTime.minute.toString().padLeft(2, '0')}',
-          style: const TextStyle(fontSize: 20),
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
       ),
     );
