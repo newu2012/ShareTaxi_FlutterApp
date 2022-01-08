@@ -17,7 +17,7 @@ class Home extends StatelessWidget {
       controller: _tabController,
       screens: [
         const MainPage(),
-        const TripsListPage(), // TODO Change to const ChatsListPage(),
+        const TripListPage(), // TODO Change to const ChatsListPage(),
         const UnknownPage(),
       ],
       items: _navBarsItems(context),

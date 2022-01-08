@@ -9,14 +9,14 @@ import '../../data/trip_dao.dart';
 import '../widgets/widgets.dart';
 import '../../data/trip.dart';
 
-class TripsListPage extends StatefulWidget {
-  const TripsListPage({Key? key}) : super(key: key);
+class TripListPage extends StatefulWidget {
+  const TripListPage({Key? key}) : super(key: key);
 
   @override
-  State<TripsListPage> createState() => _TripsListPageState();
+  State<TripListPage> createState() => _TripListPageState();
 }
 
-class _TripsListPageState extends State<TripsListPage> {
+class _TripListPageState extends State<TripListPage> {
   final ScrollController _scrollController = ScrollController();
 
   @override
