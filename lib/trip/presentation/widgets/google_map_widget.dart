@@ -24,10 +24,6 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
     setState(() {
       _mapController = controller;
       _markers = Provider.of<MapController>(context, listen: false).markers;
-
-      print(_mapController);
-      print(_markers);
-
       _moveCamera();
     });
   }
