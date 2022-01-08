@@ -19,6 +19,8 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   late GoogleMapController mapController;
+  late bool userDeniedGps;
+
   late String fromPointAddress;
   late String toPointAddress;
   Marker? fromPointMarker;
@@ -47,26 +49,25 @@ class _MainPageState extends State<MainPage> {
             Center(
               child: FutureBuilder(
                 future: _getCurrentLocation(),
-                builder: (context, AsyncSnapshot<Position> position) {
-                  if (position.hasData) {
-                    final pos = position.data as Position;
-
-                    return GoogleMap(
-                      onMapCreated: _onMapCreated,
-                      markers: _markers,
-                      initialCameraPosition: CameraPosition(
-                        target: LatLng(pos.latitude, pos.longitude),
-                        zoom: 17.0,
-                      ),
-                      myLocationEnabled: true,
-                      gestureRecognizers: Set()
-                        ..add(Factory<EagerGestureRecognizer>(
-                          () => EagerGestureRecognizer(),
-                        )),
-                    );
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
+                builder: (context, AsyncSnapshot<Position?> position) {
+                  return GoogleMap(
+                    onMapCreated: _onMapCreated,
+                    markers: _markers,
+                    initialCameraPosition: CameraPosition(
+                      target: position.hasData
+                          ? LatLng(
+                              position.data!.latitude,
+                              position.data!.longitude,
+                            )
+                          : const LatLng(56.8439, 60.6529),
+                      zoom: 17.0,
+                    ),
+                    myLocationEnabled: position.hasData,
+                    gestureRecognizers: Set()
+                      ..add(Factory<EagerGestureRecognizer>(
+                        () => EagerGestureRecognizer(),
+                      )),
+                  );
                 },
               ),
             ),
@@ -257,9 +258,11 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Future<Position> _getCurrentLocation() async {
+  Future<Position?> _getCurrentLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
+
+    if (userDeniedGps) return Future.error('User denied GPS');
 
     // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -267,7 +270,7 @@ class _MainPageState extends State<MainPage> {
       // Location services are not enabled don't continue
       // accessing the position and request users of the
       // App to enable the location services.
-      return Future.error('Location services are disabled.');
+      return Future.error('Location permissions are denied');
     }
 
     permission = await Geolocator.checkPermission();
@@ -279,6 +282,8 @@ class _MainPageState extends State<MainPage> {
         // Android's shouldShowRequestPermissionRationale
         // returned true. According to Android guidelines
         // your App should show an explanatory UI now.
+        userDeniedGps = true;
+
         return Future.error('Location permissions are denied');
       }
     }
