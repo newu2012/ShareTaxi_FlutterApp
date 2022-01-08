@@ -86,12 +86,7 @@ class MessageWidget extends StatelessWidget {
               _buildMessageCreatorText(
                 '${messageCreator.firstName} ${messageCreator.lastName}',
               ),
-              Wrap(
-                direction: Axis.vertical,
-                crossAxisAlignment: WrapCrossAlignment.start,
-                runAlignment: WrapAlignment.center,
-                children: [_buildMessageText(context)],
-              ),
+              _buildMessageText(context),
               _buildMessageDate(),
             ],
           ),
@@ -145,9 +140,11 @@ class MessageWidget extends StatelessWidget {
         color: Colors.white,
       ),
       child: LimitedBox(
-    maxWidth: MediaQuery.of(context).size.width * 0.65,
-          child:
-          Text(message.text, softWrap: true,),
+        maxWidth: MediaQuery.of(context).size.width * 0.65,
+        child: Text(
+          message.text,
+          softWrap: true,
+        ),
       ),
     );
   }
