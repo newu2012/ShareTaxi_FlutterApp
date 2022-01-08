@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +27,23 @@ class _TripsListPageState extends State<TripsListPage> {
       body: SafeArea(
         child: Column(
           children: [
+            const SizedBox(
+              height: 12,
+            ),
+            const Text(
+              'Ищем поездку',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(
+              height: 4,
+            ),
             const UserAddressesColumn(),
+            const Divider(
+              height: 8,
+            ),
             _getTripList(tripDao),
           ],
         ),
@@ -64,7 +79,6 @@ class _TripsListPageState extends State<TripsListPage> {
       itemCount: tripsFromSnapshot.length,
       controller: _scrollController,
       physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.only(top: 20.0),
       itemBuilder: (context1, i) => tripsFromSnapshot[i],
       separatorBuilder: (context, index) => const Divider(),
     );
@@ -89,43 +103,60 @@ class UserAddressesColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 60,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      color: Theme.of(context).primaryColor.withAlpha(180),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
-            children: [
-              const Icon(MdiIcons.carArrowLeft),
-              const SizedBox(
-                width: 4,
-              ),
-              SizedBox(
-                child: Text(
-                  Provider.of<MapController>(context, listen: false)
-                      .fromPointAddress,
-                  style: const TextStyle(fontSize: 19),
+          SizedBox(
+            height: 32,
+            child: TextFormField(
+              readOnly: true,
+              initialValue: Provider.of<MapController>(context, listen: false)
+                  .fromPointAddress,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.only(left: 15.0),
+                prefixIcon: SizedBox(
+                  width: 64,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      const Text('От'),
+                    ],
+                  ),
                 ),
+                prefixIconColor: const Color.fromARGB(255, 111, 108, 217),
               ),
-            ],
+            ),
           ),
-          Row(
-            children: [
-              const Icon(MdiIcons.carArrowLeft),
-              const SizedBox(
-                width: 4,
-              ),
-              SizedBox(
-                child: Text(
-                  Provider.of<MapController>(context, listen: false)
-                      .toPointAddress,
-                  style: const TextStyle(fontSize: 19),
+          SizedBox(
+            height: 32,
+            child: TextFormField(
+              readOnly: true,
+              initialValue: Provider.of<MapController>(context, listen: false)
+                  .toPointAddress,
+              decoration: InputDecoration(
+                hintText: 'Куда поедем',
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.only(left: 15.0),
+                prefixIcon: SizedBox(
+                  width: 64,
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.location_on,
+                        color: Color.fromRGBO(255, 174, 3, 100),
+                      ),
+                      const Text('До'),
+                    ],
+                  ),
                 ),
+                prefixIconColor: const Color.fromARGB(255, 255, 174, 3),
               ),
-            ],
+            ),
           ),
         ],
       ),
