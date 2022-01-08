@@ -11,7 +11,11 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
-      child: const Scaffold(body: SafeArea(child: LoginForm())),
+      child: const Scaffold(
+        body: SafeArea(
+          child: LoginForm(),
+        ),
+      ),
     );
   }
 }
@@ -44,14 +48,42 @@ class _LoginFormState extends State<LoginForm> {
       child: ListView(
         padding: const EdgeInsets.all(32.0),
         children: [
+          const Center(
+            child: Text(
+              'Share Taxi',
+              style: TextStyle(
+                fontSize: 36,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          //  TODO save image to app
+          Image.network(
+            'https://psv4.userapi.com/c505536/u87264347/docs/d24/b939ecef92b3/Illustation.png?extra=PN_ThodO3TaZuauvuzwarhvGnkuM5AwQObH7a153d3kIILtdOv-mhsdBXXyH2EbkPzyc9ts3dXLDcYVtm9U7OjVUD-OS_1D6qds6KJM5pRWo37eYGsTObqCtFK380ZuqC3iUyLPBSvtfMHM5CiAi',
+          ),
+          const Center(
+            child: Text(
+              'Вместе дешевле',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           EmailFormField(emailController: _emailController),
+          const SizedBox(
+            height: 8,
+          ),
           PasswordFormField(
             passwordController: _passwordController,
           ),
           //  TODO write function ForgotPassword
-          TextButton(
-            onPressed: () => null,
-            child: const Text('Забыли пароль?'),
+          Container(
+            alignment: AlignmentDirectional.centerEnd,
+            child: TextButton(
+              onPressed: () => null,
+              child: const Text('Забыли пароль?'),
+            ),
           ),
           LogInButton(
             formKey: _formKey,
