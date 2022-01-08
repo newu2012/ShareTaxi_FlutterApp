@@ -94,7 +94,7 @@ class App extends StatelessWidget {
       case '/':
         return MaterialPageRoute(builder: (context) => Home());
       case '/trips':
-        return MaterialPageRoute(builder: (context) => const TripsListPage());
+        return MaterialPageRoute(builder: (context) => const TripListPage());
       case '/createTrip':
         return MaterialPageRoute(builder: (context) => const CreateTripPage());
       case '/chat':
