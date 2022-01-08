@@ -33,7 +33,7 @@ class MessageWidget extends StatelessWidget {
         future: userDao.getUserByUid(message.userId),
         builder: (context, userSnapshot) {
           return userSnapshot.hasData
-              ? _buildMessage(userSnapshot.data as User, fireUserDao)
+              ? _buildMessage(context, userSnapshot.data as User, fireUserDao)
               : const LinearProgressIndicator();
         },
       ),
@@ -68,41 +68,56 @@ class MessageWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildMessage(User messageCreator, FireUserDao fireUserDao) {
+  Widget _buildMessage(context, User messageCreator, FireUserDao fireUserDao) {
     return fireUserDao.userId() == message.userId
-        ? _buildCurrentUserMessage(messageCreator)
-        : _buildAnotherUserMessage(messageCreator);
+        ? _buildCurrentUserMessage(context, messageCreator)
+        : _buildAnotherUserMessage(context, messageCreator);
   }
 
-  Widget _buildCurrentUserMessage(User messageCreator) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Column(
-          children: [
-            _buildMessageCreatorText(
-              '${messageCreator.firstName} ${messageCreator.lastName}',
-            ),
-            _buildMessageText(),
-            _buildMessageDate(),
-          ],
-        ),
-        _buildMessageCreatorAvatar(messageCreator.photoUrl),
-      ],
+  Widget _buildCurrentUserMessage(context, User messageCreator) {
+    return LimitedBox(
+      maxWidth: MediaQuery.of(context).size.width * 0.75,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              _buildMessageCreatorText(
+                '${messageCreator.firstName} ${messageCreator.lastName}',
+              ),
+              Wrap(
+                direction: Axis.vertical,
+                crossAxisAlignment: WrapCrossAlignment.start,
+                runAlignment: WrapAlignment.center,
+                children: [_buildMessageText(context)],
+              ),
+              _buildMessageDate(),
+            ],
+          ),
+          const SizedBox(
+            width: 4,
+          ),
+          _buildMessageCreatorAvatar(messageCreator.photoUrl),
+        ],
+      ),
     );
   }
 
-  Widget _buildAnotherUserMessage(User messageCreator) {
+  Widget _buildAnotherUserMessage(context, User messageCreator) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         _buildMessageCreatorAvatar(messageCreator.photoUrl),
+        const SizedBox(
+          width: 4,
+        ),
         Column(
           children: [
             _buildMessageCreatorText(
               '${messageCreator.firstName} ${messageCreator.lastName}',
             ),
-            _buildMessageText(),
+            _buildMessageText(context),
             _buildMessageDate(),
           ],
         ),
@@ -123,13 +138,17 @@ class MessageWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildMessageText() {
+  Widget _buildMessageText(context) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50.0),
         color: Colors.white,
       ),
-      child: Text(message.text),
+      child: LimitedBox(
+    maxWidth: MediaQuery.of(context).size.width * 0.65,
+          child:
+          Text(message.text, softWrap: true,),
+      ),
     );
   }
 
@@ -139,7 +158,7 @@ class MessageWidget extends StatelessWidget {
       child: Align(
         alignment: Alignment.topRight,
         child: Text(
-          DateFormat('yyyy-MM-dd, kk:mma').format(message.date).toString(),
+          DateFormat('kk:mm').format(message.date).toString(),
           style: const TextStyle(color: Colors.grey),
         ),
       ),
