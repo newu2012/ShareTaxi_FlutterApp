@@ -34,10 +34,6 @@ class _MainPageState extends State<MainPage> {
   void _onMapCreated(GoogleMapController controller) {
     setState(() {
       mapController = controller;
-
-      print(mapController);
-      print(_markers);
-
       _moveCamera();
     });
   }
