@@ -27,7 +27,10 @@ class TripListTile extends StatelessWidget {
           DistanceAndAddresses(trip: trip),
           Row(
             children: [
-              const Icon(Icons.schedule),
+              Icon(
+                Icons.schedule,
+                color: Theme.of(context).primaryColor,
+              ),
               const SizedBox(
                 width: 4,
               ),
@@ -35,7 +38,10 @@ class TripListTile extends StatelessWidget {
               const SizedBox(
                 width: 12,
               ),
-              const Icon(Icons.people),
+              Icon(
+                Icons.people,
+                color: Theme.of(context).primaryColor,
+              ),
               const SizedBox(
                 width: 4,
               ),
@@ -43,7 +49,10 @@ class TripListTile extends StatelessWidget {
               const SizedBox(
                 width: 12,
               ),
-              const Icon(Icons.payments),
+              Icon(
+                Icons.payments,
+                color: Theme.of(context).primaryColor,
+              ),
               const SizedBox(
                 width: 4,
               ),
@@ -129,7 +138,10 @@ class DistanceFromPoint extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Icon(MdiIcons.carArrowLeft),
+        Icon(
+          MdiIcons.carArrowLeft,
+          color: Theme.of(context).primaryColor,
+        ),
         const SizedBox(
           width: 4,
         ),
@@ -159,7 +171,10 @@ class DistanceToPoint extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Icon(MdiIcons.carArrowLeft),
+        const Icon(
+          MdiIcons.carArrowRight,
+          color: Color.fromRGBO(255, 174, 3, 100),
+        ),
         const SizedBox(
           width: 4,
         ),
