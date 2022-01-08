@@ -80,44 +80,61 @@ class MessageWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              _buildMessageCreatorText(
-                '${messageCreator.firstName} ${messageCreator.lastName}',
-              ),
-              _buildMessageText(context),
-              _buildMessageDate(),
-            ],
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.0),
+              color: const Color.fromRGBO(154, 217, 237, 100),
+            ),
+            padding: const EdgeInsets.symmetric(
+              vertical: 4.0,
+              horizontal: 16.0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildMessageCreatorText(
+                  '${messageCreator.firstName} ${messageCreator.lastName}',
+                ),
+                _buildMessageText(context),
+                _buildMessageDate(),
+              ],
+            ),
           ),
-          const SizedBox(
-            width: 4,
-          ),
-          _buildMessageCreatorAvatar(messageCreator.photoUrl),
         ],
       ),
     );
   }
 
-  Widget _buildAnotherUserMessage(context, User messageCreator) {
+  Widget _buildAnotherUserMessage(BuildContext context, User messageCreator) {
     return LimitedBox(
       maxWidth: MediaQuery.of(context).size.width * 0.75,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           _buildMessageCreatorAvatar(messageCreator.photoUrl),
           const SizedBox(
             width: 4,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildMessageCreatorText(
-                '${messageCreator.firstName} ${messageCreator.lastName}',
-              ),
-              _buildMessageText(context),
-              _buildMessageDate(),
-            ],
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.0),
+              color: const Color.fromRGBO(194, 193, 226, 100),
+            ),
+            padding: const EdgeInsets.symmetric(
+              vertical: 4.0,
+              horizontal: 16.0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildMessageCreatorText(
+                  '${messageCreator.firstName} ${messageCreator.lastName}',
+                ),
+                _buildMessageText(context),
+                _buildMessageDate(),
+              ],
+            ),
           ),
         ],
       ),
@@ -127,48 +144,43 @@ class MessageWidget extends StatelessWidget {
   Widget _buildMessageCreatorText(String userName) {
     return Padding(
       padding: const EdgeInsets.only(top: 4),
-      child: Align(
-        alignment: Alignment.topRight,
-        child: Text(
-          userName,
-          style: const TextStyle(color: Colors.grey),
+      child: Text(
+        userName,
+        style: const TextStyle(
+          color: Colors.black87,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
   }
 
   Widget _buildMessageText(context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(50.0),
-        color: Colors.white,
-      ),
-      child: LimitedBox(
-        maxWidth: MediaQuery.of(context).size.width * 0.65,
-        child: Text(
-          message.text,
-          softWrap: true,
-        ),
+    return LimitedBox(
+      maxWidth: MediaQuery.of(context).size.width * 0.65,
+      child: Text(
+        message.text,
+        softWrap: true,
       ),
     );
   }
 
   Widget _buildMessageDate() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 4),
-      child: Align(
-        alignment: Alignment.topRight,
+      return Container(
+        alignment: AlignmentDirectional.centerEnd,
+        padding: const EdgeInsets.only(top: 4),
         child: Text(
           DateFormat('kk:mm').format(message.date).toString(),
-          style: const TextStyle(color: Colors.grey),
+          style: TextStyle(
+            fontSize: 12.0,
+            color: Colors.black.withAlpha(124),
+          ),
         ),
-      ),
     );
   }
 
   Widget _buildMessageCreatorAvatar(String? userAvatarUrl) {
     return CircleAvatar(
-      maxRadius: 24,
+      maxRadius: 16,
       backgroundImage: NetworkImage(userAvatarUrl ??
           'https://firebasestorage.googleapis.com/v0/b/newu-share-taxi.appspot.com/o/avatar.png?alt=media&token=735f2da2-a631-4650-9372-0ba9bfa673aa'),
     );
