@@ -100,23 +100,27 @@ class MessageWidget extends StatelessWidget {
   }
 
   Widget _buildAnotherUserMessage(context, User messageCreator) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        _buildMessageCreatorAvatar(messageCreator.photoUrl),
-        const SizedBox(
-          width: 4,
-        ),
-        Column(
-          children: [
-            _buildMessageCreatorText(
-              '${messageCreator.firstName} ${messageCreator.lastName}',
-            ),
-            _buildMessageText(context),
-            _buildMessageDate(),
-          ],
-        ),
-      ],
+    return LimitedBox(
+      maxWidth: MediaQuery.of(context).size.width * 0.75,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          _buildMessageCreatorAvatar(messageCreator.photoUrl),
+          const SizedBox(
+            width: 4,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildMessageCreatorText(
+                '${messageCreator.firstName} ${messageCreator.lastName}',
+              ),
+              _buildMessageText(context),
+              _buildMessageDate(),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
