@@ -46,24 +46,28 @@ class CreateTripButton extends StatelessWidget {
         Future<String> tripId;
 
         if (_formKey.currentState!.validate()) {
-          tripId = _tripDao.saveTrip(Trip(
-            creatorId: _fireUserDao.userId(),
-            title: _titleController.text,
-            fromPointAddress: _fromPointAddress,
-            toPointAddress: _toPointAddress,
-            fromPoint: const GeoPoint(56.84, 60.65),
-            toPoint: const GeoPoint(56.85, 60.6),
-            costOverall: int.parse(_costController.text),
-            departureTime: _departureTime,
-            currentCompanions: 1,
-            maximumCompanions: _maximumCompanions,
-          ));
+          tripId = _tripDao.saveTrip(
+            Trip(
+              creatorId: _fireUserDao.userId(),
+              title: _titleController.text,
+              fromPointAddress: _fromPointAddress,
+              toPointAddress: _toPointAddress,
+              fromPoint: const GeoPoint(56.84, 60.65),
+              toPoint: const GeoPoint(56.85, 60.6),
+              costOverall: int.parse(_costController.text),
+              departureTime: _departureTime,
+              currentCompanions: 1,
+              maximumCompanions: _maximumCompanions,
+            ),
+          );
 
-          tripId.then((value) => Navigator.pushReplacementNamed(
-                context,
-                '/chat',
-                arguments: value,
-              ));
+          tripId.then(
+            (value) => Navigator.pushReplacementNamed(
+              context,
+              '/chat',
+              arguments: value,
+            ),
+          );
         }
       },
       child: const Text('Создать поездку'),
