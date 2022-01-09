@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import 'pages.dart';
 import '../../logic/map_controller.dart';
-import '../../../chat/presentation/pages/chat_page.dart';
 import '../../data/trip_dao.dart';
 import '../widgets/widgets.dart';
 import '../../data/trip.dart';
@@ -88,7 +88,7 @@ class _TripListPageState extends State<TripListPage> {
       behavior: HitTestBehavior.translucent,
       onTap: () => pushNewScreen(
         context,
-        screen: ChatPage(tripId: trip.reference!.id),
+        screen: TripInfoPage(tripId: trip.reference!.id),
       ),
     );
   }
