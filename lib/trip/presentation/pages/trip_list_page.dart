@@ -24,25 +24,21 @@ class _TripListPageState extends State<TripListPage> {
     final tripDao = Provider.of<TripDao>(context, listen: false);
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Поиск поездок'),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(
-              height: 12,
-            ),
-            const Text(
-              'Ищем поездку',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
             const SizedBox(
               height: 4,
             ),
             const UserAddressesColumn(),
             const Divider(
               height: 8,
+              thickness: 2,
             ),
             _getTripList(tripDao),
           ],

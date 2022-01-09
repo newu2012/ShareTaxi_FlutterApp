@@ -16,7 +16,7 @@ class _CreateTripPageState extends State<CreateTripPage> {
       appBar: AppBar(
         title: const Text('Создание поездки'),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 111, 108, 217),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
