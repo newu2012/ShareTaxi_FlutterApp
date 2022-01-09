@@ -50,148 +50,147 @@ class _CreateTripFormState extends State<CreateTripForm> {
 
     return Form(
       key: _formKey,
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 8,
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 8,
+          ),
+          TextFormField(
+            textCapitalization: TextCapitalization.sentences,
+            decoration: const InputDecoration(
+              hintText: 'Название поездки',
             ),
-            TextFormField(
-              textCapitalization: TextCapitalization.sentences,
-              decoration: const InputDecoration(
-                hintText: 'Название поездки',
+            controller: _titleController,
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          TextFormField(
+            readOnly: true,
+            decoration: const InputDecoration(
+              prefixIcon: Icon(
+                Icons.location_on,
+                color: Color.fromARGB(255, 111, 108, 217),
               ),
-              controller: _titleController,
+              hintText: 'Адрес отправления',
             ),
-            const SizedBox(
-              height: 8,
-            ),
-            TextFormField(
-              readOnly: true,
-              decoration: const InputDecoration(
-                prefixIcon: Icon(
-                  Icons.location_on,
-                  color: Color.fromARGB(255, 111, 108, 217),
-                ),
-                hintText: 'Адрес отправления',
+            controller: _fromPointController,
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          TextFormField(
+            readOnly: true,
+            decoration: const InputDecoration(
+              prefixIcon: Icon(
+                Icons.location_on,
+                color: Color.fromARGB(255, 255, 174, 3),
               ),
-              controller: _fromPointController,
+              hintText: 'Адрес назначения',
             ),
-            const SizedBox(
-              height: 8,
-            ),
-            TextFormField(
-              readOnly: true,
-              decoration: const InputDecoration(
-                prefixIcon: Icon(
-                  Icons.location_on,
-                  color: Color.fromARGB(255, 255, 174, 3),
+            controller: _toPointController,
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Количество человек',
+                style: TextStyle(
+                  fontSize: 16.0,
                 ),
-                hintText: 'Адрес назначения',
               ),
-              controller: _toPointController,
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Количество человек',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                  ),
-                ),
-                SizedBox(
-                  width: 85,
-                  //padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: DropdownButtonFormField(
-                    isExpanded: true,
-                    value: 4,
-                    items:
-                        <int>[2, 3, 4].map<DropdownMenuItem<int>>((int value) {
-                      return DropdownMenuItem<int>(
-                        value: value,
-                        child: Center(
-                          child: Text(
-                            value.toString(),
-                            textAlign: TextAlign.center,
-                          ),
+              SizedBox(
+                width: 85,
+                //padding: const EdgeInsets.symmetric(vertical: 8),
+                child: DropdownButtonFormField(
+                  isExpanded: true,
+                  value: 4,
+                  items: <int>[2, 3, 4].map<DropdownMenuItem<int>>((int value) {
+                    return DropdownMenuItem<int>(
+                      value: value,
+                      child: Center(
+                        child: Text(
+                          value.toString(),
+                          textAlign: TextAlign.center,
                         ),
-                      );
-                    }).toList(),
-                    onChanged: (int? newValue) {
-                      setState(() {
-                        _maximumCompanions = newValue!;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Время отправления',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    final pickedTime = await showTimePicker(
-                      context: context,
-                      initialEntryMode: TimePickerEntryMode.input,
-                      initialTime: TimeOfDay(
-                        hour: _departureTime.hour,
-                        minute: _departureTime.minute,
                       ),
                     );
-                    if (pickedTime != null) {
-                      setState(() {
-                        final time = DateTime.now();
-                        _departureTime = DateTime(
-                          time.year,
-                          time.month,
-                          time.day,
-                          pickedTime.hour,
-                          pickedTime.minute,
-                        );
-                      });
-                    }
+                  }).toList(),
+                  onChanged: (int? newValue) {
+                    setState(() {
+                      _maximumCompanions = newValue!;
+                    });
                   },
-                  child: DepartureTimeCard(departureTime: _departureTime),
                 ),
-              ],
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            DigitsOnlyFormField(
-              controller: _costController,
-              hint: 'Сколько стоит',
-              ifEmptyOrNull: 'Ожидаемая стоимость поездки для одного человека',
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            CreateTripButton(
-              formKey: _formKey,
-              titleController: _titleController,
-              fromPointAddress: _fromPointController.text,
-              toPointAddress: _toPointController.text,
-              costController: _costController,
-              maximumCompanions: _maximumCompanions,
-              departureTime: _departureTime,
-              tripDao: _tripDao,
-              fireUserDao: _fireUserDao,
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Время отправления',
+                style: TextStyle(
+                  fontSize: 16.0,
+                ),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  final pickedTime = await showTimePicker(
+                    context: context,
+                    initialEntryMode: TimePickerEntryMode.input,
+                    initialTime: TimeOfDay(
+                      hour: _departureTime.hour,
+                      minute: _departureTime.minute,
+                    ),
+                  );
+                  if (pickedTime != null) {
+                    setState(() {
+                      final time = DateTime.now();
+                      _departureTime = DateTime(
+                        time.year,
+                        time.month,
+                        time.day,
+                        pickedTime.hour,
+                        pickedTime.minute,
+                      );
+                    });
+                  }
+                },
+                child: DepartureTimeCard(departureTime: _departureTime),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          DigitsOnlyFormField(
+            controller: _costController,
+            hint: 'Сколько стоит',
+            ifEmptyOrNull: 'Ожидаемая стоимость поездки для одного человека',
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          CreateTripButton(
+            formKey: _formKey,
+            titleController: _titleController,
+            fromPointAddress: _fromPointController.text,
+            toPointAddress: _toPointController.text,
+            costController: _costController,
+            maximumCompanions: _maximumCompanions,
+            departureTime: _departureTime,
+            tripDao: _tripDao,
+            fireUserDao: _fireUserDao,
+          ),
+        ],
+      ),
     );
   }
 }

@@ -20,19 +20,13 @@ class _CreateTripPageState extends State<CreateTripPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: ListView(
           children: [
-            Expanded(
-              child: ListView(
-                children: [
-                  const SizedBox(
-                    child: GoogleMapWidget(),
-                    height: 170,
-                  ),
-                  const CreateTripForm(),
-                ],
-              ),
+            const SizedBox(
+              child: GoogleMapWidget(),
+              height: 170,
             ),
+            const CreateTripForm(),
           ],
         ),
       ),
