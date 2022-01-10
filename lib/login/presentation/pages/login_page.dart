@@ -59,7 +59,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           //  TODO save image to app
           Image.network(
-            'https://psv4.userapi.com/c505536/u87264347/docs/d24/b939ecef92b3/Illustation.png?extra=PN_ThodO3TaZuauvuzwarhvGnkuM5AwQObH7a153d3kIILtdOv-mhsdBXXyH2EbkPzyc9ts3dXLDcYVtm9U7OjVUD-OS_1D6qds6KJM5pRWo37eYGsTObqCtFK380ZuqC3iUyLPBSvtfMHM5CiAi',
+            'https://lh3.googleusercontent.com/cLW8h-UrVuRLc0hiScFmWB4vo0uR6AGSrrkOdLz4e6Fe5kNKS1iu2LYBDMEHjOjUFjOL2e8t_86yGW9nhoeN=w1920-h969',
           ),
           const Center(
             child: Text(
