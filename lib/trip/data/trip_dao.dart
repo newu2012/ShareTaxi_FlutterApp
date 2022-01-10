@@ -40,4 +40,10 @@ class TripDao extends ChangeNotifier {
   Stream<DocumentSnapshot<Object?>> getTripStreamById(String id) {
     return collection.doc(id).snapshots();
   }
+
+  Stream<QuerySnapshot> getTripsByUserId(String userId) {
+    return collection
+        .where('currentCompanions', arrayContains: userId)
+        .snapshots();
+  }
 }
