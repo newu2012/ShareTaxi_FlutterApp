@@ -15,53 +15,59 @@ class TripListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            trip.title,
-            style: const TextStyle(fontSize: 19),
-          ),
-          DistanceAndAddresses(trip: trip),
-          Row(
-            children: [
-              Icon(
-                Icons.schedule,
-                color: Theme.of(context).primaryColor,
-              ),
-              const SizedBox(
-                width: 4,
-              ),
-              Text('${DateFormat('HH:mm').format(trip.departureTime)} выезд'),
-              const SizedBox(
-                width: 12,
-              ),
-              Icon(
-                Icons.people,
-                color: Theme.of(context).primaryColor,
-              ),
-              const SizedBox(
-                width: 4,
-              ),
-              Text(
-                '${trip.currentCompanions.length}/${trip.maximumCompanions}',
-              ),
-              const SizedBox(
-                width: 12,
-              ),
-              Icon(
-                Icons.payments,
-                color: Theme.of(context).primaryColor,
-              ),
-              const SizedBox(
-                width: 4,
-              ),
-              Text('${trip.costOverall}/${trip.oneUserCost} руб.'),
-            ],
-          ),
-        ],
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      elevation: 4.0,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              trip.title,
+              style: const TextStyle(fontSize: 19),
+            ),
+            DistanceAndAddresses(trip: trip),
+            Row(
+              children: [
+                Icon(
+                  Icons.schedule,
+                  color: Theme.of(context).primaryColor,
+                ),
+                const SizedBox(
+                  width: 4,
+                ),
+                Text('${DateFormat('HH:mm').format(trip.departureTime)} выезд'),
+                const SizedBox(
+                  width: 12,
+                ),
+                Icon(
+                  Icons.people,
+                  color: Theme.of(context).primaryColor,
+                ),
+                const SizedBox(
+                  width: 4,
+                ),
+                Text(
+                  '${trip.currentCompanions.length}/${trip.maximumCompanions}',
+                ),
+                const SizedBox(
+                  width: 12,
+                ),
+                Icon(
+                  Icons.payments,
+                  color: Theme.of(context).primaryColor,
+                ),
+                const SizedBox(
+                  width: 4,
+                ),
+                Text('${trip.costOverall}/${trip.oneUserCost} руб.'),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -184,7 +190,14 @@ class DistanceToPoint extends StatelessWidget {
           width: 60,
           child: FutureBuilder(
             future: getDistance(fromPoint, toPoint),
-            builder: (_, snapshot) => Text('${snapshot.data} м.'),
+            builder: (_, snapshot) {
+              final distance = snapshot.data as int;
+
+              return distance > 1000 ?
+              Text('${(distance / 1000).toStringAsFixed(1)} км.') :
+              Text('${distance} м.');
+
+            },
           ),
         ),
       ],
