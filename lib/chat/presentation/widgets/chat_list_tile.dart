@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+import '../../../trip/presentation/widgets/widgets.dart';
 import '../../../trip/data/trip.dart';
 
 class ChatListTile extends StatelessWidget {
@@ -19,46 +21,38 @@ class ChatListTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              trip.title,
-              style: const TextStyle(fontSize: 19),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  trip.title,
+                  style: const TextStyle(fontSize: 19),
+                ),
+                Text(
+                  '${DateFormat('dd.MM.yy').format(trip.departureTime)}',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
             Row(
               children: [
                 Icon(
-                  Icons.schedule,
+                  MdiIcons.carArrowLeft,
                   color: Theme.of(context).primaryColor,
                 ),
-                const SizedBox(
-                  width: 4,
-                ),
-                Text('${DateFormat('HH:mm').format(trip.departureTime)} выезд'),
-                const SizedBox(
-                  width: 12,
-                ),
-                Icon(
-                  Icons.people,
-                  color: Theme.of(context).primaryColor,
-                ),
-                const SizedBox(
-                  width: 4,
-                ),
-                Text(
-                  '${trip.currentCompanions.length}/${trip.maximumCompanions}',
-                ),
-                const SizedBox(
-                  width: 12,
-                ),
-                Icon(
-                  Icons.payments,
-                  color: Theme.of(context).primaryColor,
-                ),
-                const SizedBox(
-                  width: 4,
-                ),
-                Text('${trip.costOverall}/${trip.oneUserCost} руб.'),
+                Text(trip.fromPointAddress),
               ],
             ),
+            Row(
+              children: [
+                const Icon(
+                  MdiIcons.carArrowRight,
+                  color: Color.fromRGBO(255, 174, 3, 100),
+                ),
+                Text(trip.toPointAddress),
+              ],
+            ),
+            TripMainInfoRow(trip: trip),
           ],
         ),
       ),

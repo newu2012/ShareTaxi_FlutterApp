@@ -6,8 +6,6 @@ import 'package:provider/provider.dart';
 import '../widgets/widgets.dart';
 import 'chat_page.dart';
 import '../../../common/data/fire_user_dao.dart';
-
-//  TODO Change to needed imports
 import '../../../trip/data/trip.dart';
 import '../../../trip/data/trip_dao.dart';
 import '../../../trip/presentation/widgets/trip_list_tile.dart';
@@ -120,7 +118,7 @@ class _ChatListPageState extends State<ChatListPage> {
 
   Widget _buildListItem(BuildContext context, Trip trip, bool active) {
     return GestureDetector(
-      child: active ? ChatListTile(trip) : TripListTile(trip),
+      child: active ? TripListTile(trip) : ChatListTile(trip),
       behavior: HitTestBehavior.translucent,
       onTap: () => pushNewScreen(
         context,
