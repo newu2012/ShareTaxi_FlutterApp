@@ -23,8 +23,9 @@ dependencies:
   latlong2: ^0.8.1
   flutter_polyline_points: ^1.0.0
   material_design_icons_flutter: ^5.0.6595
+  marquee: ^2.2.0
 
-  # additional packages, can be simply replaced by self-created widgets
+  # additional packages, can be replaced by self-created widgets
   persistent_bottom_nav_bar: ^4.0.2
   email_validator: ^2.0.1
 
@@ -33,7 +34,7 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^1.0.4
-  dart_code_metrics: ^4.8.1
+  dart_code_metrics: ^4.9.0
 
 flutter:
   uses-material-design: true
