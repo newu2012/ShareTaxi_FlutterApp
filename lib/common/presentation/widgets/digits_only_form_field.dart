@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../common/logic/validators.dart';
+import '../../logic/validators.dart';
 
 class DigitsOnlyFormField extends StatelessWidget {
   const DigitsOnlyFormField({
