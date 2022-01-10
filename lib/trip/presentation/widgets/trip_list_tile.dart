@@ -45,7 +45,9 @@ class TripListTile extends StatelessWidget {
               const SizedBox(
                 width: 4,
               ),
-              Text('${trip.currentCompanions}/${trip.maximumCompanions}'),
+              Text(
+                '${trip.currentCompanions.length}/${trip.maximumCompanions}',
+              ),
               const SizedBox(
                 width: 12,
               ),

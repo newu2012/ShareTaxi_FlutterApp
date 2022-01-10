@@ -25,6 +25,12 @@ class TripDao extends ChangeNotifier {
     return tripId;
   }
 
+  void updateTrip({required String id, required Trip trip}) async {
+    await collection.doc(id).update({
+      'currentCompanions': FieldValue.arrayUnion(trip.currentCompanions),
+    });
+  }
+
   Stream<QuerySnapshot> getTripStream() {
     return collection
         .where('departureTime', isGreaterThanOrEqualTo: DateTime.now())
