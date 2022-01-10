@@ -40,17 +40,12 @@ class _TripInfoListState extends State<TripInfoList> {
                     List<String>.from(_trip.currentCompanions);
                 newCompanions.add(_fireUserDao.userId()!);
                 newCompanions = newCompanions.toSet().toList();
-
                 final newTrip = Trip.fromTrip(
                   trip: _trip,
                   currentCompanions: newCompanions,
                 );
-                print(_trip.currentCompanions);
-                print(newTrip.currentCompanions);
-                print(newCompanions);
 
                 _tripDao.updateTrip(id: _trip.reference!.id, trip: newTrip);
-
                 Navigator.pushReplacementNamed(
                   context,
                   '/chat',
