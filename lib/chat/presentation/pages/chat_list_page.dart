@@ -18,7 +18,6 @@ class ChatListPage extends StatefulWidget {
 }
 
 class _ChatListPageState extends State<ChatListPage> {
-  final ScrollController _scrollController = ScrollController();
   late FireUserDao _fireUserDao;
   late TripDao _tripDao;
 
@@ -29,7 +28,7 @@ class _ChatListPageState extends State<ChatListPage> {
 
     return Scaffold(
       body: SafeArea(
-        child: Column(
+        child: ListView(
           children: [
             const SizedBox(
               height: 12,
@@ -42,8 +41,7 @@ class _ChatListPageState extends State<ChatListPage> {
   }
 
   Widget _getChatList(TripDao tripDao) {
-    return Expanded(
-      child: Padding(
+      return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: StreamBuilder<QuerySnapshot>(
           stream: tripDao.getTripsByUserId(_fireUserDao.userId()!),
@@ -60,7 +58,6 @@ class _ChatListPageState extends State<ChatListPage> {
             );
           },
         ),
-      ),
     );
   }
 
@@ -86,7 +83,7 @@ class _ChatListPageState extends State<ChatListPage> {
         const SizedBox(
           height: 12,
         ),
-        _buildList(activeTrips, true),
+        _buildTrips(activeTrips, true),
         const SizedBox(
           height: 16,
         ),
@@ -100,19 +97,15 @@ class _ChatListPageState extends State<ChatListPage> {
         const SizedBox(
           height: 12,
         ),
-        _buildList(inactiveTrips, false),
+        _buildTrips(inactiveTrips, false),
       ]);
 
     return widgetsToBuild;
   }
 
-  Widget _buildList(List<Trip> trips, bool active) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: trips.length,
-      controller: _scrollController,
-      physics: const BouncingScrollPhysics(),
-      itemBuilder: (context, i) => _buildListItem(context, trips[i], active),
+  Widget _buildTrips(List<Trip> trips, bool active) {
+    return Column(
+      children: trips.map((e) => _buildListItem(context, e, active)).toList(),
     );
   }
 
