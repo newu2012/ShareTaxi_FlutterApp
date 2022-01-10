@@ -36,10 +36,6 @@ class _TripListPageState extends State<TripListPage> {
               height: 4,
             ),
             const UserAddressesColumn(),
-            const Divider(
-              height: 8,
-              thickness: 2,
-            ),
             _getTripList(tripDao),
           ],
         ),
@@ -57,104 +53,33 @@ class _TripListPageState extends State<TripListPage> {
             if (!snapshot.hasData)
               return const Center(child: LinearProgressIndicator());
 
-            return _buildList(context, snapshot.data!.docs);
+            final trips =
+                snapshot.data!.docs.map((e) => Trip.fromSnapshot(e)).toList();
+            trips.sort((a, b) => a.departureTime.compareTo(b.departureTime));
+
+            return _buildList(trips);
           },
         ),
       ),
     );
   }
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {
-    snapshot!.sort((a, b) => Trip.fromSnapshot(a)
-        .departureTime
-        .compareTo(Trip.fromSnapshot(b).departureTime));
-    final tripsFromSnapshot =
-        snapshot.map((data) => _buildListItem(context, data)).toList();
-
-    return ListView.separated(
-      itemCount: tripsFromSnapshot.length,
+  Widget _buildList(List<Trip> trips) {
+    return ListView.builder(
+      itemCount: trips.length,
       controller: _scrollController,
       physics: const BouncingScrollPhysics(),
-      itemBuilder: (context1, i) => tripsFromSnapshot[i],
-      separatorBuilder: (context, index) => const Divider(),
+      itemBuilder: (context, i) => _buildListItem(context, trips[i]),
     );
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
-    final trip = Trip.fromSnapshot(snapshot);
-
+  Widget _buildListItem(BuildContext context, Trip trip) {
     return GestureDetector(
       child: TripListTile(trip),
       behavior: HitTestBehavior.translucent,
       onTap: () => pushNewScreen(
         context,
         screen: TripInfoPage(tripId: trip.reference!.id),
-      ),
-    );
-  }
-}
-
-class UserAddressesColumn extends StatelessWidget {
-  const UserAddressesColumn({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        children: [
-          SizedBox(
-            height: 32,
-            child: TextFormField(
-              readOnly: true,
-              initialValue: Provider.of<MapController>(context, listen: false)
-                  .fromPointAddress,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.only(left: 15.0),
-                prefixIcon: SizedBox(
-                  width: 64,
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.location_on,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      const Text('От'),
-                    ],
-                  ),
-                ),
-                prefixIconColor: const Color.fromARGB(255, 111, 108, 217),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 32,
-            child: TextFormField(
-              readOnly: true,
-              initialValue: Provider.of<MapController>(context, listen: false)
-                  .toPointAddress,
-              decoration: InputDecoration(
-                hintText: 'Куда поедем',
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.only(left: 15.0),
-                prefixIcon: SizedBox(
-                  width: 64,
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.location_on,
-                        color: Color.fromRGBO(255, 174, 3, 100),
-                      ),
-                      const Text('До'),
-                    ],
-                  ),
-                ),
-                prefixIconColor: const Color.fromARGB(255, 255, 174, 3),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
