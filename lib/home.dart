@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import 'app.dart';
+import 'chat/presentation/pages/chat_list_page.dart';
 import 'common/presentation/pages/unknown_page.dart';
 import 'trip/presentation/pages/pages.dart';
 
@@ -17,7 +18,7 @@ class Home extends StatelessWidget {
       controller: _tabController,
       screens: [
         const MainPage(),
-        const TripListPage(), // TODO Change to const ChatsListPage(),
+        const ChatListPage(),
         const UnknownPage(),
       ],
       items: _navBarsItems(context),
