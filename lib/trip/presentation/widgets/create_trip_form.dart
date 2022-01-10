@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../logic/map_controller.dart';
+import '../../../common/presentation/widgets/widgets.dart';
 import 'widgets.dart';
 import '../../data/trip_dao.dart';
 import '../../../common/data/fire_user_dao.dart';
