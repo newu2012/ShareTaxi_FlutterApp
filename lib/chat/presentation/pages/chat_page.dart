@@ -103,27 +103,22 @@ class ChatPageState extends State<ChatPage> {
           if (!snapshot.hasData)
             return const Center(child: CircularProgressIndicator());
 
-          return _buildList(snapshot.data!.docs);
+          return _messageList(snapshot.data!.docs);
         },
       ),
     );
   }
 
-  Widget _buildList(List<DocumentSnapshot>? snapshot) {
+  Widget _messageList(List<DocumentSnapshot>? snapshot) {
+    snapshot!.sort((a, b) =>
+        Message.fromSnapshot(a).date.compareTo(Message.fromSnapshot(b).date));
+    snapshot.map((data) => _buildListItem(data)).toList();
+
     return ListView(
       controller: _scrollController,
       physics: const ClampingScrollPhysics(),
-      children: _messageList(snapshot),
+      children: snapshot.map((data) => _buildListItem(data)).toList(),
     );
-  }
-
-  List<Widget> _messageList(
-    List<DocumentSnapshot>? snapshot,
-  ) {
-    snapshot!.sort((a, b) =>
-        Message.fromSnapshot(a).date.compareTo(Message.fromSnapshot(b).date));
-
-    return snapshot.map((data) => _buildListItem(data)).toList();
   }
 
   Widget _buildListItem(DocumentSnapshot snapshot) {
