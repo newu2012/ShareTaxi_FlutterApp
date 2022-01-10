@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/trip.dart';
@@ -52,8 +51,6 @@ class CreateTripButton extends StatelessWidget {
               title: _titleController.text,
               fromPointAddress: _fromPointAddress,
               toPointAddress: _toPointAddress,
-              fromPoint: const GeoPoint(56.84, 60.65),
-              toPoint: const GeoPoint(56.85, 60.6),
               costOverall: int.parse(_costController.text),
               departureTime: _departureTime,
               currentCompanions: [

@@ -6,8 +6,6 @@ class Trip {
   final String title;
   final String fromPointAddress;
   final String toPointAddress;
-  final GeoPoint fromPoint;
-  final GeoPoint toPoint;
   final List<String> currentCompanions;
   final int maximumCompanions;
   final int costOverall;
@@ -23,8 +21,6 @@ class Trip {
     required this.title,
     required this.fromPointAddress,
     required this.toPointAddress,
-    required this.fromPoint,
-    required this.toPoint,
     required this.currentCompanions,
     required this.maximumCompanions,
     required this.costOverall,
@@ -38,8 +34,6 @@ class Trip {
     String? title,
     String? fromPointAddress,
     String? toPointAddress,
-    GeoPoint? fromPoint,
-    GeoPoint? toPoint,
     List<String>? currentCompanions,
     int? maximumCompanions,
     int? costOverall,
@@ -49,8 +43,6 @@ class Trip {
         title = title ?? trip.title,
         fromPointAddress = fromPointAddress ?? trip.fromPointAddress,
         toPointAddress = toPointAddress ?? trip.toPointAddress,
-        fromPoint = fromPoint ?? trip.fromPoint,
-        toPoint = toPoint ?? trip.toPoint,
         currentCompanions = currentCompanions ?? trip.currentCompanions,
         maximumCompanions = maximumCompanions ?? trip.maximumCompanions,
         costOverall = costOverall ?? trip.costOverall,
@@ -62,8 +54,6 @@ class Trip {
         title: json['title'] as String,
         fromPointAddress: json['fromPointAddress'] as String,
         toPointAddress: json['toPointAddress'] as String,
-        fromPoint: json['fromPoint'] as GeoPoint,
-        toPoint: json['toPoint'] as GeoPoint,
         currentCompanions: List.from(json['currentCompanions']),
         maximumCompanions: json['maximumCompanions'] as int,
         costOverall: json['costOverall'] as int,
@@ -75,8 +65,6 @@ class Trip {
         'title': title,
         'fromPointAddress': fromPointAddress,
         'toPointAddress': toPointAddress,
-        'fromPoint': fromPoint,
-        'toPoint': toPoint,
         'currentCompanions': currentCompanions,
         'maximumCompanions': maximumCompanions,
         'costOverall': costOverall,
