@@ -133,7 +133,7 @@ packages:
       name: dart_code_metrics
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.8.1"
+    version: "4.9.0"
   dart_style:
     dependency: transitive
     description:
@@ -145,6 +145,13 @@ packages:
     dependency: "direct main"
     description:
       name: email_validator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
+  fading_edge_scrollview:
+    dependency: transitive
+    description:
+      name: fading_edge_scrollview
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
@@ -380,6 +387,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  marquee:
+    dependency: "direct main"
+    description:
+      name: marquee
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.0"
   matcher:
     dependency: transitive
     description:
