@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/google_map_widget.dart';
+import '../widgets/widgets.dart';
 
 class TripInfoPage extends StatelessWidget {
   const TripInfoPage({Key? key, required this.tripId}) : super(key: key);
@@ -23,17 +23,7 @@ class TripInfoPage extends StatelessWidget {
                 child: GoogleMapWidget(),
                 height: 170,
               ),
-
-              ElevatedButton(
-                onPressed: () => Navigator.pushReplacementNamed(
-                    context,
-                    '/chat',
-                    arguments: tripId,
-                  ),
-                child: const Text(
-                  'Присоединиться к поездке',
-                ),
-              ),
+              TripInfoList(tripId: tripId),
             ],
           ),
         ),
