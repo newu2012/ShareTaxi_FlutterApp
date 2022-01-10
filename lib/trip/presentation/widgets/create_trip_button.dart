@@ -56,7 +56,9 @@ class CreateTripButton extends StatelessWidget {
               toPoint: const GeoPoint(56.85, 60.6),
               costOverall: int.parse(_costController.text),
               departureTime: _departureTime,
-              currentCompanions: 1,
+              currentCompanions: [
+                _fireUserDao.userId()!,
+              ],
               maximumCompanions: _maximumCompanions,
             ),
           );

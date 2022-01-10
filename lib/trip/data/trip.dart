@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:math';
 
 class Trip {
   final String? creatorId;
@@ -7,10 +8,12 @@ class Trip {
   final String toPointAddress;
   final GeoPoint fromPoint;
   final GeoPoint toPoint;
-  final int currentCompanions;
+  final List<String> currentCompanions;
   final int maximumCompanions;
   final int costOverall;
-  int get oneUserCost => (costOverall / (currentCompanions + 1)).round();
+  int get oneUserCost =>
+      (costOverall / min((currentCompanions.length + 1), maximumCompanions))
+          .round();
   final DateTime departureTime;
 
   DocumentReference? reference;
@@ -29,6 +32,31 @@ class Trip {
     this.reference,
   });
 
+  Trip.fromTrip({
+    required Trip trip,
+    String? creatorId,
+    String? title,
+    String? fromPointAddress,
+    String? toPointAddress,
+    GeoPoint? fromPoint,
+    GeoPoint? toPoint,
+    List<String>? currentCompanions,
+    int? maximumCompanions,
+    int? costOverall,
+    DateTime? departureTime,
+    DocumentReference? reference,
+  })  : creatorId = creatorId ?? trip.creatorId,
+        title = title ?? trip.title,
+        fromPointAddress = fromPointAddress ?? trip.fromPointAddress,
+        toPointAddress = toPointAddress ?? trip.toPointAddress,
+        fromPoint = fromPoint ?? trip.fromPoint,
+        toPoint = toPoint ?? trip.toPoint,
+        currentCompanions = currentCompanions ?? trip.currentCompanions,
+        maximumCompanions = maximumCompanions ?? trip.maximumCompanions,
+        costOverall = costOverall ?? trip.costOverall,
+        departureTime = departureTime ?? trip.departureTime,
+        reference = reference ?? trip.reference;
+
   factory Trip.fromJson(Map<dynamic, dynamic> json) => Trip(
         creatorId: json['creatorId'] as String,
         title: json['title'] as String,
@@ -36,7 +64,7 @@ class Trip {
         toPointAddress: json['toPointAddress'] as String,
         fromPoint: json['fromPoint'] as GeoPoint,
         toPoint: json['toPoint'] as GeoPoint,
-        currentCompanions: json['currentCompanions'] as int,
+        currentCompanions: List.from(json['currentCompanions']),
         maximumCompanions: json['maximumCompanions'] as int,
         costOverall: json['costOverall'] as int,
         departureTime: (json['departureTime'] as Timestamp).toDate(),
