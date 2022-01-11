@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +24,7 @@ class _TripListPageState extends State<TripListPage> {
   @override
   Widget build(BuildContext context) {
     final tripDao = Provider.of<TripDao>(context, listen: false);
+    final mapController = Provider.of<MapController>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -36,14 +39,14 @@ class _TripListPageState extends State<TripListPage> {
               height: 4,
             ),
             const UserAddressesColumn(),
-            _getTripList(tripDao),
+            _getTripList(tripDao, mapController),
           ],
         ),
       ),
     );
   }
 
-  Widget _getTripList(TripDao tripDao) {
+  Widget _getTripList(TripDao tripDao, MapController mapController) {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -55,13 +58,44 @@ class _TripListPageState extends State<TripListPage> {
 
             final trips =
                 snapshot.data!.docs.map((e) => Trip.fromSnapshot(e)).toList();
-            trips.sort((a, b) => a.departureTime.compareTo(b.departureTime));
 
-            return _buildList(trips);
+            return FutureBuilder(
+              future: _sortTripsByDistance(trips, mapController),
+              builder: (context, snapshot) => snapshot.hasData
+                  ? _buildList(snapshot.data! as List<Trip>)
+                  : const CircularProgressIndicator(),
+            );
           },
         ),
       ),
     );
+  }
+
+  Future<List<Trip>> _sortTripsByDistance(
+    List<Trip> trips,
+    MapController mapController,
+  ) async {
+    final tripsWithDistance = await Future.wait(trips.map((e) async {
+      return [
+        e,
+        await getDistance(
+          mapController.toPointAddress,
+          e.toPointAddress,
+        ),
+        await getDistance(
+          mapController.fromPointAddress,
+          e.fromPointAddress,
+        ),
+      ];
+    }));
+
+    tripsWithDistance.sort((a, b) {
+      return ((a[1] as int) + (a[2] as int)) - ((b[1] as int) + (b[2] as int));
+    });
+    final tripsSorted =
+        List<Trip>.from(tripsWithDistance.map((e) => e.first).toList());
+
+    return tripsSorted;
   }
 
   Widget _buildList(List<Trip> trips) {
@@ -82,5 +116,21 @@ class _TripListPageState extends State<TripListPage> {
         screen: TripInfoPage(tripId: trip.reference!.id),
       ),
     );
+  }
+
+  Future<int> getDistance(String fromAddress, String toAddress) async {
+    final fromLocation =
+        (await GeocodingPlatform.instance.locationFromAddress(fromAddress))
+            .map((e) => LatLng(e.latitude, e.longitude))
+            .first;
+    final toLocation =
+        (await GeocodingPlatform.instance.locationFromAddress(toAddress))
+            .map((e) => LatLng(e.latitude, e.longitude))
+            .first;
+
+    final distance =
+        const Distance().distance(fromLocation, toLocation).toInt();
+
+    return distance;
   }
 }
