@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +11,9 @@ import 'package:provider/provider.dart';
 import '../../logic/map_controller.dart';
 
 class GoogleMapWidget extends StatefulWidget {
-  const GoogleMapWidget({Key? key}) : super(key: key);
+  const GoogleMapWidget({Key? key, this.tripAddresses}) : super(key: key);
+
+  final List<String>? tripAddresses;
 
   @override
   _GoogleMapWidgetState createState() => _GoogleMapWidgetState();
@@ -20,12 +23,12 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   late GoogleMapController _mapController;
   var userDeniedGps = false;
 
-  late Set<Marker> _markers;
+  Set<Marker> _markers = {};
 
   void _onMapCreated(GoogleMapController controller) {
     setState(() {
       _mapController = controller;
-      _markers = Provider.of<MapController>(context, listen: false).markers;
+      setMarkers().then((value) => _markers = value);
       _moveCamera();
     });
   }
@@ -36,8 +39,6 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
       child: FutureBuilder(
         future: _getCurrentLocation(),
         builder: (context, AsyncSnapshot<Position?> position) {
-          _markers = Provider.of<MapController>(context, listen: false).markers;
-          
           return GoogleMap(
             onMapCreated: _onMapCreated,
             markers: _markers,
@@ -61,9 +62,54 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
     );
   }
 
+  Future<Set<Marker>> setMarkers() async {
+    final Set<Marker> tripMarkers = widget.tripAddresses != null
+        ? await createMarkersFromAddresses(widget.tripAddresses!)
+        : {};
+    print(
+      'Trip markers: ${tripMarkers.map((e) => '${e.markerId} ${e.position}')}',
+    );
+    final userMarkers =
+        Provider.of<MapController>(context, listen: false).markers;
+    print(
+      'User markers: ${userMarkers.map((e) => '${e.markerId} ${e.position}')}',
+    );
+    final allMarkers = Set<Marker>.from(userMarkers)..addAll(tripMarkers);
+    print(
+      'All markers: ${allMarkers.map((e) => '${e.markerId} ${e.position}')}',
+    );
+    _markers = allMarkers;
+
+    return _markers;
+  }
+
+  Future<Set<Marker>> createMarkersFromAddresses(List<String> addresses) async {
+    final Set<Marker> markers = (await Future.wait(addresses.map((e) async {
+      return _createMarker(
+        (await GeocodingPlatform.instance.locationFromAddress(e))
+            .map((e) => LatLng(e.latitude, e.longitude))
+            .first,
+        e,
+      );
+    })))
+        .toSet();
+
+    return markers;
+  }
+
+  Marker _createMarker(LatLng position, String pointName) {
+    return Marker(
+      markerId: MarkerId(pointName),
+      position: position,
+      icon: BitmapDescriptor.defaultMarker,
+    );
+  }
+
   Future<Position?> _getCurrentLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
+
+    await setMarkers();
 
     if (userDeniedGps) return Future.error('User denied GPS');
 
@@ -105,23 +151,23 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   void _moveCamera() {
     try {
       if (_markers.isEmpty) return;
-      setState(() {
-        _markers = Provider.of<MapController>(context, listen: false).markers;
-      });
 
-      final target = _markers.length == 2
+      final target = _markers.length > 1
           ? LatLng(
-              (_markers.first.position.latitude +
-                      _markers.last.position.latitude) /
-                  2,
-              (_markers.first.position.longitude +
-                      _markers.last.position.longitude) /
-                  2,
+              (_markers
+                      .map((e) => e.position.latitude)
+                      .reduce((a, b) => a + b)) /
+                  _markers.length,
+              (_markers
+                      .map((e) => e.position.longitude)
+                      .reduce((a, b) => a + b)) /
+                  _markers.length,
             )
           : _markers.first.position;
 
       var zoomLevel = 12.0;
-      if (_markers.length == 2) {
+
+      if (_markers.length > 1) {
         final radius = GeolocatorPlatform.instance.distanceBetween(
           _markers.first.position.latitude,
           _markers.first.position.longitude,
