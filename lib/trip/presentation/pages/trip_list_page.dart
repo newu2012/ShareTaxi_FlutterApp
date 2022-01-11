@@ -5,9 +5,11 @@ import 'package:latlong2/latlong.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../../../chat/presentation/pages/chat_page.dart';
 import 'pages.dart';
 import '../../logic/map_controller.dart';
 import '../../data/trip_dao.dart';
+import '../../../common/data/fire_user_dao.dart';
 import '../widgets/widgets.dart';
 import '../../data/trip.dart';
 
@@ -23,8 +25,8 @@ class _TripListPageState extends State<TripListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final tripDao = Provider.of<TripDao>(context, listen: false);
-    final mapController = Provider.of<MapController>(context, listen: false);
+    final _tripDao = Provider.of<TripDao>(context, listen: false);
+    final _mapController = Provider.of<MapController>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -39,7 +41,7 @@ class _TripListPageState extends State<TripListPage> {
               height: 4,
             ),
             const UserAddressesColumn(),
-            _getTripList(tripDao, mapController),
+            _getTripList(_tripDao, _mapController),
           ],
         ),
       ),
@@ -108,12 +110,16 @@ class _TripListPageState extends State<TripListPage> {
   }
 
   Widget _buildListItem(BuildContext context, Trip trip) {
+    final _fireUserDao = Provider.of<FireUserDao>(context, listen: false);
+
     return GestureDetector(
       child: TripListTile(trip),
       behavior: HitTestBehavior.translucent,
       onTap: () => pushNewScreen(
         context,
-        screen: TripInfoPage(tripId: trip.reference!.id),
+        screen: trip.currentCompanions.contains(_fireUserDao.userId())
+            ? ChatPage(tripId: trip.reference!.id)
+            : TripInfoPage(tripId: trip.reference!.id),
       ),
     );
   }
