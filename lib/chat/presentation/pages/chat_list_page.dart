@@ -51,7 +51,7 @@ class _ChatListPageState extends State<ChatListPage> {
 
             final trips =
                 snapshot.data!.docs.map((e) => Trip.fromSnapshot(e)).toList();
-            trips.sort((a, b) => a.departureTime.compareTo(b.departureTime));
+            trips.sort((a, b) => b.departureTime.compareTo(a.departureTime));
 
             return Column(
               children: _widgetsToBuild(trips),
