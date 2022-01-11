@@ -19,7 +19,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   late GoogleMapController mapController;
-  late bool userDeniedGps;
+  var userDeniedGps = false;
 
   late String fromPointAddress;
   late String toPointAddress;
