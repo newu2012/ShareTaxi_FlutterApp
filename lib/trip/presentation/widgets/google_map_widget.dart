@@ -18,7 +18,7 @@ class GoogleMapWidget extends StatefulWidget {
 
 class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   late GoogleMapController _mapController;
-  late bool userDeniedGps;
+  var userDeniedGps = false;
 
   late Set<Marker> _markers;
 
