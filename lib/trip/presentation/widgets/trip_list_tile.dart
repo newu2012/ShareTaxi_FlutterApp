@@ -45,13 +45,9 @@ Future<int> getDistance(String fromAddress, String toAddress) async {
           .map((e) => LatLng(e.latitude, e.longitude))
           .first;
 
-  final distance = (_calculateMeterDistance(fromLocation, toLocation)).toInt();
+  final distance = const Distance()
+      .distance(fromLocation, toLocation)
+      .toInt();
 
   return distance;
-}
-
-double _calculateMeterDistance(LatLng p1, LatLng p2) {
-  const distance = Distance();
-
-  return distance(p1, p2);
 }
