@@ -18,11 +18,12 @@ dependencies:
   firebase_auth: ^3.3.5
   firebase_storage: ^10.2.5
   google_maps_flutter: ^2.1.1
-  geolocator: ^8.0.1
-  geocoding: ^2.0.1
+  geolocator: ^8.0.3
+  geocoding: ^2.0.2
   latlong2: ^0.8.1
   flutter_polyline_points: ^1.0.0
   material_design_icons_flutter: ^5.0.6595
+  http: ^0.13.4
 
   # additional packages, can be replaced by self-created widgets
   persistent_bottom_nav_bar: ^4.0.2
@@ -33,7 +34,7 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^1.0.4
-  dart_code_metrics: ^4.9.0
+  dart_code_metrics: ^4.9.1
 
 flutter:
   uses-material-design: true
