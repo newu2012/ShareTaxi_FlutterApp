@@ -35,7 +35,7 @@ class LogInButton extends StatelessWidget {
               if (value != null)
                 {
                   ScaffoldMessenger.of(context)..removeCurrentMaterialBanner(),
-                  Navigator.pushReplacementNamed(context, '/'),
+                  Navigator.pop(context),
                 },
             },
           )
