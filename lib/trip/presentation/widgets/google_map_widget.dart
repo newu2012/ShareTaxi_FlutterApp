@@ -66,18 +66,9 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
     final Set<Marker> tripMarkers = widget.tripAddresses != null
         ? await createMarkersFromAddresses(widget.tripAddresses!)
         : {};
-    print(
-      'Trip markers: ${tripMarkers.map((e) => '${e.markerId} ${e.position}')}',
-    );
     final userMarkers =
         Provider.of<MapController>(context, listen: false).markers;
-    print(
-      'User markers: ${userMarkers.map((e) => '${e.markerId} ${e.position}')}',
-    );
     final allMarkers = Set<Marker>.from(userMarkers)..addAll(tripMarkers);
-    print(
-      'All markers: ${allMarkers.map((e) => '${e.markerId} ${e.position}')}',
-    );
     _markers = allMarkers;
 
     return _markers;
@@ -168,14 +159,13 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
       var zoomLevel = 12.0;
 
       if (_markers.length > 1) {
-        final radius = GeolocatorPlatform.instance.distanceBetween(
-          _markers.first.position.latitude,
-          _markers.first.position.longitude,
-          _markers.last.position.latitude,
-          _markers.last.position.longitude,
-        );
-        final scale = radius / 500;
-        zoomLevel = (16 - log(scale * 1.5) / log(2)) - 1;
+        try {
+          final scale = getMapRadiusFromMarkers() / 500;
+          zoomLevel = (16 - log(scale * 1.5) / log(2)) - 1;
+          if (zoomLevel == double.infinity) zoomLevel = 12.0;
+        } on Exception catch (e) {
+          print(e);
+        }
       }
 
       _mapController
@@ -186,5 +176,26 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
     } on Exception catch (e) {
       print(e);
     }
+  }
+
+  double getMapRadiusFromMarkers() {
+    final markers = _markers.toList();
+    var radius = GeolocatorPlatform.instance.distanceBetween(
+      markers.first.position.latitude,
+      markers.first.position.longitude,
+      markers[1].position.latitude,
+      markers[1].position.longitude,
+    );
+
+    if (_markers.first.position.latitude != _markers.last.position.latitude ||
+        _markers.first.position.longitude != _markers.last.position.longitude)
+      radius = GeolocatorPlatform.instance.distanceBetween(
+        markers.first.position.latitude,
+        markers.first.position.longitude,
+        markers.last.position.latitude,
+        markers.last.position.longitude,
+      );
+
+    return radius;
   }
 }
