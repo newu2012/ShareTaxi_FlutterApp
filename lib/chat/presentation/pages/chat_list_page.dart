@@ -41,23 +41,23 @@ class _ChatListPageState extends State<ChatListPage> {
   }
 
   Widget _getChatList(TripDao tripDao) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: StreamBuilder<QuerySnapshot>(
-          stream: tripDao.getTripsByUserId(_fireUserDao.userId()!),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData)
-              return const Center(child: LinearProgressIndicator());
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: StreamBuilder<QuerySnapshot>(
+        stream: tripDao.getTripsByUserId(_fireUserDao.userId()!),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return const Center(child: LinearProgressIndicator());
 
-            final trips =
-                snapshot.data!.docs.map((e) => Trip.fromSnapshot(e)).toList();
-            trips.sort((a, b) => b.departureTime.compareTo(a.departureTime));
+          final trips =
+              snapshot.data!.docs.map((e) => Trip.fromSnapshot(e)).toList();
+          trips.sort((a, b) => b.departureTime.compareTo(a.departureTime));
 
-            return Column(
-              children: _widgetsToBuild(trips),
-            );
-          },
-        ),
+          return Column(
+            children: _widgetsToBuild(trips),
+          );
+        },
+      ),
     );
   }
 
@@ -99,6 +99,14 @@ class _ChatListPageState extends State<ChatListPage> {
         ),
         _buildTrips(inactiveTrips, false),
       ]);
+
+    if (activeTrips.isEmpty && inactiveTrips.isEmpty)
+      widgetsToBuild.add(
+        const Text(
+          'Поездок ещё не было',
+          style: textStyle,
+        ),
+      );
 
     return widgetsToBuild;
   }
