@@ -36,21 +36,42 @@ class _TripInfoListState extends State<TripInfoList> {
             Text(_trip.title),
             ElevatedButton(
               onPressed: () {
-                var newCompanions =
-                    List<String>.from(_trip.currentCompanions);
-                newCompanions.add(_fireUserDao.userId()!);
-                newCompanions = newCompanions.toSet().toList();
-                final newTrip = Trip.fromTrip(
-                  trip: _trip,
-                  currentCompanions: newCompanions,
-                );
+                if (_trip.currentCompanions.length < _trip.maximumCompanions) {
+                  var newCompanions =
+                      List<String>.from(_trip.currentCompanions);
+                  newCompanions.add(_fireUserDao.userId()!);
+                  newCompanions = newCompanions.toSet().toList();
+                  final newTrip = Trip.fromTrip(
+                    trip: _trip,
+                    currentCompanions: newCompanions,
+                  );
 
-                _tripDao.updateTrip(id: _trip.reference!.id, trip: newTrip);
-                Navigator.pushReplacementNamed(
-                  context,
-                  '/chat',
-                  arguments: widget.tripId,
-                );
+                  _tripDao.updateTrip(id: _trip.reference!.id, trip: newTrip);
+                  Navigator.pushReplacementNamed(
+                    context,
+                    '/chat',
+                    arguments: widget.tripId,
+                  );
+                } else {
+                  ScaffoldMessenger.of(context)
+                    ..removeCurrentMaterialBanner()
+                    ..showMaterialBanner(
+                      MaterialBanner(
+                        leading: const Icon(Icons.info),
+                        content: const Text(
+                          'В поездке уже максимальное количество участников',
+                        ),
+                        backgroundColor: Colors.amber,
+                        actions: <Widget>[
+                          IconButton(
+                            onPressed: () => ScaffoldMessenger.of(context)
+                                .hideCurrentMaterialBanner(),
+                            icon: const Icon(Icons.close),
+                          ),
+                        ],
+                      ),
+                    );
+                }
               },
               child: const Text(
                 'Присоединиться к поездке',
