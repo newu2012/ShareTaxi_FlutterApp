@@ -54,21 +54,12 @@ class _TripInfoListState extends State<TripInfoList> {
                   );
                 } else {
                   ScaffoldMessenger.of(context)
-                    ..removeCurrentMaterialBanner()
-                    ..showMaterialBanner(
-                      MaterialBanner(
-                        leading: const Icon(Icons.info),
-                        content: const Text(
+                    ..showSnackBar(
+                      const SnackBar(
+                        content: Text(
                           'В поездке уже максимальное количество участников',
                         ),
                         backgroundColor: Colors.amber,
-                        actions: <Widget>[
-                          IconButton(
-                            onPressed: () => ScaffoldMessenger.of(context)
-                                .hideCurrentMaterialBanner(),
-                            icon: const Icon(Icons.close),
-                          ),
-                        ],
                       ),
                     );
                 }
