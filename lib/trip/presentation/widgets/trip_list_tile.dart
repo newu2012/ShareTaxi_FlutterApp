@@ -22,9 +22,13 @@ class TripListTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              trip.title,
-              style: const TextStyle(fontSize: 19),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Text(
+                trip.title,
+                style: const TextStyle(fontSize: 19),
+                overflow: TextOverflow.fade,
+              ),
             ),
             DistanceAndAddressesRow(trip: trip),
             TripMainInfoRow(trip: trip),
@@ -45,9 +49,7 @@ Future<int> getDistance(String fromAddress, String toAddress) async {
           .map((e) => LatLng(e.latitude, e.longitude))
           .first;
 
-  final distance = const Distance()
-      .distance(fromLocation, toLocation)
-      .toInt();
+  final distance = const Distance().distance(fromLocation, toLocation).toInt();
 
   return distance;
 }

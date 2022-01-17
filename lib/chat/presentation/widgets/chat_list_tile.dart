@@ -24,9 +24,17 @@ class ChatListTile extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  trip.title,
-                  style: const TextStyle(fontSize: 19),
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      trip.title,
+                      style: const TextStyle(fontSize: 19),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 8,
                 ),
                 Text(
                   '${DateFormat('dd.MM.yy').format(trip.departureTime)}',
@@ -40,7 +48,14 @@ class ChatListTile extends StatelessWidget {
                   MdiIcons.carArrowLeft,
                   color: Theme.of(context).primaryColor,
                 ),
-                Text(trip.fromPointAddress),
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      trip.fromPointAddress,
+                    ),
+                  ),
+                ),
               ],
             ),
             Row(
@@ -49,7 +64,14 @@ class ChatListTile extends StatelessWidget {
                   MdiIcons.carArrowRight,
                   color: Color.fromRGBO(255, 174, 3, 100),
                 ),
-                Text(trip.toPointAddress),
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      trip.toPointAddress,
+                    ),
+                  ),
+                ),
               ],
             ),
             TripMainInfoRow(trip: trip),
