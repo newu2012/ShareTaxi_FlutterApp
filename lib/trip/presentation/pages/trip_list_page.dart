@@ -58,6 +58,15 @@ class _TripListPageState extends State<TripListPage> {
             if (!snapshot.hasData)
               return const Center(child: LinearProgressIndicator());
 
+            if (snapshot.data!.size == 0)
+              return Center(
+                child: Text(
+                  'Активных похожих поездок не нашлось.',
+                  style: Theme.of(context).textTheme.headline4,
+                    textAlign: TextAlign.center,
+                ),
+              );
+
             final trips =
                 snapshot.data!.docs.map((e) => Trip.fromSnapshot(e)).toList();
 
