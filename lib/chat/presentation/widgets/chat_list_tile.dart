@@ -42,48 +42,61 @@ class ChatListTile extends StatelessWidget {
                 ),
               ],
             ),
-            Row(
-              children: [
-                Icon(
-                  MdiIcons.carArrowLeft,
-                  color: Theme.of(context).primaryColor,
-                ),
-                const SizedBox(
-                  width: 4,
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Text(
-                      trip.fromPointAddress,
-                    ),
-                  ),
-                ),
-              ],
+            AddressRowWithoutDistance(
+              trip: trip,
+              fromPoint: true,
             ),
-            Row(
-              children: [
-                const Icon(
-                  MdiIcons.carArrowRight,
-                  color: Color.fromRGBO(255, 174, 3, 100),
-                ),
-                const SizedBox(
-                  width: 4,
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Text(
-                      trip.toPointAddress,
-                    ),
-                  ),
-                ),
-              ],
+            AddressRowWithoutDistance(
+              trip: trip,
+              fromPoint: false,
             ),
             TripMainInfoRow(trip: trip),
           ],
         ),
       ),
+    );
+  }
+}
+
+class AddressRowWithoutDistance extends StatelessWidget {
+  const AddressRowWithoutDistance({
+    Key? key,
+    required this.trip,
+    required this.fromPoint,
+  }) : super(key: key);
+  final Trip trip;
+  final bool fromPoint;
+
+  @override
+  Widget build(BuildContext context) {
+    final icon = fromPoint
+        ? Icon(
+            MdiIcons.carArrowLeft,
+            color: Theme.of(context).primaryColor,
+          )
+        : const Icon(
+            MdiIcons.carArrowRight,
+            color: Color.fromRGBO(255, 174, 3, 100),
+          );
+    final text = fromPoint ? trip.fromPointAddress : trip.toPointAddress;
+
+    return _buildRow(icon, text);
+  }
+
+  Widget _buildRow(Icon icon, String text) {
+    return Row(
+      children: [
+        icon,
+        const SizedBox(
+          width: 4,
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Text(text),
+          ),
+        ),
+      ],
     );
   }
 }
