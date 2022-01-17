@@ -309,9 +309,19 @@ class _MainPageState extends State<MainPage> {
   }
 
   void searchAndNavigate(String address, String pointName) async {
-    final locations =
-        (await GeocodingPlatform.instance.locationFromAddress(address))
-            .map((e) => LatLng(e.latitude, e.longitude));
+    var locations;
+    try {
+      locations =
+          (await GeocodingPlatform.instance.locationFromAddress(address))
+              .map((e) => LatLng(e.latitude, e.longitude));
+    } on Exception catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Не удалось найти адрес')),
+      );
+
+      return;
+    }
 
     setState(() {
       if (pointName == 'fromPoint') {
