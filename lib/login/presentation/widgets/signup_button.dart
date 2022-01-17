@@ -41,7 +41,7 @@ class SignUpButton extends StatelessWidget {
             _passController.text.trim(),
           );
           userId.then((value) {
-            Navigator.pushReplacementNamed(context, '/login');
+            Navigator.pop(context);
           }).catchError(
             (e) {
               ScaffoldMessenger.of(context)
