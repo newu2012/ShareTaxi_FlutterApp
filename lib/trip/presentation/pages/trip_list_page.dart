@@ -63,7 +63,7 @@ class _TripListPageState extends State<TripListPage> {
                 child: Text(
                   'Активных похожих поездок не нашлось.',
                   style: Theme.of(context).textTheme.headline4,
-                    textAlign: TextAlign.center,
+                  textAlign: TextAlign.center,
                 ),
               );
 
@@ -74,7 +74,7 @@ class _TripListPageState extends State<TripListPage> {
               future: _sortTripsByDistance(trips, mapController),
               builder: (context, snapshot) => snapshot.hasData
                   ? _buildList(snapshot.data! as List<Trip>)
-                  : const CircularProgressIndicator(),
+                  : const Center(child: LinearProgressIndicator()),
             );
           },
         ),
