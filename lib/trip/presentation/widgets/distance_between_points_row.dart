@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as google;
+import 'package:latlong2/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-import 'widgets.dart';
-
 class DistanceBetweenPointsRow extends StatelessWidget {
-  final String fromPoint;
-  final String toPoint;
+  final google.LatLng fromPoint;
+  final google.LatLng toPoint;
   final bool fromUser;
 
   const DistanceBetweenPointsRow({
@@ -34,17 +34,18 @@ class DistanceBetweenPointsRow extends StatelessWidget {
         const SizedBox(
           width: 4,
         ),
-        FutureBuilder(
-          future: getDistance(fromPoint, toPoint),
-          builder: (_, snapshot) {
-            if (!snapshot.hasData) return const Text('...');
-            final distance = snapshot.data as int;
+        Builder(builder: (context) {
+          final distance = const Distance()
+              .distance(
+                LatLng(fromPoint.latitude, fromPoint.longitude),
+                LatLng(toPoint.latitude, toPoint.longitude),
+              )
+              .toInt();
 
-            return distance > 1000
-                ? Text('${(distance / 1000).toStringAsFixed(1)} км.')
-                : Text('${distance} м.');
-          },
-        ),
+          return distance > 1000
+              ? Text('${(distance / 1000).toStringAsFixed(1)} км.')
+              : Text('${distance} м.');
+        }),
       ],
     );
   }

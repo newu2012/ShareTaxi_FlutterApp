@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../data/trip.dart';
 import '../../../common/data/fire_user_dao.dart';
@@ -41,7 +43,7 @@ class CreateTripButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
+      onPressed: () async {
         Future<String> tripId;
 
         if (_formKey.currentState!.validate()) {
@@ -50,7 +52,13 @@ class CreateTripButton extends StatelessWidget {
               creatorId: _fireUserDao.userId(),
               title: _titleController.text,
               fromPointAddress: _fromPointAddress,
+              fromPointLatLng: (await GeocodingPlatform.instance
+                  .locationFromAddress(_fromPointAddress))
+                  .map((e) => LatLng(e.latitude, e.longitude)).first ,
               toPointAddress: _toPointAddress,
+              toPointLatLng: (await GeocodingPlatform.instance
+                  .locationFromAddress(_toPointAddress))
+                  .map((e) => LatLng(e.latitude, e.longitude)).first ,
               costOverall: int.parse(_costController.text),
               departureTime: _departureTime,
               currentCompanions: [
