@@ -32,7 +32,11 @@ class LogInButton extends StatelessWidget {
           user
               .then(
             (value) => {
-              if (value != null) Navigator.pushReplacementNamed(context, '/'),
+              if (value != null)
+                {
+                  ScaffoldMessenger.of(context)..removeCurrentMaterialBanner(),
+                  Navigator.pushReplacementNamed(context, '/'),
+                },
             },
           )
               .catchError(
