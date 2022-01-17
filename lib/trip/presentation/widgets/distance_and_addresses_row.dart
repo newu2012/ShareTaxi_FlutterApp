@@ -41,11 +41,21 @@ class DistanceAndAddressesRow extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(trip.fromPointAddress),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Text(
+                trip.fromPointAddress,
+              ),
+            ),
             const SizedBox(
               height: 8,
             ),
-            Text(trip.toPointAddress),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Text(
+                trip.toPointAddress,
+              ),
+            ),
           ],
         ),
       ],
