@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../chat/presentation/widgets/chat_list_tile.dart';
+import 'distance_and_addresses_row.dart';
 import '../../../common/data/fire_user_dao.dart';
 import '../../data/trip.dart';
 import '../../data/trip_dao.dart';
@@ -33,7 +35,24 @@ class _TripInfoListState extends State<TripInfoList> {
             const SizedBox(
               height: 8,
             ),
-            Text(_trip.title),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Text(
+                _trip.title,
+                style: const TextStyle(fontSize: 19),
+                overflow: TextOverflow.fade,
+              ),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            AddressRow(
+              trip: _trip,
+              withDistance: _trip.creatorId != _fireUserDao.userId(),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
             ElevatedButton(
               onPressed: () {
                 if (_trip.currentCompanions.length < _trip.maximumCompanions) {
@@ -72,5 +91,24 @@ class _TripInfoListState extends State<TripInfoList> {
         );
       },
     );
+  }
+}
+
+class AddressRow extends StatelessWidget {
+  const AddressRow({Key? key, required this.trip, required this.withDistance})
+      : super(key: key);
+  final bool withDistance;
+  final Trip trip;
+
+  @override
+  Widget build(BuildContext context) {
+    return withDistance
+        ? DistanceAndAddressesRow(trip: trip)
+        : Column(
+            children: [
+              AddressRowWithoutDistance(trip: trip, fromPoint: true),
+              AddressRowWithoutDistance(trip: trip, fromPoint: false),
+            ],
+          );
   }
 }
