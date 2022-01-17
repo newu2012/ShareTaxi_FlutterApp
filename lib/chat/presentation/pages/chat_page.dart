@@ -42,6 +42,16 @@ class ChatPageState extends State<ChatPage> {
         ),
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 111, 108, 217),
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.pushNamed(
+              context,
+              '/tripInfo',
+              arguments: widget.tripId,
+            ),
+            icon: const Icon(Icons.info),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),

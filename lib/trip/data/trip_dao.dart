@@ -27,7 +27,7 @@ class TripDao extends ChangeNotifier {
 
   void updateTrip({required String id, required Trip trip}) async {
     await collection.doc(id).update({
-      'currentCompanions': FieldValue.arrayUnion(trip.currentCompanions),
+      'currentCompanions': trip.currentCompanions,
     });
   }
 
