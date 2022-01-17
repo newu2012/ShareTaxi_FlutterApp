@@ -48,6 +48,9 @@ class ChatListTile extends StatelessWidget {
                   MdiIcons.carArrowLeft,
                   color: Theme.of(context).primaryColor,
                 ),
+                const SizedBox(
+                  width: 4,
+                ),
                 Expanded(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -63,6 +66,9 @@ class ChatListTile extends StatelessWidget {
                 const Icon(
                   MdiIcons.carArrowRight,
                   color: Color.fromRGBO(255, 174, 3, 100),
+                ),
+                const SizedBox(
+                  width: 4,
                 ),
                 Expanded(
                   child: SingleChildScrollView(
