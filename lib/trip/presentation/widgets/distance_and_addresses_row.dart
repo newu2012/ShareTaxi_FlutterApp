@@ -22,14 +22,14 @@ class DistanceAndAddressesRow extends StatelessWidget {
           children: [
             DistanceBetweenPointsRow(
               fromPoint: Provider.of<MapController>(context, listen: false)
-                  .fromPointAddress,
-              toPoint: trip.fromPointAddress,
+                  .fromPointLatLng,
+              toPoint: trip.fromPointLatLng,
               fromUser: true,
             ),
             DistanceBetweenPointsRow(
               fromPoint: Provider.of<MapController>(context, listen: false)
-                  .toPointAddress,
-              toPoint: trip.toPointAddress,
+                  .toPointLatLng,
+              toPoint: trip.toPointLatLng,
               fromUser: false,
             ),
           ],

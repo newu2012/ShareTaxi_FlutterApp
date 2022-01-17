@@ -318,10 +318,14 @@ class _MainPageState extends State<MainPage> {
         fromPointMarker = _createMarker(locations.first, pointName);
         Provider.of<MapController>(context, listen: false).fromPointAddress =
             address;
+        Provider.of<MapController>(context, listen: false).fromPointLatLng =
+            locations.first;
       } else if (pointName == 'toPoint') {
         toPointMarker = _createMarker(locations.first, pointName);
         Provider.of<MapController>(context, listen: false).toPointAddress =
             address;
+        Provider.of<MapController>(context, listen: false).toPointLatLng =
+            locations.first;
       }
     });
 

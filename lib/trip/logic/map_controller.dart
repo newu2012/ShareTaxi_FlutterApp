@@ -6,5 +6,7 @@ class MapController extends ChangeNotifier {
   Set<Marker> markers = {};
 
   late String fromPointAddress;
+  late LatLng fromPointLatLng;
   late String toPointAddress;
+  late LatLng toPointLatLng;
 }
