@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:share_taxi/trip/data/trip.dart';
-import 'package:share_taxi/trip/data/trip_dao.dart';
 
+import '../../data/trip.dart';
+import '../../data/trip_dao.dart';
 import '../widgets/widgets.dart';
 
 class TripInfoPage extends StatelessWidget {
