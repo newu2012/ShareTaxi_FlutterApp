@@ -18,11 +18,13 @@ class TripInfoList extends StatefulWidget {
 
 class _TripInfoListState extends State<TripInfoList> {
   late Trip _trip;
+  late TripDao _tripDao;
+  late FireUserDao _fireUserDao;
 
   @override
   Widget build(BuildContext context) {
-    final _tripDao = Provider.of<TripDao>(context, listen: false);
-    final _fireUserDao = Provider.of<FireUserDao>(context, listen: false);
+    _tripDao = Provider.of<TripDao>(context, listen: false);
+    _fireUserDao = Provider.of<FireUserDao>(context, listen: false);
 
     return StreamBuilder<DocumentSnapshot<Object?>>(
       stream: _tripDao.getTripStreamById(widget.tripId),
@@ -53,43 +55,120 @@ class _TripInfoListState extends State<TripInfoList> {
             const SizedBox(
               height: 8,
             ),
-            ElevatedButton(
-              onPressed: () {
-                if (_trip.currentCompanions.length < _trip.maximumCompanions) {
-                  var newCompanions =
-                      List<String>.from(_trip.currentCompanions);
-                  newCompanions.add(_fireUserDao.userId()!);
-                  newCompanions = newCompanions.toSet().toList();
-                  final newTrip = Trip.fromTrip(
-                    trip: _trip,
-                    currentCompanions: newCompanions,
-                  );
-
-                  _tripDao.updateTrip(id: _trip.reference!.id, trip: newTrip);
-                  Navigator.pushReplacementNamed(
-                    context,
-                    '/chat',
-                    arguments: widget.tripId,
-                  );
-                } else {
-                  ScaffoldMessenger.of(context)
-                    ..showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'В поездке уже максимальное количество участников',
-                        ),
-                        backgroundColor: Colors.amber,
-                      ),
-                    );
-                }
-              },
-              child: const Text(
-                'Присоединиться к поездке',
-              ),
-            ),
+            _buildMainInfoButton(),
           ],
         );
       },
+    );
+  }
+
+  Widget _buildMainInfoButton() {
+    if (_trip.creatorId == _fireUserDao.userId())
+      return const SizedBox(
+        height: 2,
+      );
+    if (!_trip.currentCompanions.contains(_fireUserDao.userId()))
+      return JoinTripButton(
+        trip: _trip,
+        fireUserDao: _fireUserDao,
+        tripDao: _tripDao,
+        tripId: widget.tripId,
+      );
+
+    return LeaveTripButton(
+      tripDao: _tripDao,
+      trip: _trip,
+      fireUserDao: _fireUserDao,
+    );
+  }
+}
+
+class JoinTripButton extends StatelessWidget {
+  const JoinTripButton({
+    Key? key,
+    required this.trip,
+    required this.fireUserDao,
+    required this.tripDao,
+    required this.tripId,
+  }) : super(key: key);
+
+  final Trip trip;
+  final FireUserDao fireUserDao;
+  final TripDao tripDao;
+  final String tripId;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        if (trip.currentCompanions.length < trip.maximumCompanions) {
+          var newCompanions = List<String>.from(trip.currentCompanions);
+          newCompanions.add(fireUserDao.userId()!);
+          newCompanions = newCompanions.toSet().toList();
+          final newTrip = Trip.fromTrip(
+            trip: trip,
+            currentCompanions: newCompanions,
+          );
+
+          tripDao.updateTrip(id: trip.reference!.id, trip: newTrip);
+          Navigator.pushReplacementNamed(
+            context,
+            '/chat',
+            arguments: tripId,
+          );
+        } else {
+          ScaffoldMessenger.of(context)
+            ..showSnackBar(
+              const SnackBar(
+                content: Text(
+                  'В поездке уже максимальное количество участников',
+                ),
+                backgroundColor: Colors.amber,
+              ),
+            );
+        }
+      },
+      child: const Text(
+        'Присоединиться к поездке',
+      ),
+    );
+  }
+}
+
+class LeaveTripButton extends StatelessWidget {
+  const LeaveTripButton({
+    Key? key,
+    required this.trip,
+    required this.fireUserDao,
+    required this.tripDao,
+  }) : super(key: key);
+
+  final Trip trip;
+  final FireUserDao fireUserDao;
+  final TripDao tripDao;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        var newCompanions = List<String>.from(trip.currentCompanions);
+        newCompanions.remove(fireUserDao.userId()!);
+        newCompanions = newCompanions.toSet().toList();
+        final newTrip = Trip.fromTrip(
+          trip: trip,
+          currentCompanions: newCompanions,
+        );
+
+        tripDao.updateTrip(id: trip.reference!.id, trip: newTrip);
+        Navigator.pop(context);
+        Navigator.pop(context);
+      },
+      child: const Text(
+        'Покинуть поездку',
+      ),
+      style: ElevatedButton.styleFrom(
+        primary: const Color.fromARGB(255, 216, 57, 76),
+      ),
     );
   }
 }
