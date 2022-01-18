@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../chat/data/message.dart';
+import '../../../chat/data/message_dao.dart';
 import '../../../common/data/user.dart';
 import '../../../common/data/user_dao.dart';
 import '../../../chat/presentation/widgets/chat_list_tile.dart';
@@ -94,6 +96,7 @@ class _TripInfoListState extends State<TripInfoList> {
       tripDao: _tripDao,
       trip: _trip,
       fireUserDao: _fireUserDao,
+      tripId: widget.tripId,
     );
   }
 }
@@ -309,14 +312,18 @@ class LeaveTripButton extends StatelessWidget {
     required this.trip,
     required this.fireUserDao,
     required this.tripDao,
+    required this.tripId,
   }) : super(key: key);
 
   final Trip trip;
   final FireUserDao fireUserDao;
   final TripDao tripDao;
+  final String tripId;
 
   @override
   Widget build(BuildContext context) {
+    final _messageDao = Provider.of<MessageDao>(context, listen: false);
+
     return ElevatedButton(
       onPressed: () {
         var newCompanions = List<String>.from(trip.currentCompanions);
@@ -328,6 +335,17 @@ class LeaveTripButton extends StatelessWidget {
         );
 
         tripDao.updateTrip(id: trip.reference!.id, trip: newTrip);
+        _messageDao.saveMessage(Message(
+          text: 'вышел(ла) из поездки',
+          date: DateTime.now(),
+          tripId: tripId,
+          isSystem: true,
+          messageType: 'leaveTrip',
+          args: [
+            FireUserDao().userId()!,
+          ],
+        ));
+
         Navigator.pop(context);
         Navigator.pop(context);
       },
@@ -357,6 +375,8 @@ class JoinTripButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _messageDao = Provider.of<MessageDao>(context, listen: false);
+
     return ElevatedButton(
       onPressed: () {
         if (trip.currentCompanions.length < trip.maximumCompanions) {
@@ -369,6 +389,17 @@ class JoinTripButton extends StatelessWidget {
           );
 
           tripDao.updateTrip(id: trip.reference!.id, trip: newTrip);
+          _messageDao.saveMessage(Message(
+            text: 'присоединился(ась) к поездке',
+            date: DateTime.now(),
+            tripId: tripId,
+            isSystem: true,
+            messageType: 'joinTrip',
+            args: [
+              FireUserDao().userId()!,
+            ],
+          ));
+
           Navigator.pushReplacementNamed(
             context,
             '/chat',

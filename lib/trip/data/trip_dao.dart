@@ -17,6 +17,7 @@ class TripDao extends ChangeNotifier {
       date: DateTime.now(),
       tripId: tripId,
       isSystem: true,
+      messageType: 'createTrip',
       args: [
         FireUserDao().userId()!,
       ],
