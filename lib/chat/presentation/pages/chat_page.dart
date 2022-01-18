@@ -96,6 +96,7 @@ class ChatPageState extends State<ChatPage> {
         text: _messageController.text.trim(),
         date: DateTime.now(),
         userId: userId,
+        messageType: 'text',
       );
 
       setState(() {

@@ -8,6 +8,7 @@ class Message {
   final DateTime date;
   final String? userId;
   final bool isSystem;
+  final String messageType;
 
   final List<dynamic>? args;
 
@@ -19,6 +20,7 @@ class Message {
     required this.tripId,
     this.userId,
     this.isSystem = false,
+    required this.messageType,
     this.args,
     this.reference,
   });
@@ -29,6 +31,7 @@ class Message {
         date: DateTime.parse(json['date'] as String),
         userId: json['userId'] as String?,
         isSystem: json['isSystem'] as bool,
+        messageType: json['messageType'] as String,
         args: json['args'] as List<dynamic>?,
       );
 
@@ -38,6 +41,7 @@ class Message {
         'text': text,
         'userId': userId,
         'isSystem': isSystem,
+        'messageType': messageType,
         'args': args,
       };
 
