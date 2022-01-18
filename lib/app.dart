@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'profile/user_page.dart';
 import 'trip/logic/map_controller.dart';
 import 'trip/presentation/pages/pages.dart';
 import 'chat/presentation/pages/chat_page.dart';
@@ -71,22 +72,14 @@ class App extends StatelessWidget {
   ) {
     if (!Provider.of<FireUserDao>(context, listen: false).isLoggedIn()) {
       switch (settings.name) {
-        case '/onboarding':
-          //  TODO Change to OnboardingPage()
-          return MaterialPageRoute(builder: (context) => const UnknownPage());
         case '/login':
           return MaterialPageRoute(builder: (context) => const LoginPage());
         case '/signup':
           return MaterialPageRoute(builder: (context) => const SignupPage());
-        default:
-          return MaterialPageRoute(builder: (context) => const UnknownPage());
       }
     }
 
     switch (settings.name) {
-      case '/onboarding':
-        //  TODO Change to OnboardingPage()
-        return MaterialPageRoute(builder: (context) => const UnknownPage());
       case '/login':
         return MaterialPageRoute(builder: (context) => const LoginPage());
       case '/signup':
@@ -108,6 +101,10 @@ class App extends StatelessWidget {
           builder: (context) => ChatPage(
             tripId: settings.arguments as String,
           ),
+        );
+      case '/user':
+        return MaterialPageRoute(
+          builder: (context) => UserPage(userId: settings.arguments as String),
         );
       default:
         return MaterialPageRoute(builder: (context) => const UnknownPage());
