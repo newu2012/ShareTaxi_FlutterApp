@@ -58,7 +58,7 @@ class FireUserDao extends ChangeNotifier {
     }
   }
 
-  void logout() async {
+  Future<void> logout() async {
     await auth.signOut();
     notifyListeners();
   }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:provider/provider.dart';
 
+import 'profile/user_page.dart';
 import 'app.dart';
 import 'chat/presentation/pages/chat_list_page.dart';
-import 'common/presentation/pages/unknown_page.dart';
+import 'common/data/fire_user_dao.dart';
 import 'trip/presentation/pages/pages.dart';
 
 class Home extends StatelessWidget {
@@ -13,13 +15,15 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _fireUserDao = Provider.of<FireUserDao>(context, listen: false);
+
     return PersistentTabView(
       context,
       controller: _tabController,
       screens: [
         const MainPage(),
         const ChatListPage(),
-        const UnknownPage(),
+        UserPage(userId: _fireUserDao.userId()!),
       ],
       items: _navBarsItems(context),
       navBarStyle: NavBarStyle.style1,
