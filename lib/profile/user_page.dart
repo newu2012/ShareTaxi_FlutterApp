@@ -18,6 +18,15 @@ class UserPage extends StatelessWidget {
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
+          leading: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+          ),
           title:
               Text(userId == _fireUserDao.userId() ? 'Мой профиль' : 'Профиль'),
           centerTitle: true,
@@ -25,7 +34,7 @@ class UserPage extends StatelessWidget {
         ),
         body: SafeArea(
           child: FutureBuilder<User>(
-            future: _userDao.getUserByUid(_fireUserDao.userId()),
+            future: _userDao.getUserByUid(userId),
             builder: (context, snapshot) => snapshot.hasData
                 ? ProfileListView(
                     user: snapshot.data!,
