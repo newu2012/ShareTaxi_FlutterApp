@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:share_taxi/common/data/user.dart';
-import 'package:share_taxi/common/data/user_dao.dart';
 
+import '../../../common/data/user.dart';
+import '../../../common/data/user_dao.dart';
 import '../../../chat/presentation/widgets/chat_list_tile.dart';
 import 'distance_and_addresses_row.dart';
 import '../../../common/data/fire_user_dao.dart';
@@ -237,19 +237,26 @@ class _CompanionsRowState extends State<CompanionsRow> {
           'Попутчики',
           style: TextStyle(fontSize: 19.0),
         ),
+        const SizedBox(
+          height: 8,
+        ),
         SizedBox(
           height: 60,
+          width: double.infinity,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: widget.trip.currentCompanions.length,
             itemBuilder: (context, i) {
-              return FutureBuilder<User>(
-                future: _userDao.getUserByUid(
-                  widget.trip.currentCompanions[i],
+              return Container(
+                constraints: const BoxConstraints(maxWidth: 150),
+                child: FutureBuilder<User>(
+                  future: _userDao.getUserByUid(
+                    widget.trip.currentCompanions[i],
+                  ),
+                  builder: (context, snapshot) => snapshot.hasData
+                      ? CompanionCard(companion: snapshot.data!)
+                      : const Center(child: LinearProgressIndicator()),
                 ),
-                builder: (context, snapshot) => snapshot.hasData
-                    ? CompanionCard(companion: snapshot.data!)
-                    : const Center(child: LinearProgressIndicator()),
               );
             },
           ),
@@ -266,9 +273,7 @@ class CompanionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Container(
-        height: 60,
-        constraints: const BoxConstraints(maxWidth: 150),
+      child: Padding(
         padding: const EdgeInsets.all(8),
         child: Row(
           children: [
