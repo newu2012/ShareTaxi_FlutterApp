@@ -36,7 +36,6 @@ class _TripInfoListState extends State<TripInfoList> {
 
         return SizedBox(
           width: 300,
-          height: 500,
           child: Column(
             children: [
               const SizedBox(
