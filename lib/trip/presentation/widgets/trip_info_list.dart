@@ -274,24 +274,32 @@ class CompanionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Row(
-          children: [
-            _buildMessageCreatorAvatar(companion.photoUrl),
-            const SizedBox(
-              width: 8,
-            ),
-            Expanded(
-              child: Text(
-                '${companion.firstName} ${companion.lastName}',
-                softWrap: true,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => Navigator.pushNamed(
+        context,
+        '/user',
+        arguments: companion.reference!.id,
+      ),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            children: [
+              _buildMessageCreatorAvatar(companion.photoUrl),
+              const SizedBox(
+                width: 8,
               ),
-            ),
-          ],
+              Expanded(
+                child: Text(
+                  '${companion.firstName} ${companion.lastName}',
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

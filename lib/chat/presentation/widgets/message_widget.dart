@@ -107,36 +107,44 @@ class MessageWidget extends StatelessWidget {
   }
 
   Widget _buildAnotherUserMessage(BuildContext context, User messageCreator) {
-    return LimitedBox(
-      maxWidth: MediaQuery.of(context).size.width * 0.75,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          _buildMessageCreatorAvatar(messageCreator.photoUrl),
-          const SizedBox(
-            width: 4,
-          ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.0),
-              color: const Color.fromRGBO(194, 193, 226, 100),
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => Navigator.pushNamed(
+        context,
+        '/user',
+        arguments: message.userId,
+      ),
+      child: LimitedBox(
+        maxWidth: MediaQuery.of(context).size.width * 0.75,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            _buildMessageCreatorAvatar(messageCreator.photoUrl),
+            const SizedBox(
+              width: 4,
             ),
-            padding: const EdgeInsets.symmetric(
-              vertical: 4.0,
-              horizontal: 16.0,
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16.0),
+                color: const Color.fromRGBO(194, 193, 226, 100),
+              ),
+              padding: const EdgeInsets.symmetric(
+                vertical: 4.0,
+                horizontal: 16.0,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildMessageCreatorText(
+                    '${messageCreator.firstName} ${messageCreator.lastName}',
+                  ),
+                  _buildMessageText(context),
+                  _buildMessageDate(),
+                ],
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildMessageCreatorText(
-                  '${messageCreator.firstName} ${messageCreator.lastName}',
-                ),
-                _buildMessageText(context),
-                _buildMessageDate(),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
