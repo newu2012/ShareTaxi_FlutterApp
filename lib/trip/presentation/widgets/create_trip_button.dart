@@ -43,6 +43,7 @@ class CreateTripButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+      child: const Text('Создать поездку'),
       onPressed: () async {
         Future<String> tripId;
 
@@ -53,12 +54,14 @@ class CreateTripButton extends StatelessWidget {
               title: _titleController.text,
               fromPointAddress: _fromPointAddress,
               fromPointLatLng: (await GeocodingPlatform.instance
-                  .locationFromAddress(_fromPointAddress))
-                  .map((e) => LatLng(e.latitude, e.longitude)).first ,
+                      .locationFromAddress(_fromPointAddress))
+                  .map((e) => LatLng(e.latitude, e.longitude))
+                  .first,
               toPointAddress: _toPointAddress,
               toPointLatLng: (await GeocodingPlatform.instance
-                  .locationFromAddress(_toPointAddress))
-                  .map((e) => LatLng(e.latitude, e.longitude)).first ,
+                      .locationFromAddress(_toPointAddress))
+                  .map((e) => LatLng(e.latitude, e.longitude))
+                  .first,
               costOverall: int.parse(_costController.text),
               departureTime: _departureTime,
               currentCompanions: [
@@ -77,7 +80,6 @@ class CreateTripButton extends StatelessWidget {
           );
         }
       },
-      child: const Text('Создать поездку'),
     );
   }
 }
