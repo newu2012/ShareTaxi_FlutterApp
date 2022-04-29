@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:math';
-
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../../common/data/fire_user_dao.dart';
 
 class Trip {
   final String? creatorId;
@@ -13,9 +14,12 @@ class Trip {
   final List<String> currentCompanions;
   final int maximumCompanions;
   final int costOverall;
-  int get oneUserCost =>
-      (costOverall / min((currentCompanions.length + 1), maximumCompanions))
-          .round();
+
+  int get oneUserCost => (costOverall /
+          (currentCompanions.contains(FireUserDao().userId())
+              ? currentCompanions.length
+              : min(currentCompanions.length + 1, maximumCompanions)))
+      .round();
   final DateTime departureTime;
 
   DocumentReference? reference;
