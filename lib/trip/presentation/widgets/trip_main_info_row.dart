@@ -20,8 +20,8 @@ class TripMainInfoRow extends StatelessWidget {
         ? '${(trip.oneUserCost / 1000).toStringAsFixed(1)} к'
         : '${trip.oneUserCost}';
     final costText = costOverall.endsWith('к') && costOneUser.endsWith('к')
-        ? Text('$costOverall/$costOneUser')
-        : Text('$costOverall/$costOneUser руб.');
+        ? Text('$costOneUser/$costOverall')
+        : Text('$costOneUser/$costOverall руб.');
 
     return Row(
       children: [
