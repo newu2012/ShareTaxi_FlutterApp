@@ -26,14 +26,7 @@ class FireUserDao extends ChangeNotifier {
 
       return userCredentials.user?.uid;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-      } else {
-        print(e);
-      }
-      rethrow;
+      if (catchAuthExceptions(e) != null) rethrow;
     }
   }
 
@@ -47,14 +40,19 @@ class FireUserDao extends ChangeNotifier {
 
       return userCredentials.user;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-      } else {
-        print(e);
-        rethrow;
-      }
+      if (catchAuthExceptions(e) != null) rethrow;
+    }
+  }
+
+  FirebaseAuthException? catchAuthExceptions(e) {
+    if (e.code == 'weak-password') {
+      print('The password provided is too weak.');
+    } else if (e.code == 'email-already-in-use') {
+      print('The account already exists for that email.');
+    } else {
+      print(e);
+
+      return e;
     }
   }
 
