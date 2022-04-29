@@ -174,7 +174,7 @@ class _CreateTripFormState extends State<CreateTripForm> {
           DigitsOnlyFormField(
             controller: _costController,
             hint: 'Сколько стоит',
-            ifEmptyOrNull: 'Ожидаемая стоимость поездки для одного человека',
+            ifEmptyOrNull: 'Ожидаемая стоимость поездки',
           ),
           const SizedBox(
             height: 8,
