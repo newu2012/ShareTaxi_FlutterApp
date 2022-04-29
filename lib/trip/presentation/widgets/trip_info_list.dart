@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../chat/data/message.dart';
@@ -145,7 +146,7 @@ class TimeCard extends StatelessWidget {
                 width: 12,
               ),
               Text(
-                '${trip.departureTime.hour}:${trip.departureTime.minute}',
+                DateFormat('HH:mm').format(trip.departureTime).toString(),
                 style: Theme.of(context).textTheme.headline6,
               ),
             ],
