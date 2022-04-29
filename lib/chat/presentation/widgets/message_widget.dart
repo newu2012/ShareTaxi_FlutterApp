@@ -177,7 +177,7 @@ class MessageWidget extends StatelessWidget {
         alignment: AlignmentDirectional.centerEnd,
         padding: const EdgeInsets.only(top: 4),
         child: Text(
-          DateFormat('kk:mm').format(message.date).toString(),
+          DateFormat('HH:mm').format(message.date).toString(),
           style: TextStyle(
             fontSize: 12.0,
             color: Colors.black.withAlpha(124),
