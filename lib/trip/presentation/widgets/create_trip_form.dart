@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/trip.dart';
 import '../../logic/map_controller.dart';
 import '../../../common/presentation/widgets/widgets.dart';
 import 'widgets.dart';
@@ -21,6 +22,8 @@ class _CreateTripFormState extends State<CreateTripForm> {
   final _toPointController = TextEditingController();
   final _costController = TextEditingController();
 
+  var _companionTypeSwitch = false;
+  var _companionType = CompanionType.passenger;
   var _maximumCompanions = 4;
   var _departureTime = DateTime.now().add(
     const Duration(minutes: 30),
@@ -96,10 +99,44 @@ class _CreateTripFormState extends State<CreateTripForm> {
             height: 8,
           ),
           Row(
+            children: [
+              const Text(
+                'Пассажир',
+                style: TextStyle(
+                  fontSize: 16.0,
+                ),
+              ),
+              Switch(
+                value: _companionTypeSwitch,
+                onChanged: (value) {
+                  setState(() {
+                    switch (value) {
+                      case true:
+                        _companionType = CompanionType.driver;
+                        break;
+                      case false:
+                        _companionType = CompanionType.passenger;
+                    }
+                    _companionTypeSwitch = value;
+                  });
+                },
+              ),
+              const Text(
+                'Водитель',
+                style: TextStyle(
+                  fontSize: 16.0,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'Количество человек',
+                'Максимум человек',
                 style: TextStyle(
                   fontSize: 16.0,
                 ),
@@ -186,6 +223,7 @@ class _CreateTripFormState extends State<CreateTripForm> {
             fromPointAddress: _fromPointController.text,
             toPointAddress: _toPointController.text,
             costController: _costController,
+            companionType: _companionType,
             maximumCompanions: _maximumCompanions,
             departureTime: _departureTime,
             tripDao: _tripDao,

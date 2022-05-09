@@ -14,6 +14,7 @@ class CreateTripButton extends StatelessWidget {
     required String fromPointAddress,
     required String toPointAddress,
     required TextEditingController costController,
+    required CompanionType companionType,
     required int maximumCompanions,
     required DateTime departureTime,
     required TripDao tripDao,
@@ -23,6 +24,7 @@ class CreateTripButton extends StatelessWidget {
         _fromPointAddress = fromPointAddress,
         _toPointAddress = toPointAddress,
         _costController = costController,
+        _companionType = companionType,
         _maximumCompanions = maximumCompanions,
         _departureTime = departureTime,
         _tripDao = tripDao,
@@ -37,6 +39,7 @@ class CreateTripButton extends StatelessWidget {
   final String _fromPointAddress;
   final String _toPointAddress;
   final TextEditingController _costController;
+  final CompanionType _companionType;
   final int _maximumCompanions;
   final DateTime _departureTime;
 
@@ -66,7 +69,7 @@ class CreateTripButton extends StatelessWidget {
             currentCompanions: [
               Companion(
                 userId: _fireUserDao.userId()!,
-                companionType: CompanionType.passenger,
+                companionType: _companionType,
               ),
             ],
             maximumCompanions: _maximumCompanions,
