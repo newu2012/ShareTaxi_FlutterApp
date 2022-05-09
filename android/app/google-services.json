@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "493235615089",
-    "project_id": "newu-share-taxi",
-    "storage_bucket": "newu-share-taxi.appspot.com"
+    "project_number": "261276082631",
+    "project_id": "carpooling-helper",
+    "storage_bucket": "carpooling-helper.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:493235615089:android:a7ba6f1eb618e900b7b2d0",
+        "mobilesdk_app_id": "1:261276082631:android:09fd9422fae785aced39e2",
         "android_client_info": {
-          "package_name": "com.newu2012.share_taxi"
+          "package_name": "com.newu2012.carpooling_helper"
         }
       },
       "oauth_client": [
         {
-          "client_id": "493235615089-cp4sf8l913eleb7538ceqa8r60rinlcm.apps.googleusercontent.com",
+          "client_id": "261276082631-gfpe7gi1vhkc54mv3qvgq03rl3t5o0ig.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCRWh_8TeO8x-ToZwGYyXsbO6e3yJDzw5E"
+          "current_key": "AIzaSyDQaGauILUpDoIaDkvYQwv_qG3NXeh5IIo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "493235615089-cp4sf8l913eleb7538ceqa8r60rinlcm.apps.googleusercontent.com",
+              "client_id": "261276082631-gfpe7gi1vhkc54mv3qvgq03rl3t5o0ig.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
