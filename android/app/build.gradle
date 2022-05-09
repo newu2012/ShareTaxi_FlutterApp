@@ -44,7 +44,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.newu2012.share_taxi"
+        applicationId "com.newu2012.carpooling_helper"
         multiDexEnabled true
         minSdkVersion 20
         targetSdkVersion 31
