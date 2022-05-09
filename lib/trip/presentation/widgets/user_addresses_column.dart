@@ -44,7 +44,6 @@ class UserAddressesColumn extends StatelessWidget {
               initialValue: Provider.of<MapController>(context, listen: false)
                   .toPointAddress,
               decoration: InputDecoration(
-                hintText: 'Куда поедем',
                 border: InputBorder.none,
                 contentPadding: const EdgeInsets.only(left: 15.0),
                 prefixIcon: SizedBox(
