@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
+import '../../../trip/logic/map_controller.dart';
 import '../widgets/widgets.dart';
 import 'chat_page.dart';
 import '../../../common/data/fire_user_dao.dart';
@@ -118,8 +119,14 @@ class _ChatListPageState extends State<ChatListPage> {
   }
 
   Widget _buildListItem(BuildContext context, Trip trip, bool active) {
+    final mapController = Provider.of<MapController>(context, listen: false);
+
     return GestureDetector(
-      child: active ? TripListTile(trip) : ChatListTile(trip),
+      child: active &&
+              mapController.fromPointAddress != null &&
+              mapController.toPointAddress != null
+          ? TripListTile(trip)
+          : ChatListTile(trip),
       behavior: HitTestBehavior.translucent,
       onTap: () => pushNewScreen(
         context,

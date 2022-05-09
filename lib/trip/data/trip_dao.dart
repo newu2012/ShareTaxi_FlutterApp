@@ -43,8 +43,15 @@ class TripDao extends ChangeNotifier {
   }
 
   Stream<QuerySnapshot> getTripsByUserId(String userId) {
-    return collection
-        .where('currentCompanions', arrayContains: userId)
-        .snapshots();
+    return collection.where('currentCompanions', arrayContainsAny: [
+      {
+        'userId': userId,
+        'companionType': 'driver',
+      },
+      {
+        'userId': userId,
+        'companionType': 'passenger',
+      },
+    ]).snapshots();
   }
 }

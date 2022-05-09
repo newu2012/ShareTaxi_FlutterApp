@@ -85,7 +85,9 @@ class _TripInfoListState extends State<TripInfoList> {
       return const SizedBox(
         height: 2,
       );
-    if (!_trip.currentCompanions.contains(_fireUserDao.userId()))
+    if (!_trip.currentCompanions
+        .map((e) => e.userId)
+        .contains(_fireUserDao.userId()))
       return JoinTripButton(
         trip: _trip,
         fireUserDao: _fireUserDao,
@@ -254,7 +256,9 @@ class _CompanionsRowState extends State<CompanionsRow> {
                 constraints: const BoxConstraints(maxWidth: 150),
                 child: FutureBuilder<User>(
                   future: _userDao.getUserByUid(
-                    widget.trip.currentCompanions[i],
+                    widget.trip.currentCompanions
+                        .map((e) => e.userId)
+                        .toList()[i],
                   ),
                   builder: (context, snapshot) => snapshot.hasData
                       ? CompanionCard(companion: snapshot.data!)
@@ -335,8 +339,8 @@ class LeaveTripButton extends StatelessWidget {
 
     return ElevatedButton(
       onPressed: () {
-        var newCompanions = List<String>.from(trip.currentCompanions);
-        newCompanions.remove(fireUserDao.userId()!);
+        var newCompanions = List<Companion>.from(trip.currentCompanions);
+        newCompanions.removeWhere((e) => e.userId == fireUserDao.userId()!);
         newCompanions = newCompanions.toSet().toList();
         final newTrip = Trip.fromTrip(
           trip: trip,
@@ -389,8 +393,11 @@ class JoinTripButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: () {
         if (trip.currentCompanions.length < trip.maximumCompanions) {
-          var newCompanions = List<String>.from(trip.currentCompanions);
-          newCompanions.add(fireUserDao.userId()!);
+          var newCompanions = List<Companion>.from(trip.currentCompanions);
+          newCompanions.add(Companion(
+            userId: fireUserDao.userId()!,
+            companionType: CompanionType.passenger,
+          ));
           newCompanions = newCompanions.toSet().toList();
           final newTrip = Trip.fromTrip(
             trip: trip,

@@ -48,28 +48,30 @@ class CreateTripButton extends StatelessWidget {
         Future<String> tripId;
 
         if (_formKey.currentState!.validate()) {
-          tripId = _tripDao.saveTrip(
-            Trip(
-              creatorId: _fireUserDao.userId(),
-              title: _titleController.text,
-              fromPointAddress: _fromPointAddress,
-              fromPointLatLng: (await GeocodingPlatform.instance
-                      .locationFromAddress(_fromPointAddress))
-                  .map((e) => LatLng(e.latitude, e.longitude))
-                  .first,
-              toPointAddress: _toPointAddress,
-              toPointLatLng: (await GeocodingPlatform.instance
-                      .locationFromAddress(_toPointAddress))
-                  .map((e) => LatLng(e.latitude, e.longitude))
-                  .first,
-              costOverall: int.parse(_costController.text),
-              departureTime: _departureTime,
-              currentCompanions: [
-                _fireUserDao.userId()!,
-              ],
-              maximumCompanions: _maximumCompanions,
-            ),
+          final newTrip = Trip(
+            creatorId: _fireUserDao.userId(),
+            title: _titleController.text,
+            fromPointAddress: _fromPointAddress,
+            fromPointLatLng: (await GeocodingPlatform.instance
+                    .locationFromAddress(_fromPointAddress))
+                .map((e) => LatLng(e.latitude, e.longitude))
+                .first,
+            toPointAddress: _toPointAddress,
+            toPointLatLng: (await GeocodingPlatform.instance
+                    .locationFromAddress(_toPointAddress))
+                .map((e) => LatLng(e.latitude, e.longitude))
+                .first,
+            costOverall: int.parse(_costController.text),
+            departureTime: _departureTime,
+            currentCompanions: [
+              Companion(
+                userId: _fireUserDao.userId()!,
+                companionType: CompanionType.passenger,
+              ),
+            ],
+            maximumCompanions: _maximumCompanions,
           );
+          tripId = _tripDao.saveTrip(newTrip);
 
           tripId.then(
             (value) => Navigator.pushReplacementNamed(

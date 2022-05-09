@@ -24,6 +24,12 @@ class _TripListPageState extends State<TripListPage> {
   final ScrollController _scrollController = ScrollController();
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final _tripDao = Provider.of<TripDao>(context, listen: false);
     final _mapController = Provider.of<MapController>(context, listen: false);
@@ -90,11 +96,11 @@ class _TripListPageState extends State<TripListPage> {
       return [
         e,
         await getDistance(
-          mapController.toPointAddress,
+          mapController.toPointAddress!,
           e.toPointAddress,
         ),
         await getDistance(
-          mapController.fromPointAddress,
+          mapController.fromPointAddress!,
           e.fromPointAddress,
         ),
       ];
@@ -126,7 +132,9 @@ class _TripListPageState extends State<TripListPage> {
       behavior: HitTestBehavior.translucent,
       onTap: () => pushNewScreen(
         context,
-        screen: trip.currentCompanions.contains(_fireUserDao.userId())
+        screen: trip.currentCompanions
+                .map((e) => e.userId)
+                .contains(_fireUserDao.userId())
             ? ChatPage(tripId: trip.reference!.id)
             : TripInfoPage(tripId: trip.reference!.id),
       ),
