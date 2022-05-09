@@ -21,10 +21,20 @@ class _MainPageState extends State<MainPage> {
   late GoogleMapController mapController;
   var userDeniedGps = false;
 
+  final TextEditingController fromPointController = TextEditingController();
+  final TextEditingController toPointController = TextEditingController();
   late String fromPointAddress;
   late String toPointAddress;
   Marker? fromPointMarker;
   Marker? toPointMarker;
+
+  @override
+  void dispose() {
+    fromPointController.dispose();
+    toPointController.dispose();
+    super.dispose();
+  }
+
   Set<Marker> get _markers {
     final markers = <Marker>{};
     if (fromPointMarker != null) markers.add(fromPointMarker!);
@@ -91,6 +101,7 @@ class _MainPageState extends State<MainPage> {
                 child: Column(
                   children: [
                     TextField(
+                      controller: fromPointController,
                       onSubmitted: (value) => searchAndNavigate,
                       onEditingComplete: () =>
                           searchAndNavigate(fromPointAddress, 'fromPoint'),
@@ -135,6 +146,7 @@ class _MainPageState extends State<MainPage> {
                       height: 1,
                     ),
                     TextField(
+                      controller: toPointController,
                       onSubmitted: (value) => searchAndNavigate,
                       onEditingComplete: () =>
                           searchAndNavigate(toPointAddress, 'toPoint'),
@@ -309,38 +321,59 @@ class _MainPageState extends State<MainPage> {
   }
 
   void searchAndNavigate(String address, String pointName) async {
-    var locations;
+    var coordinatesFromAddress;
+    var finalAddress;
     try {
-      locations =
-          (await GeocodingPlatform.instance.locationFromAddress(address))
-              .map((e) => LatLng(e.latitude, e.longitude));
+      final locationsFromAddress =
+          await GeocodingPlatform.instance.locationFromAddress(
+        address,
+      );
+      coordinatesFromAddress = LatLng(
+        locationsFromAddress.first.latitude,
+        locationsFromAddress.first.longitude,
+      );
+      final addressPlacemark =
+          await GeocodingPlatform.instance.placemarkFromCoordinates(
+        coordinatesFromAddress.latitude,
+        coordinatesFromAddress.longitude,
+        localeIdentifier: 'ru_RU',
+      );
+      finalAddress = getAddressFromPlacemark(addressPlacemark.first);
     } on Exception catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Не удалось найти адрес')),
       );
-
-      return;
     }
 
     setState(() {
       if (pointName == 'fromPoint') {
-        fromPointMarker = _createMarker(locations.first, pointName);
+        fromPointMarker = _createMarker(coordinatesFromAddress, pointName);
+        fromPointAddress = finalAddress;
+        fromPointController.text = finalAddress;
         Provider.of<MapController>(context, listen: false).fromPointAddress =
-            address;
+            finalAddress;
         Provider.of<MapController>(context, listen: false).fromPointLatLng =
-            locations.first;
+            coordinatesFromAddress;
       } else if (pointName == 'toPoint') {
-        toPointMarker = _createMarker(locations.first, pointName);
+        toPointMarker = _createMarker(coordinatesFromAddress, pointName);
+        toPointAddress = finalAddress;
+        toPointController.text = finalAddress;
         Provider.of<MapController>(context, listen: false).toPointAddress =
-            address;
+            finalAddress;
         Provider.of<MapController>(context, listen: false).toPointLatLng =
-            locations.first;
+            coordinatesFromAddress;
       }
     });
 
     Provider.of<MapController>(context, listen: false).markers = _markers;
     _moveCamera();
+  }
+
+  String getAddressFromPlacemark(Placemark pl) {
+    final finalAddress = '${pl.street}, ${pl.name}, ${pl.locality}';
+
+    return finalAddress;
   }
 
   void _moveCamera() {
