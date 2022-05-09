@@ -33,17 +33,17 @@ class Home extends StatelessWidget {
 
   List<PersistentBottomNavBarItem> _navBarsItems(BuildContext context) {
     return [
-      _shareTaxiBottomNavBarItem(
+      _carpoolingHelperBottomNavBarItem(
         context,
         const Icon(Icons.home),
         'Главная',
       ),
-      _shareTaxiBottomNavBarItem(
+      _carpoolingHelperBottomNavBarItem(
         context,
         const Icon(Icons.chat),
         'Чаты',
       ),
-      _shareTaxiBottomNavBarItem(
+      _carpoolingHelperBottomNavBarItem(
         context,
         const Icon(Icons.account_circle),
         'Профиль',
@@ -51,7 +51,7 @@ class Home extends StatelessWidget {
     ];
   }
 
-  PersistentBottomNavBarItem _shareTaxiBottomNavBarItem(
+  PersistentBottomNavBarItem _carpoolingHelperBottomNavBarItem(
     BuildContext context,
     Icon icon,
     String title,
