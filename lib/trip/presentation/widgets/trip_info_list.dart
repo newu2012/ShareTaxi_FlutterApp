@@ -8,7 +8,7 @@ import '../../../chat/data/message_dao.dart';
 import '../../../common/data/user.dart';
 import '../../../common/data/user_dao.dart';
 import '../../../chat/presentation/widgets/chat_list_tile.dart';
-import 'distance_and_addresses_row.dart';
+import 'distance_and_addresses_column.dart';
 import '../../../common/data/fire_user_dao.dart';
 import '../../data/trip.dart';
 import '../../data/trip_dao.dart';
@@ -449,7 +449,7 @@ class AddressRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return withDistance
-        ? DistanceAndAddressesRow(trip: trip)
+        ? DistanceAndAddressesColumn(trip: trip)
         : Column(
             children: [
               AddressRowWithoutDistance(trip: trip, fromPoint: true),

@@ -30,7 +30,10 @@ class TripListTile extends StatelessWidget {
                 overflow: TextOverflow.fade,
               ),
             ),
-            DistanceAndAddressesRow(trip: trip),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DistanceAndAddressesColumn(trip: trip),
+            ),
             TripMainInfoRow(trip: trip),
           ],
         ),

@@ -5,8 +5,8 @@ import '../../data/trip.dart';
 import '../../logic/map_controller.dart';
 import 'widgets.dart';
 
-class DistanceAndAddressesRow extends StatelessWidget {
-  const DistanceAndAddressesRow({
+class DistanceAndAddressesColumn extends StatelessWidget {
+  const DistanceAndAddressesColumn({
     Key? key,
     required this.trip,
   }) : super(key: key);
