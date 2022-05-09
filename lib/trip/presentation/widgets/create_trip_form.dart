@@ -30,9 +30,10 @@ class _CreateTripFormState extends State<CreateTripForm> {
   void initState() {
     super.initState();
     _fromPointController.text =
-        Provider.of<MapController>(context, listen: false).fromPointAddress;
+        Provider.of<MapController>(context, listen: false).fromPointAddress ??
+            '';
     _toPointController.text =
-        Provider.of<MapController>(context, listen: false).toPointAddress;
+        Provider.of<MapController>(context, listen: false).toPointAddress ?? '';
   }
 
   @override

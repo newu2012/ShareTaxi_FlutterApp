@@ -364,10 +364,10 @@ class _MainPageState extends State<MainPage> {
         Provider.of<MapController>(context, listen: false).toPointLatLng =
             coordinatesFromAddress;
       }
-    });
 
-    Provider.of<MapController>(context, listen: false).markers = _markers;
-    _moveCamera();
+      Provider.of<MapController>(context, listen: false).markers = _markers;
+      _moveCamera();
+    });
   }
 
   String getAddressFromPlacemark(Placemark pl) {
