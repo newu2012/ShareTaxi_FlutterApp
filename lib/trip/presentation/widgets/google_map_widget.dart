@@ -63,9 +63,9 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   }
 
   Future<Set<Marker>> setMarkers() async {
-    final Set<Marker> tripMarkers = widget.tripAddresses != null
+    final tripMarkers = widget.tripAddresses != null
         ? await createMarkersFromAddresses(widget.tripAddresses!)
-        : {};
+        : Set<Marker>();
     final userMarkers =
         Provider.of<MapController>(context, listen: false).markers;
     final allMarkers = Set<Marker>.from(userMarkers)..addAll(tripMarkers);
@@ -75,7 +75,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   }
 
   Future<Set<Marker>> createMarkersFromAddresses(List<String> addresses) async {
-    final Set<Marker> markers = (await Future.wait(addresses.map((e) async {
+    final markers = (await Future.wait(addresses.map((e) async {
       return _createMarker(
         (await GeocodingPlatform.instance.locationFromAddress(e))
             .map((e) => LatLng(e.latitude, e.longitude))

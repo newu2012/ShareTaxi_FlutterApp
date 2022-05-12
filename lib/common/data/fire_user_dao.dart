@@ -17,31 +17,33 @@ class FireUserDao extends ChangeNotifier {
   }
 
   Future<String?> signup(String email, String password) async {
+    var userCredentials;
     try {
-      final userCredentials = await auth.createUserWithEmailAndPassword(
+      userCredentials = await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       notifyListeners();
-
-      return userCredentials.user?.uid;
     } on FirebaseAuthException catch (e) {
       if (catchAuthExceptions(e) != null) rethrow;
     }
+
+    return userCredentials.user?.uid;
   }
 
   Future<User?> login(String email, String password) async {
+    var userCredentials;
     try {
-      final userCredentials = await auth.signInWithEmailAndPassword(
+      userCredentials = await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
       notifyListeners();
-
-      return userCredentials.user;
     } on FirebaseAuthException catch (e) {
       if (catchAuthExceptions(e) != null) rethrow;
     }
+
+    return userCredentials.user;
   }
 
   FirebaseAuthException? catchAuthExceptions(e) {
@@ -51,9 +53,9 @@ class FireUserDao extends ChangeNotifier {
       print('The account already exists for that email.');
     } else {
       print(e);
-
-      return e;
     }
+
+    return e;
   }
 
   Future<void> logout() async {
