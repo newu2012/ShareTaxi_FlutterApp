@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:badges/badges.dart';
 
 import '../../data/data.dart';
 import 'widgets.dart';
@@ -317,7 +318,10 @@ class _CompanionsRowState extends State<CompanionsRow> {
                         .toList()[i],
                   ),
                   builder: (context, snapshot) => snapshot.hasData
-                      ? CompanionCard(companion: snapshot.data!)
+                      ? CompanionCard(
+                          companion: snapshot.data!,
+                          trip: widget.trip,
+                        )
                       : const Center(child: LinearProgressIndicator()),
                 ),
               );
@@ -330,11 +334,17 @@ class _CompanionsRowState extends State<CompanionsRow> {
 }
 
 class CompanionCard extends StatelessWidget {
-  const CompanionCard({Key? key, required this.companion}) : super(key: key);
+  const CompanionCard({Key? key, required this.companion, required this.trip})
+      : super(key: key);
   final User companion;
+  final Trip trip;
 
   @override
   Widget build(BuildContext context) {
+    final companionType = trip.currentCompanions
+        .firstWhere((e) => e.userId == companion.reference!.id)
+        .companionType;
+
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () => Navigator.pushNamed(
@@ -342,24 +352,36 @@ class CompanionCard extends StatelessWidget {
         '/user',
         arguments: companion.reference!.id,
       ),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            children: [
-              _buildMessageCreatorAvatar(companion.photoUrl),
-              const SizedBox(
-                width: 8,
-              ),
-              Expanded(
-                child: Text(
-                  '${companion.firstName} ${companion.lastName}',
-                  softWrap: true,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
+      child: Badge(
+        badgeContent: Icon(
+          companionType == CompanionType.passenger
+              ? Icons.person
+              : Icons.directions_car,
+          size: 16,
+        ),
+        animationType: BadgeAnimationType.scale,
+        padding: const EdgeInsets.all(2),
+        badgeColor: Colors.lightBlueAccent,
+        position: const BadgePosition(top: 0, end: 0),
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              children: [
+                _buildMessageCreatorAvatar(companion.photoUrl),
+                const SizedBox(
+                  width: 8,
                 ),
-              ),
-            ],
+                Expanded(
+                  child: Text(
+                    '${companion.firstName} ${companion.lastName}',
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

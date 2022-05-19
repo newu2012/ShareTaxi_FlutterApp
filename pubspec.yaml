@@ -28,6 +28,7 @@ dependencies:
   # additional packages, can be replaced by self-created widgets
   persistent_bottom_nav_bar: ^4.0.2
   email_validator: ^2.0.1
+  badges: ^2.0.2
 
 dev_dependencies:
   flutter_test:
