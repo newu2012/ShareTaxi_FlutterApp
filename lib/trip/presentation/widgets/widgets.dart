@@ -1,3 +1,4 @@
+export 'companion_type_switch.dart';
 export 'create_trip_button.dart';
 export 'trip_list_tile.dart';
 export 'google_map_widget.dart';

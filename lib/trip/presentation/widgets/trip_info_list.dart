@@ -3,19 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/data.dart';
+import 'widgets.dart';
 import '../../../chat/data/message.dart';
 import '../../../chat/data/message_dao.dart';
 import '../../../common/data/user.dart';
 import '../../../common/data/user_dao.dart';
 import '../../../chat/presentation/widgets/chat_list_tile.dart';
-import 'distance_and_addresses_column.dart';
 import '../../../common/data/fire_user_dao.dart';
-import '../../data/trip.dart';
-import '../../data/trip_dao.dart';
 
 class TripInfoList extends StatefulWidget {
-  const TripInfoList({Key? key, required this.tripId}) : super(key: key);
+  TripInfoList({Key? key, required this.tripId}) : super(key: key);
   final String tripId;
+
+  var _companionTypeSwitch = false;
+  var _companionType = CompanionType.passenger;
 
   @override
   _TripInfoListState createState() => _TripInfoListState();
@@ -25,6 +27,39 @@ class _TripInfoListState extends State<TripInfoList> {
   late Trip _trip;
   late TripDao _tripDao;
   late FireUserDao _fireUserDao;
+
+  void refresh(bool value) {
+    setState(() {
+      if (_trip.currentCompanions
+          .map((el) => el.userId)
+          .contains(_fireUserDao.userId()!)) {
+        final currentUser = _trip.currentCompanions
+            .where((element) => element.userId == _fireUserDao.userId())
+            .first;
+
+        switch (value) {
+          case true:
+            currentUser.companionType = CompanionType.driver;
+            break;
+          case false:
+            currentUser.companionType = CompanionType.passenger;
+            break;
+        }
+      } else {
+        switch (value) {
+          case true:
+            widget._companionType = CompanionType.driver;
+            break;
+          case false:
+            widget._companionType = CompanionType.passenger;
+            break;
+        }
+      }
+
+      widget._companionTypeSwitch = value;
+      _tripDao.updateTripCompanions(id: widget.tripId, trip: _trip);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +71,18 @@ class _TripInfoListState extends State<TripInfoList> {
       builder: (context, snapshot) {
         if (!snapshot.hasData) return const CircularProgressIndicator();
         _trip = Trip.fromSnapshot(snapshot.data!);
+
+        if (_trip.currentCompanions
+            .map((el) => el.userId)
+            .contains(_fireUserDao.userId()!)) {
+          final user = _trip.currentCompanions.firstWhere(
+            (element) => element.userId == _fireUserDao.userId(),
+          );
+
+          widget._companionTypeSwitch =
+              user.companionType == CompanionType.driver;
+          widget._companionType = user.companionType;
+        }
 
         return SizedBox(
           width: 300,
@@ -72,6 +119,14 @@ class _TripInfoListState extends State<TripInfoList> {
               const SizedBox(
                 height: 8,
               ),
+              CompanionTypeSwitch(
+                updateSwitchState: refresh,
+                companionTypeSwitch: widget._companionTypeSwitch,
+                companionType: widget._companionType,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
               _buildMainInfoButton(),
             ],
           ),
@@ -93,6 +148,7 @@ class _TripInfoListState extends State<TripInfoList> {
         fireUserDao: _fireUserDao,
         tripDao: _tripDao,
         tripId: widget.tripId,
+        companionType: widget._companionType,
       );
 
     return LeaveTripButton(
@@ -347,7 +403,7 @@ class LeaveTripButton extends StatelessWidget {
           currentCompanions: newCompanions,
         );
 
-        tripDao.updateTrip(id: trip.reference!.id, trip: newTrip);
+        tripDao.updateTripCompanions(id: trip.reference!.id, trip: newTrip);
         _messageDao.saveMessage(Message(
           text: 'вышел(ла) из поездки',
           date: DateTime.now(),
@@ -373,70 +429,78 @@ class LeaveTripButton extends StatelessWidget {
 }
 
 class JoinTripButton extends StatelessWidget {
-  const JoinTripButton({
-    Key? key,
-    required this.trip,
-    required this.fireUserDao,
-    required this.tripDao,
-    required this.tripId,
-  }) : super(key: key);
+  JoinTripButton(
+      {Key? key,
+      required this.trip,
+      required this.fireUserDao,
+      required this.tripDao,
+      required this.tripId,
+      required this.companionType})
+      : super(key: key);
 
   final Trip trip;
   final FireUserDao fireUserDao;
   final TripDao tripDao;
   final String tripId;
+  final CompanionType companionType;
+
+  late var _messageDao;
 
   @override
   Widget build(BuildContext context) {
-    final _messageDao = Provider.of<MessageDao>(context, listen: false);
+    _messageDao = Provider.of<MessageDao>(context, listen: false);
 
     return ElevatedButton(
-      onPressed: () {
-        if (trip.currentCompanions.length < trip.maximumCompanions) {
-          var newCompanions = List<Companion>.from(trip.currentCompanions);
-          newCompanions.add(Companion(
-            userId: fireUserDao.userId()!,
-            companionType: CompanionType.passenger,
-          ));
-          newCompanions = newCompanions.toSet().toList();
-          final newTrip = Trip.fromTrip(
-            trip: trip,
-            currentCompanions: newCompanions,
-          );
-
-          tripDao.updateTrip(id: trip.reference!.id, trip: newTrip);
-          _messageDao.saveMessage(Message(
-            text: 'присоединился(ась) к поездке',
-            date: DateTime.now(),
-            tripId: tripId,
-            isSystem: true,
-            messageType: 'joinTrip',
-            args: [
-              FireUserDao().userId()!,
-            ],
-          ));
-
-          Navigator.pushReplacementNamed(
-            context,
-            '/chat',
-            arguments: tripId,
-          );
-        } else {
-          ScaffoldMessenger.of(context)
-            ..showSnackBar(
-              const SnackBar(
-                content: Text(
-                  'В поездке уже максимальное количество участников',
-                ),
-                backgroundColor: Colors.amber,
-              ),
-            );
-        }
-      },
+      onPressed: () => joinTrip(context),
       child: const Text(
         'Присоединиться к поездке',
       ),
     );
+  }
+
+  void joinTrip(BuildContext context) {
+    {
+      if (trip.currentCompanions.length < trip.maximumCompanions) {
+        var newCompanions = List<Companion>.from(trip.currentCompanions);
+        newCompanions.add(Companion(
+          userId: fireUserDao.userId()!,
+          companionType: companionType,
+        ));
+        newCompanions = newCompanions.toSet().toList();
+        final newTrip = Trip.fromTrip(
+          trip: trip,
+          currentCompanions: newCompanions,
+        );
+
+        tripDao.updateTripCompanions(id: trip.reference!.id, trip: newTrip);
+        _messageDao.saveMessage(Message(
+          text: 'присоединился(ась) к поездке',
+          date: DateTime.now(),
+          tripId: tripId,
+          isSystem: true,
+          messageType: 'joinTrip',
+          args: [
+            FireUserDao().userId()!,
+          ],
+        ));
+
+        Navigator.pushReplacementNamed(
+          context,
+          '/chat',
+          arguments: tripId,
+        );
+      } else {
+        ScaffoldMessenger.of(context)
+          ..showSnackBar(
+            const SnackBar(
+              content: Text(
+                'В поездке уже максимальное количество участников',
+              ),
+              backgroundColor: Colors.amber,
+            ),
+          );
+      }
+    }
   }
 }
 

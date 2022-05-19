@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../data/trip.dart';
+import '../../data/data.dart';
 import '../../../common/data/fire_user_dao.dart';
-import '../../data/trip_dao.dart';
 
 class CreateTripButton extends StatelessWidget {
   const CreateTripButton({

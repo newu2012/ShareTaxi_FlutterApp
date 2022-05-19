@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../common/data/fire_user_dao.dart';
+import 'companion.dart';
+import 'companion_type.dart';
 
 class Trip {
   String? creatorId;
@@ -130,15 +132,3 @@ class Trip {
     return trip;
   }
 }
-
-class Companion {
-  late String userId;
-  late CompanionType companionType;
-
-  Companion({
-    required String this.userId,
-    required CompanionType this.companionType,
-  });
-}
-
-enum CompanionType { driver, passenger }
