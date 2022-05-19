@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/trip.dart';
+import '../../data/data.dart';
 import '../../logic/map_controller.dart';
 import '../../../common/presentation/widgets/widgets.dart';
 import 'widgets.dart';
-import '../../data/trip_dao.dart';
 import '../../../common/data/fire_user_dao.dart';
 
 class CreateTripForm extends StatefulWidget {
@@ -46,6 +45,19 @@ class _CreateTripFormState extends State<CreateTripForm> {
     _toPointController.dispose();
     _costController.dispose();
     super.dispose();
+  }
+
+  void refresh(bool value) {
+    setState(() {
+      switch (value) {
+        case true:
+          _companionType = CompanionType.driver;
+          break;
+        case false:
+          _companionType = CompanionType.passenger;
+      }
+      _companionTypeSwitch = value;
+    });
   }
 
   @override
@@ -98,36 +110,10 @@ class _CreateTripFormState extends State<CreateTripForm> {
           const SizedBox(
             height: 8,
           ),
-          Row(
-            children: [
-              const Text(
-                'Пассажир',
-                style: TextStyle(
-                  fontSize: 16.0,
-                ),
-              ),
-              Switch(
-                value: _companionTypeSwitch,
-                onChanged: (value) {
-                  setState(() {
-                    switch (value) {
-                      case true:
-                        _companionType = CompanionType.driver;
-                        break;
-                      case false:
-                        _companionType = CompanionType.passenger;
-                    }
-                    _companionTypeSwitch = value;
-                  });
-                },
-              ),
-              const Text(
-                'Водитель',
-                style: TextStyle(
-                  fontSize: 16.0,
-                ),
-              ),
-            ],
+          CompanionTypeSwitch(
+            updateSwitchState: refresh,
+            companionTypeSwitch: _companionTypeSwitch,
+            companionType: _companionType,
           ),
           const SizedBox(
             height: 8,

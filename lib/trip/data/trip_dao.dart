@@ -28,7 +28,14 @@ class TripDao extends ChangeNotifier {
 
   void updateTrip({required String id, required Trip trip}) async {
     await collection.doc(id).update({
+      'title': trip.title,
       'currentCompanions': trip.currentCompanions,
+    });
+  }
+
+  void updateTripCompanions({required String id, required Trip trip}) async {
+    await collection.doc(id).update({
+      'currentCompanions': trip.CompanionsToJson(),
     });
   }
 
