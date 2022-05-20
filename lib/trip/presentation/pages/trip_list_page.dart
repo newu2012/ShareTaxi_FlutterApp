@@ -46,7 +46,7 @@ class _TripListPageState extends State<TripListPage> {
             const SizedBox(
               height: 4,
             ),
-            const UserAddressesColumn(),
+            UserAddressesPanel(),
             _getTripList(_tripDao, _mapController),
           ],
         ),
