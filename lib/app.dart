@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'profile/user_page.dart';
+import 'trip/data/data.dart';
 import 'trip/logic/map_controller.dart';
 import 'trip/presentation/pages/pages.dart';
 import 'chat/presentation/pages/chat_page.dart';
@@ -12,7 +13,6 @@ import 'home.dart';
 import 'common/presentation/pages/unknown_page.dart';
 import 'login/presentation/pages/signup_page.dart';
 import 'login/presentation/pages/login_page.dart';
-import 'trip/data/trip_dao.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
@@ -87,7 +87,10 @@ class App extends StatelessWidget {
       case '/':
         return MaterialPageRoute(builder: (context) => Home());
       case '/trips':
-        return MaterialPageRoute(builder: (context) => const TripListPage());
+        return MaterialPageRoute(
+            builder: (context) => TripListPage(
+                  tripPreferences: TripPreferences(),
+                ));
       case '/createTrip':
         return MaterialPageRoute(builder: (context) => const CreateTripPage());
       case '/tripInfo':
