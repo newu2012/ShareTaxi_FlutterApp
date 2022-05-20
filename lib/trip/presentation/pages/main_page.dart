@@ -102,7 +102,10 @@ class _MainPageState extends State<MainPage> {
                   children: [
                     TextField(
                       controller: fromPointController,
-                      onSubmitted: (value) => searchAndNavigate,
+                      onSubmitted: (value) => {
+                        FocusManager.instance.primaryFocus?.unfocus(),
+                        searchAndNavigate(fromPointAddress, 'fromPoint'),
+                      },
                       onEditingComplete: () =>
                           searchAndNavigate(fromPointAddress, 'fromPoint'),
                       textInputAction: TextInputAction.search,
@@ -131,8 +134,10 @@ class _MainPageState extends State<MainPage> {
                             Icons.search,
                             color: Theme.of(context).primaryColor,
                           ),
-                          onPressed: () =>
-                              searchAndNavigate(fromPointAddress, 'fromPoint'),
+                          onPressed: () => {
+                            FocusManager.instance.primaryFocus?.unfocus(),
+                            searchAndNavigate(fromPointAddress, 'fromPoint'),
+                          },
                           iconSize: 30.0,
                         ),
                       ),
@@ -147,7 +152,10 @@ class _MainPageState extends State<MainPage> {
                     ),
                     TextField(
                       controller: toPointController,
-                      onSubmitted: (value) => searchAndNavigate,
+                      onSubmitted: (value) => {
+                        FocusManager.instance.primaryFocus?.unfocus(),
+                        searchAndNavigate(toPointAddress, 'toPoint'),
+                      },
                       onEditingComplete: () =>
                           searchAndNavigate(toPointAddress, 'toPoint'),
                       textInputAction: TextInputAction.search,
@@ -176,8 +184,10 @@ class _MainPageState extends State<MainPage> {
                             Icons.search,
                             color: Theme.of(context).primaryColor,
                           ),
-                          onPressed: () =>
-                              searchAndNavigate(toPointAddress, 'toPoint'),
+                          onPressed: () => {
+                            FocusManager.instance.primaryFocus?.unfocus(),
+                            searchAndNavigate(toPointAddress, 'toPoint'),
+                          },
                           iconSize: 30.0,
                         ),
                       ),
@@ -344,6 +354,7 @@ class _MainPageState extends State<MainPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Не удалось найти адрес')),
       );
+      return;
     }
 
     setState(() {
