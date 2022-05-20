@@ -6,15 +6,16 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../chat/presentation/pages/chat_page.dart';
+import '../../data/data.dart';
 import 'pages.dart';
 import '../../logic/map_controller.dart';
-import '../../data/trip_dao.dart';
 import '../../../common/data/fire_user_dao.dart';
 import '../widgets/widgets.dart';
-import '../../data/trip.dart';
 
 class TripListPage extends StatefulWidget {
-  const TripListPage({Key? key}) : super(key: key);
+  const TripListPage({Key? key, required this.tripPreferences})
+      : super(key: key);
+  final TripPreferences tripPreferences;
 
   @override
   State<TripListPage> createState() => _TripListPageState();
@@ -41,14 +42,17 @@ class _TripListPageState extends State<TripListPage> {
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 4,
-            ),
-            UserAddressesPanel(),
-            _getTripList(_tripDao, _mapController),
-          ],
+        child: ChangeNotifierProvider<TripPreferences>(
+          create: (_) => TripPreferences(),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 4,
+              ),
+              UserAddressesPanel(),
+              _getTripList(_tripDao, _mapController),
+            ],
+          ),
         ),
       ),
     );
