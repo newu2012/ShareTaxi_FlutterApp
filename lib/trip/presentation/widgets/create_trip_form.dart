@@ -195,10 +195,24 @@ class _CreateTripFormState extends State<CreateTripForm> {
           const SizedBox(
             height: 8,
           ),
-          DigitsOnlyFormField(
-            controller: _costController,
-            hint: 'Сколько стоит',
-            ifEmptyOrNull: 'Ожидаемая стоимость поездки',
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Стоимость поездки',
+                style: TextStyle(
+                  fontSize: 16.0,
+                ),
+              ),
+              SizedBox(
+                width: 85,
+                child: DigitsOnlyFormField(
+                  controller: _costController,
+                  hint: 'Стоимость',
+                  ifEmptyOrNull: 'Больше 0',
+                ),
+              ),
+            ],
           ),
           const SizedBox(
             height: 8,
@@ -232,20 +246,23 @@ class DepartureTimeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: const Color.fromRGBO(111, 108, 217, 35),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.0),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-        child: Text(
-          '${_departureTime.hour}:'
-          '${_departureTime.minute.toString().padLeft(2, '0')}',
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+    return SizedBox(
+      width: 85,
+      child: Card(
+        color: const Color.fromRGBO(111, 108, 217, 35),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+          child: Text(
+            '${_departureTime.hour}:'
+            '${_departureTime.minute.toString().padLeft(2, '0')}',
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
         ),
       ),
