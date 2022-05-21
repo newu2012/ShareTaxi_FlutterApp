@@ -22,14 +22,6 @@ class TripListPage extends StatefulWidget {
 }
 
 class _TripListPageState extends State<TripListPage> {
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final _tripDao = Provider.of<TripDao>(context, listen: false);
@@ -50,20 +42,45 @@ class _TripListPageState extends State<TripListPage> {
                 height: 4,
               ),
               UserAddressesPanel(),
-              _getTripList(_tripDao, _mapController),
+              TripList(_tripDao, _mapController),
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _getTripList(TripDao tripDao, MapController mapController) {
+class TripList extends StatefulWidget {
+  TripDao tripDao;
+  MapController mapController;
+
+  TripList(TripDao this.tripDao, MapController this.mapController, {Key? key})
+      : super(key: key);
+
+  @override
+  State<TripList> createState() => _TripListState();
+}
+
+class _TripListState extends State<TripList> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tripPreferences =
+        Provider.of<TripPreferences>(context, listen: false);
+
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: StreamBuilder<QuerySnapshot>(
-          stream: tripDao.getTripStream(),
+          stream: widget.tripDao.getTripStream(),
           builder: (context, snapshot) {
             if (!snapshot.hasData)
               return const Center(child: LinearProgressIndicator());
@@ -81,7 +98,8 @@ class _TripListPageState extends State<TripListPage> {
                 snapshot.data!.docs.map((e) => Trip.fromSnapshot(e)).toList();
 
             return FutureBuilder(
-              future: _sortTripsByDistance(trips, mapController),
+              future: tripPreferences.applyTripPreferences(
+                  trips, widget.mapController),
               builder: (context, snapshot) => snapshot.hasData
                   ? _buildList(snapshot.data! as List<Trip>)
                   : const Center(child: LinearProgressIndicator()),
@@ -90,33 +108,6 @@ class _TripListPageState extends State<TripListPage> {
         ),
       ),
     );
-  }
-
-  Future<List<Trip>> _sortTripsByDistance(
-    List<Trip> trips,
-    MapController mapController,
-  ) async {
-    final tripsWithDistance = await Future.wait(trips.map((e) async {
-      return [
-        e,
-        await getDistance(
-          mapController.toPointAddress!,
-          e.toPointAddress,
-        ),
-        await getDistance(
-          mapController.fromPointAddress!,
-          e.fromPointAddress,
-        ),
-      ];
-    }));
-
-    tripsWithDistance.sort((a, b) {
-      return ((a[1] as int) + (a[2] as int)) - ((b[1] as int) + (b[2] as int));
-    });
-    final tripsSorted =
-        List<Trip>.from(tripsWithDistance.map((e) => e.first).toList());
-
-    return tripsSorted;
   }
 
   Widget _buildList(List<Trip> trips) {
@@ -143,21 +134,5 @@ class _TripListPageState extends State<TripListPage> {
             : TripInfoPage(tripId: trip.reference!.id),
       ),
     );
-  }
-
-  Future<int> getDistance(String fromAddress, String toAddress) async {
-    final fromLocation =
-        (await GeocodingPlatform.instance.locationFromAddress(fromAddress))
-            .map((e) => LatLng(e.latitude, e.longitude))
-            .first;
-    final toLocation =
-        (await GeocodingPlatform.instance.locationFromAddress(toAddress))
-            .map((e) => LatLng(e.latitude, e.longitude))
-            .first;
-
-    final distance =
-        const Distance().distance(fromLocation, toLocation).toInt();
-
-    return distance;
   }
 }
