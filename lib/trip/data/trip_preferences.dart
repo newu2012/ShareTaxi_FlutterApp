@@ -7,7 +7,7 @@ import 'data.dart';
 
 class TripPreferences extends ChangeNotifier {
   DateTime departureDateTimePreference =
-      DateTime.now().add(const Duration(days: 14));
+      DateTime.now().add(const Duration(days: 1));
   int distanceMetersPreference = 2000;
   int costPreference = 2500;
 
@@ -42,8 +42,27 @@ class TripPreferences extends ChangeNotifier {
     newTrips = await filterByDistance(newTrips, mapController);
     newTrips = filterByDepartureTime(newTrips);
     newTrips = filterByCost(newTrips);
+    print('${newTrips.length} left after filter');
 
     return newTrips;
+  }
+
+  Future<List<Trip>> sortTrips(
+      List<Trip> trips, MapController mapController) async {
+    switch (sortPreference) {
+      case SortPreference.distance:
+        trips = await sortByDistance(trips, mapController);
+        break;
+      case SortPreference.time:
+        sortByDepartureTime(trips);
+        break;
+      case SortPreference.cost:
+        sortByCost(trips);
+        break;
+    }
+    print('${trips.length} sorted');
+
+    return trips;
   }
 
   List<Trip> filterByDepartureTime(List<Trip> trips) {
@@ -73,23 +92,6 @@ class TripPreferences extends ChangeNotifier {
     }).toList();
 
     return newTrips;
-  }
-
-  Future<List<Trip>> sortTrips(
-      List<Trip> trips, MapController mapController) async {
-    switch (sortPreference) {
-      case SortPreference.distance:
-        trips = await sortByDistance(trips, mapController);
-        break;
-      case SortPreference.time:
-        sortByDepartureTime(trips);
-        break;
-      case SortPreference.cost:
-        sortByCost(trips);
-        break;
-    }
-
-    return trips;
   }
 
   List<Trip> sortByDepartureTime(List<Trip> trips) {
