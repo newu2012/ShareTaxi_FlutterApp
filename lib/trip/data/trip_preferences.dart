@@ -6,52 +6,115 @@ import '../logic/map_controller.dart';
 import 'data.dart';
 
 class TripPreferences extends ChangeNotifier {
-  var departureDateTimePreference =
-      DateTime.now().add(const Duration(hours: 2));
-  var distanceMetersPreference = 2000;
-  var costRubPreference = null;
+  DateTime departureDateTimePreference =
+      DateTime.now().add(const Duration(days: 14));
+  int distanceMetersPreference = 2000;
+  int costPreference = 2500;
+
+  SortPreference sortPreference = SortPreference.time;
 
   TripPreferences();
 
   TripPreferences.full({
     required this.departureDateTimePreference,
     required this.distanceMetersPreference,
-    required this.costRubPreference,
+    required this.costPreference,
   });
 
   void copyFrom(TripPreferences from) {
     departureDateTimePreference = from.departureDateTimePreference;
     distanceMetersPreference = from.distanceMetersPreference;
-    costRubPreference = from.costRubPreference;
+    costPreference = from.costPreference;
   }
 
   Future<List<Trip>> applyTripPreferences(
       List<Trip> trips, MapController mapController) async {
+    final newTrips = trips;
+    final filteredTrips = await filterTrips(newTrips, mapController);
+    final sortedTrips = await sortTrips(filteredTrips, mapController);
+
+    return sortedTrips;
+  }
+
+  Future<List<Trip>> filterTrips(
+      List<Trip> trips, MapController mapController) async {
     var newTrips = trips;
-    newTrips = filterTrips(newTrips);
-    newTrips = sortTrips(newTrips);
+    newTrips = await filterByDistance(newTrips, mapController);
+    newTrips = filterByDepartureTime(newTrips);
+    newTrips = filterByCost(newTrips);
+
     return newTrips;
   }
 
-  List<Trip> filterTrips(List<Trip> trips) {
-    var newTrips = trips.where((trip) {
-      print(trip.departureTime);
-      print(departureDateTimePreference);
-      print(trip.departureTime.compareTo(departureDateTimePreference));
-      return trip.departureTime.compareTo(departureDateTimePreference) == -1;
+  List<Trip> filterByDepartureTime(List<Trip> trips) {
+    final newTrips = trips.where((trip) {
+      return trip.departureTime.compareTo(departureDateTimePreference) != 1;
     }).toList();
 
     return newTrips;
   }
 
-  List<Trip> sortTrips(List<Trip> trips) {
+  Future<List<Trip>> filterByDistance(
+      List<Trip> trips, MapController mapController) async {
+    final tripsWithDistance = await getTripsDistance(trips, mapController);
+
+    final tripsWithDistanceFiltered = tripsWithDistance
+        .where((el) => (el[1] as int) < distanceMetersPreference)
+        .toList();
+    final tripsSorted =
+        List<Trip>.from(tripsWithDistanceFiltered.map((e) => e.first).toList());
+
+    return tripsSorted;
+  }
+
+  List<Trip> filterByCost(List<Trip> trips) {
+    final newTrips = trips.where((trip) {
+      return trip.costOverall.compareTo(costPreference) != 1;
+    }).toList();
+
+    return newTrips;
+  }
+
+  Future<List<Trip>> sortTrips(
+      List<Trip> trips, MapController mapController) async {
+    switch (sortPreference) {
+      case SortPreference.distance:
+        trips = await sortByDistance(trips, mapController);
+        break;
+      case SortPreference.time:
+        sortByDepartureTime(trips);
+        break;
+      case SortPreference.cost:
+        sortByCost(trips);
+        break;
+    }
+
     return trips;
   }
 
-  Future<List<Trip>> _sortTripsByDistance(
+  List<Trip> sortByDepartureTime(List<Trip> trips) {
+    final newTrips = trips;
+    newTrips.sort((a, b) => a.departureTime.compareTo(b.departureTime));
+
+    return newTrips;
+  }
+
+  Future<List<Trip>> sortByDistance(
     List<Trip> trips,
     MapController mapController,
   ) async {
+    final tripsWithDistance = await getTripsDistance(trips, mapController);
+
+    tripsWithDistance.sort((a, b) =>
+        ((a[1] as int) + (a[2] as int)) - ((b[1] as int) + (b[2] as int)));
+    final tripsSorted =
+        List<Trip>.from(tripsWithDistance.map((e) => e.first).toList());
+
+    return tripsSorted;
+  }
+
+  Future<List<List<Object>>> getTripsDistance(
+      List<Trip> trips, MapController mapController) async {
     final tripsWithDistance = await Future.wait(trips.map((e) async {
       return [
         e,
@@ -66,13 +129,7 @@ class TripPreferences extends ChangeNotifier {
       ];
     }));
 
-    tripsWithDistance.sort((a, b) {
-      return ((a[1] as int) + (a[2] as int)) - ((b[1] as int) + (b[2] as int));
-    });
-    final tripsSorted =
-        List<Trip>.from(tripsWithDistance.map((e) => e.first).toList());
-
-    return tripsSorted;
+    return tripsWithDistance;
   }
 
   Future<int> getDistance(String fromAddress, String toAddress) async {
@@ -90,4 +147,13 @@ class TripPreferences extends ChangeNotifier {
 
     return distance;
   }
+
+  List<Trip> sortByCost(List<Trip> trips) {
+    final newTrips = trips;
+    newTrips.sort((a, b) => a.costOverall.compareTo(b.costOverall));
+
+    return newTrips;
+  }
 }
+
+enum SortPreference { time, distance, cost }
