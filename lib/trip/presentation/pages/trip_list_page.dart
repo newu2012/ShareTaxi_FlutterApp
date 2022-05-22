@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
@@ -64,6 +62,10 @@ class TripList extends StatefulWidget {
 
 class _TripListState extends State<TripList> {
   final ScrollController _scrollController = ScrollController();
+  // Попробовать вынести в TripList и записывать в него, если там null
+  // Мб в TripPreferences или ещё где хранить старый,
+  // а обновлять только при "Применить" у фильтров
+  late TripPreferences tripPreferences;
 
   @override
   void dispose() {
@@ -73,8 +75,7 @@ class _TripListState extends State<TripList> {
 
   @override
   Widget build(BuildContext context) {
-    final tripPreferences =
-        Provider.of<TripPreferences>(context, listen: false);
+    tripPreferences = Provider.of<TripPreferences>(context, listen: true);
 
     return Expanded(
       child: Padding(

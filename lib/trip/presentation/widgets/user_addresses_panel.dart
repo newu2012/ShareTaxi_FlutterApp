@@ -122,39 +122,58 @@ class TripPreferencesPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 32),
-      shrinkWrap: true,
-      children: [
-        const Divider(thickness: 4),
-        const Text(
-          'Фильтры',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+    return SizedBox(
+      height: 350,
+      child: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 32),
+        shrinkWrap: true,
+        children: [
+          const Divider(thickness: 4),
+          const Text(
+            'Фильтры',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+            textAlign: TextAlign.center,
           ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(
-          height: 16,
-        ),
-        TimePreferenceRow(),
-        const SizedBox(
-          height: 8,
-        ),
-        DistancePreference(),
-        const SizedBox(
-          height: 16,
-        ),
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 80),
-          child: ElevatedButton(
-              onPressed: () {
-                changeExpandedState();
-              },
-              child: const Text('Применить')),
-        ),
-      ],
+          const SizedBox(
+            height: 8,
+          ),
+          TimePreferenceRow(),
+          const SizedBox(
+            height: 8,
+          ),
+          DistancePreferenceRow(),
+          const SizedBox(
+            height: 16,
+          ),
+          const Text(
+            'Сортировка',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          //  TODO вернуть виджет
+          SortingPreference(),
+          const SizedBox(
+            height: 16,
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 80),
+            child: ElevatedButton(
+                onPressed: () {
+                  changeExpandedState();
+                },
+                child: const Text('Применить')),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -227,16 +246,16 @@ class _TimePreferenceRowState extends State<TimePreferenceRow> {
   }
 }
 
-class DistancePreference extends StatefulWidget {
+class DistancePreferenceRow extends StatefulWidget {
   var distanceController = TextEditingController();
 
-  DistancePreference({Key? key}) : super(key: key);
+  DistancePreferenceRow({Key? key}) : super(key: key);
 
   @override
-  State<DistancePreference> createState() => _DistancePreferenceState();
+  State<DistancePreferenceRow> createState() => _DistancePreferenceRowState();
 }
 
-class _DistancePreferenceState extends State<DistancePreference> {
+class _DistancePreferenceRowState extends State<DistancePreferenceRow> {
   @override
   Widget build(BuildContext context) {
     final tripPreferences =
@@ -266,6 +285,76 @@ class _DistancePreferenceState extends State<DistancePreference> {
             ifEmptyOrNull: 'Больше 0',
           ),
         ),
+      ],
+    );
+  }
+}
+
+class SortingPreference extends StatefulWidget {
+  const SortingPreference({Key? key}) : super(key: key);
+
+  @override
+  State<SortingPreference> createState() => _SortingPreferenceState();
+}
+
+class _SortingPreferenceState extends State<SortingPreference> {
+  late TripPreferences tripPreferences;
+  SortPreference? sortPreference = SortPreference.time;
+
+  void updateRadioState(SortPreference? value) {
+    setState(() {
+      sortPreference = value;
+      tripPreferences.sortPreference = value!;
+      Provider.of<TripPreferences>(context, listen: false).sortPreference =
+          value;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    tripPreferences = Provider.of<TripPreferences>(context, listen: true);
+    sortPreference = tripPreferences.sortPreference;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          'Сортировать по',
+          style: TextStyle(fontSize: 16),
+        ),
+        SizedBox(
+          width: 175,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              RadioListTile(
+                  visualDensity:
+                      const VisualDensity(horizontal: -4, vertical: -4),
+                  title: const Text('Время'),
+                  value: SortPreference.time,
+                  groupValue: sortPreference,
+                  onChanged: (SortPreference? value) =>
+                      updateRadioState(value)),
+              RadioListTile(
+                  visualDensity:
+                      const VisualDensity(horizontal: -4, vertical: -4),
+                  title: const Text('Расстояние'),
+                  value: SortPreference.distance,
+                  groupValue: sortPreference,
+                  onChanged: (SortPreference? value) =>
+                      updateRadioState(value)),
+              RadioListTile(
+                  visualDensity:
+                      const VisualDensity(horizontal: -4, vertical: -4),
+                  title: const Text('Стоимость'),
+                  value: SortPreference.cost,
+                  groupValue: sortPreference,
+                  onChanged: (SortPreference? value) =>
+                      updateRadioState(value)),
+            ],
+          ),
+        )
       ],
     );
   }

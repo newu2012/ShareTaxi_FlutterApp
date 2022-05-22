@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:latlong2/latlong.dart';
@@ -13,6 +15,8 @@ class TripPreferences extends ChangeNotifier {
 
   SortPreference sortPreference = SortPreference.time;
 
+  bool isApplyingNow = false;
+
   TripPreferences();
 
   TripPreferences.full({
@@ -27,13 +31,20 @@ class TripPreferences extends ChangeNotifier {
     costPreference = from.costPreference;
   }
 
-  Future<List<Trip>> applyTripPreferences(
+  Future<List<Trip>?> applyTripPreferences(
       List<Trip> trips, MapController mapController) async {
-    final newTrips = trips;
-    final filteredTrips = await filterTrips(newTrips, mapController);
-    final sortedTrips = await sortTrips(filteredTrips, mapController);
+    if (!isApplyingNow) {
+      print('started applying');
+      isApplyingNow = true;
+      final newTrips = trips;
+      final filteredTrips = await filterTrips(newTrips, mapController);
+      final sortedTrips = await sortTrips(filteredTrips, mapController);
+      isApplyingNow = false;
 
-    return sortedTrips;
+      return sortedTrips;
+    }
+
+    return trips;
   }
 
   Future<List<Trip>> filterTrips(
@@ -42,7 +53,7 @@ class TripPreferences extends ChangeNotifier {
     newTrips = await filterByDistance(newTrips, mapController);
     newTrips = filterByDepartureTime(newTrips);
     newTrips = filterByCost(newTrips);
-    print('${newTrips.length} left after filter');
+    print('${newTrips.length} left after filter from ${trips.length}');
 
     return newTrips;
   }
