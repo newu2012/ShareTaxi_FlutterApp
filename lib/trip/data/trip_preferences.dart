@@ -72,7 +72,7 @@ class TripPreferences extends ChangeNotifier {
 
   List<Trip> filterByDepartureTime(List<Trip> trips) {
     final newTrips = trips.where((trip) {
-      return trip.departureTime.compareTo(departureDateTimePreference) != 1;
+      return trip.departureDateTime.compareTo(departureDateTimePreference) != 1;
     }).toList();
 
     return newTrips;
@@ -101,7 +101,7 @@ class TripPreferences extends ChangeNotifier {
 
   List<Trip> sortByDepartureTime(List<Trip> trips) {
     final newTrips = trips;
-    newTrips.sort((a, b) => a.departureTime.compareTo(b.departureTime));
+    newTrips.sort((a, b) => a.departureDateTime.compareTo(b.departureDateTime));
 
     return newTrips;
   }

@@ -24,7 +24,7 @@ class Trip {
               ? currentCompanions.length
               : min(currentCompanions.length + 1, maximumCompanions)))
       .round();
-  final DateTime departureTime;
+  final DateTime departureDateTime;
 
   DocumentReference? reference;
 
@@ -38,7 +38,7 @@ class Trip {
     required this.currentCompanions,
     required this.maximumCompanions,
     required this.costOverall,
-    required this.departureTime,
+    required this.departureDateTime,
     this.reference,
   });
 
@@ -53,7 +53,7 @@ class Trip {
     List<Companion>? currentCompanions,
     int? maximumCompanions,
     int? costOverall,
-    DateTime? departureTime,
+    DateTime? departureDateTime,
     DocumentReference? reference,
   })  : creatorId = creatorId ?? trip.creatorId,
         title = title ?? trip.title,
@@ -64,7 +64,7 @@ class Trip {
         currentCompanions = currentCompanions ?? trip.currentCompanions,
         maximumCompanions = maximumCompanions ?? trip.maximumCompanions,
         costOverall = costOverall ?? trip.costOverall,
-        departureTime = departureTime ?? trip.departureTime,
+        departureDateTime = departureDateTime ?? trip.departureDateTime,
         reference = reference ?? trip.reference;
 
   factory Trip.fromJson(Map<dynamic, dynamic> json) => Trip(
@@ -83,7 +83,7 @@ class Trip {
         currentCompanions: CompanionsFromJson(json),
         maximumCompanions: json['maximumCompanions'] as int,
         costOverall: json['costOverall'] as int,
-        departureTime: (json['departureTime'] as Timestamp).toDate(),
+        departureDateTime: (json['departureDateTime'] as Timestamp).toDate(),
       );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -98,7 +98,7 @@ class Trip {
         'currentCompanions': CompanionsToJson(),
         'maximumCompanions': maximumCompanions,
         'costOverall': costOverall,
-        'departureTime': departureTime,
+        'departureDateTime': departureDateTime,
       };
 
   static List<Companion> CompanionsFromJson(json) {
