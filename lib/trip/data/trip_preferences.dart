@@ -39,10 +39,6 @@ class TripPreferences extends ChangeNotifier {
     final newTrips = trips;
     final filteredTrips = await filterTrips(newTrips, mapController);
     final sortedTrips = await sortTrips(filteredTrips, mapController);
-    print(sortPreference.name);
-    trips.forEach((e) {
-      print('${e.departureTime.day} ${e.departureTime.minute}');
-    });
 
     return sortedTrips;
   }
@@ -53,7 +49,6 @@ class TripPreferences extends ChangeNotifier {
     newTrips = await filterByDistance(newTrips, mapController);
     newTrips = filterByDepartureTime(newTrips);
     newTrips = filterByCost(newTrips);
-    print('${newTrips.length} left after filter from ${trips.length}');
 
     return newTrips;
   }
@@ -71,7 +66,6 @@ class TripPreferences extends ChangeNotifier {
         sortByCost(trips);
         break;
     }
-    print('${trips.length} sorted');
 
     return trips;
   }
