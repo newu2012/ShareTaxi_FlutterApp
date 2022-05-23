@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../common/presentation/widgets/widgets.dart';
 import '../../data/data.dart';
 import '../../logic/map_controller.dart';
+import 'widgets.dart';
 
 class UserAddressesPanel extends StatefulWidget {
   UserAddressesPanel({Key? key}) : super(key: key);
@@ -182,27 +183,27 @@ class TimePreferenceRow extends StatefulWidget {
   TimePreferenceRow({
     Key? key,
   }) : super(key: key);
-  var timeController = TextEditingController();
 
   @override
   State<TimePreferenceRow> createState() => _TimePreferenceRowState();
 }
 
 class _TimePreferenceRowState extends State<TimePreferenceRow> {
+  late DateTime _departureDateTimePreference;
+  late TripPreferences tripPreferences;
+
+  void updateDepartureDateTimePreference(DateTime dateTime) {
+    setState(() {
+      _departureDateTimePreference = dateTime;
+      tripPreferences.departureDateTimePreference =
+          _departureDateTimePreference;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final tripPreferences =
-        Provider.of<TripPreferences>(context, listen: false);
-
-    widget.timeController.text =
-        tripPreferences.departureDateTimePreference.toString();
-
-    widget.timeController.addListener(() {
-      if (widget.timeController.text.length != 0) {
-        tripPreferences.departureDateTimePreference =
-            DateTime.parse(widget.timeController.text);
-      }
-    });
+    tripPreferences = Provider.of<TripPreferences>(context, listen: false);
+    _departureDateTimePreference = tripPreferences.departureDateTimePreference;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -211,35 +212,9 @@ class _TimePreferenceRowState extends State<TimePreferenceRow> {
           'Выезд до',
           style: TextStyle(fontSize: 16),
         ),
-        SizedBox(
-          width: 85,
-          // child:  showDateRangePicker(context: context, firstDate: firstDate,
-          // lastDate: lastDate)
-          child: GestureDetector(
-            onTap: () async {
-              final pickedTime = await showTimePicker(
-                context: context,
-                initialEntryMode: TimePickerEntryMode.input,
-                initialTime: TimeOfDay(
-                  hour: tripPreferences.departureDateTimePreference.hour,
-                  minute: tripPreferences.departureDateTimePreference.minute,
-                ),
-              );
-              if (pickedTime != null) {
-                setState(() {
-                  final time = DateTime.now();
-                  tripPreferences.departureDateTimePreference = DateTime(
-                    time.year,
-                    time.month,
-                    time.day,
-                    pickedTime.hour,
-                    pickedTime.minute,
-                  );
-                });
-              }
-            },
-            child: Text(tripPreferences.departureDateTimePreference.toString()),
-          ),
+        DepartureDateTimeCard(
+          departureDateTime: _departureDateTimePreference,
+          updateDepartureDateTime: updateDepartureDateTimePreference,
         ),
       ],
     );
