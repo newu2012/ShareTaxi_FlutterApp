@@ -32,7 +32,9 @@ class TripMainInfoRow extends StatelessWidget {
         const SizedBox(
           width: 4,
         ),
-        Text('${DateFormat('HH:mm').format(trip.departureTime)} выезд'),
+        Text(
+            '${DateFormat('dd.MM HH:mm')
+                .format(trip.departureDateTime)}'),
         const SizedBox(
           width: 12,
         ),

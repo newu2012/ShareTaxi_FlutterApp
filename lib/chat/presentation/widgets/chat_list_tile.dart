@@ -37,7 +37,7 @@ class ChatListTile extends StatelessWidget {
                   width: 8,
                 ),
                 Text(
-                  '${DateFormat('dd.MM.yy').format(trip.departureTime)}',
+                  '${DateFormat('dd.MM.yy').format(trip.departureDateTime)}',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],

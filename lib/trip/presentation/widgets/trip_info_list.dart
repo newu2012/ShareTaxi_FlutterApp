@@ -205,7 +205,7 @@ class TimeCard extends StatelessWidget {
                 width: 12,
               ),
               Text(
-                DateFormat('HH:mm').format(trip.departureTime).toString(),
+                '${DateFormat('dd.MM\nHH:mm').format(trip.departureDateTime)}',
                 style: Theme.of(context).textTheme.headline6,
               ),
             ],

@@ -52,7 +52,8 @@ class _ChatListPageState extends State<ChatListPage> {
 
           final trips =
               snapshot.data!.docs.map((e) => Trip.fromSnapshot(e)).toList();
-          trips.sort((a, b) => b.departureTime.compareTo(a.departureTime));
+          trips.sort(
+              (a, b) => b.departureDateTime.compareTo(a.departureDateTime));
 
           return Column(
             children: _widgetsToBuild(trips),
@@ -64,10 +65,10 @@ class _ChatListPageState extends State<ChatListPage> {
 
   List<Widget> _widgetsToBuild(List<Trip> trips) {
     final activeTrips = trips
-        .where((trip) => trip.departureTime.isAfter(DateTime.now()))
+        .where((trip) => trip.departureDateTime.isAfter(DateTime.now()))
         .toList();
     final inactiveTrips = trips
-        .where((trip) => trip.departureTime.isBefore(DateTime.now()))
+        .where((trip) => trip.departureDateTime.isBefore(DateTime.now()))
         .toList();
 
     final widgetsToBuild = <Widget>[];

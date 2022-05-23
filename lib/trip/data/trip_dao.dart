@@ -41,7 +41,7 @@ class TripDao extends ChangeNotifier {
 
   Stream<QuerySnapshot> getTripStream() {
     return collection
-        .where('departureTime', isGreaterThanOrEqualTo: DateTime.now())
+        .where('departureDateTime', isGreaterThanOrEqualTo: DateTime.now())
         .snapshots();
   }
 
