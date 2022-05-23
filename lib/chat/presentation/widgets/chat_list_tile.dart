@@ -17,30 +17,19 @@ class ChatListTile extends StatelessWidget {
       ),
       elevation: 4.0,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Text(
-                      trip.title,
-                      style: const TextStyle(fontSize: 19),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                Text(
-                  '${DateFormat('dd.MM.yy').format(trip.departureDateTime)}',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ],
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Text(
+                trip.title,
+                style: const TextStyle(fontSize: 18),
+              ),
+            ),
+            const SizedBox(
+              height: 4,
             ),
             AddressRowWithoutDistance(
               trip: trip,
@@ -49,6 +38,9 @@ class ChatListTile extends StatelessWidget {
             AddressRowWithoutDistance(
               trip: trip,
               fromPoint: false,
+            ),
+            const SizedBox(
+              height: 4,
             ),
             TripMainInfoRow(trip: trip),
           ],
