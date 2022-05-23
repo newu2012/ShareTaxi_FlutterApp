@@ -83,7 +83,8 @@ class TripPreferences extends ChangeNotifier {
     final tripsWithDistance = await getTripsDistance(trips, mapController);
 
     final tripsWithDistanceFiltered = tripsWithDistance
-        .where((el) => (el[1] as int) < distanceMetersPreference)
+        .where(
+            (el) => (el[1] as int) + (el[2] as int) <= distanceMetersPreference)
         .toList();
     final tripsSorted =
         List<Trip>.from(tripsWithDistanceFiltered.map((e) => e.first).toList());
