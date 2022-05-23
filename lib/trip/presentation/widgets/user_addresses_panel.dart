@@ -15,8 +15,6 @@ class UserAddressesPanel extends StatefulWidget {
 }
 
 class _UserAddressesPanelState extends State<UserAddressesPanel> {
-  late TripPreferences tripPreferences;
-
   void changeExpandedState() {
     setState(() {
       widget.isTripPreferencesPanelExpanded =
@@ -26,8 +24,6 @@ class _UserAddressesPanelState extends State<UserAddressesPanel> {
 
   @override
   Widget build(BuildContext context) {
-    tripPreferences = Provider.of<TripPreferences>(context, listen: true);
-
     return ExpansionPanelList(
       animationDuration: const Duration(milliseconds: 500),
       expandedHeaderPadding: const EdgeInsets.all(0),
@@ -95,7 +91,6 @@ class _UserAddressesPanelState extends State<UserAddressesPanel> {
             ),
           ),
           body: TripPreferencesPanel(
-            tripPreferences: tripPreferences,
             changeExpandedState: changeExpandedState,
           ),
         ),
@@ -110,19 +105,25 @@ class _UserAddressesPanelState extends State<UserAddressesPanel> {
   }
 }
 
-class TripPreferencesPanel extends StatelessWidget {
-  final TripPreferences tripPreferences;
+class TripPreferencesPanel extends StatefulWidget {
+  late TripPreferences tripPreferences;
   final Function changeExpandedState;
-  final TripPreferences newTripPreferences = TripPreferences();
 
   TripPreferencesPanel({
     Key? key,
-    required TripPreferences this.tripPreferences,
     required Function this.changeExpandedState,
   }) : super(key: key);
 
   @override
+  State<TripPreferencesPanel> createState() => _TripPreferencesPanelState();
+}
+
+class _TripPreferencesPanelState extends State<TripPreferencesPanel> {
+  @override
   Widget build(BuildContext context) {
+    widget.tripPreferences =
+        Provider.of<TripPreferences>(context, listen: true);
+
     return SizedBox(
       height: 350,
       child: ListView(
@@ -169,7 +170,10 @@ class TripPreferencesPanel extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 80),
             child: ElevatedButton(
                 onPressed: () {
-                  changeExpandedState();
+                  setState(() {
+                    widget.changeExpandedState();
+                    widget.tripPreferences.notifyPreferences();
+                  });
                 },
                 child: const Text('Применить')),
           ),
@@ -274,20 +278,18 @@ class SortingPreference extends StatefulWidget {
 
 class _SortingPreferenceState extends State<SortingPreference> {
   late TripPreferences tripPreferences;
-  SortPreference? sortPreference = SortPreference.time;
+  late SortPreference sortPreference = SortPreference.time;
 
   void updateRadioState(SortPreference? value) {
     setState(() {
-      sortPreference = value;
-      tripPreferences.sortPreference = value!;
-      Provider.of<TripPreferences>(context, listen: false).sortPreference =
-          value;
+      sortPreference = value!;
+      tripPreferences.sortPreference = sortPreference;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    tripPreferences = Provider.of<TripPreferences>(context, listen: true);
+    tripPreferences = Provider.of<TripPreferences>(context, listen: false);
     sortPreference = tripPreferences.sortPreference;
 
     return Row(
