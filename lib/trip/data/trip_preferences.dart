@@ -93,7 +93,7 @@ class TripPreferences extends ChangeNotifier {
 
   List<Trip> filterByCost(List<Trip> trips) {
     final newTrips = trips.where((trip) {
-      return trip.costOverall.compareTo(costPreference) != 1;
+      return trip.cost.compareTo(costPreference) != 1;
     }).toList();
 
     return newTrips;
@@ -157,7 +157,7 @@ class TripPreferences extends ChangeNotifier {
 
   List<Trip> sortByCost(List<Trip> trips) {
     final newTrips = trips;
-    newTrips.sort((a, b) => a.costOverall.compareTo(b.costOverall));
+    newTrips.sort((a, b) => a.cost.compareTo(b.cost));
 
     return newTrips;
   }

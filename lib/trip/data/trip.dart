@@ -15,9 +15,9 @@ class Trip {
   LatLng toPointLatLng;
   List<Companion> currentCompanions;
   int maximumCompanions;
-  int costOverall;
+  int cost;
 
-  int get oneUserCost => (costOverall /
+  int get oneUserCost => (cost /
           (currentCompanions
                   .map((e) => e.userId)
                   .contains(FireUserDao().userId())
@@ -37,7 +37,7 @@ class Trip {
     required this.toPointLatLng,
     required this.currentCompanions,
     required this.maximumCompanions,
-    required this.costOverall,
+    required this.cost,
     required this.departureDateTime,
     this.reference,
   });
@@ -52,7 +52,7 @@ class Trip {
     LatLng? toPointLatLng,
     List<Companion>? currentCompanions,
     int? maximumCompanions,
-    int? costOverall,
+    int? cost,
     DateTime? departureDateTime,
     DocumentReference? reference,
   })  : creatorId = creatorId ?? trip.creatorId,
@@ -63,7 +63,7 @@ class Trip {
         toPointLatLng = toPointLatLng ?? trip.toPointLatLng,
         currentCompanions = currentCompanions ?? trip.currentCompanions,
         maximumCompanions = maximumCompanions ?? trip.maximumCompanions,
-        costOverall = costOverall ?? trip.costOverall,
+        cost = cost ?? trip.cost,
         departureDateTime = departureDateTime ?? trip.departureDateTime,
         reference = reference ?? trip.reference;
 
@@ -82,7 +82,7 @@ class Trip {
         ),
         currentCompanions: CompanionsFromJson(json),
         maximumCompanions: json['maximumCompanions'] as int,
-        costOverall: json['costOverall'] as int,
+        cost: json['cost'] as int,
         departureDateTime: (json['departureDateTime'] as Timestamp).toDate(),
       );
 
@@ -97,7 +97,7 @@ class Trip {
             GeoPoint(toPointLatLng.latitude, toPointLatLng.longitude),
         'currentCompanions': CompanionsToJson(),
         'maximumCompanions': maximumCompanions,
-        'costOverall': costOverall,
+        'cost': cost,
         'departureDateTime': departureDateTime,
       };
 
