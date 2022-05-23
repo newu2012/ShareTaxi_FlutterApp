@@ -39,7 +39,7 @@ class _TripListPageState extends State<TripListPage> {
               const SizedBox(
                 height: 4,
               ),
-              UserAddressesPanel(),
+              const UserAddressesPanel(),
               TripList(_tripDao, _mapController),
             ],
           ),
@@ -50,10 +50,11 @@ class _TripListPageState extends State<TripListPage> {
 }
 
 class TripList extends StatefulWidget {
-  TripDao tripDao;
-  MapController mapController;
+  final TripDao tripDao;
+  final MapController mapController;
 
-  TripList(TripDao this.tripDao, MapController this.mapController, {Key? key})
+  const TripList(TripDao this.tripDao, MapController this.mapController,
+      {Key? key})
       : super(key: key);
 
   @override
@@ -62,6 +63,7 @@ class TripList extends StatefulWidget {
 
 class _TripListState extends State<TripList> {
   final ScrollController _scrollController = ScrollController();
+
   // Попробовать вынести в TripList и записывать в него, если там null
   // Мб в TripPreferences или ещё где хранить старый,
   // а обновлять только при "Применить" у фильтров

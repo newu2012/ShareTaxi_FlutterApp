@@ -7,18 +7,18 @@ import '../../logic/map_controller.dart';
 import 'widgets.dart';
 
 class UserAddressesPanel extends StatefulWidget {
-  UserAddressesPanel({Key? key}) : super(key: key);
-  var isTripPreferencesPanelExpanded = true;
+  const UserAddressesPanel({Key? key}) : super(key: key);
 
   @override
   State<UserAddressesPanel> createState() => _UserAddressesPanelState();
 }
 
 class _UserAddressesPanelState extends State<UserAddressesPanel> {
+  var isTripPreferencesPanelExpanded = true;
+
   void changeExpandedState() {
     setState(() {
-      widget.isTripPreferencesPanelExpanded =
-          !widget.isTripPreferencesPanelExpanded;
+      isTripPreferencesPanelExpanded = !isTripPreferencesPanelExpanded;
     });
   }
 
@@ -29,7 +29,7 @@ class _UserAddressesPanelState extends State<UserAddressesPanel> {
       expandedHeaderPadding: const EdgeInsets.all(0),
       children: [
         ExpansionPanel(
-          isExpanded: widget.isTripPreferencesPanelExpanded,
+          isExpanded: isTripPreferencesPanelExpanded,
           headerBuilder: (BuildContext buildContext, bool isExpanded) =>
               Padding(
             padding: const EdgeInsets.only(left: 16.0),
@@ -97,8 +97,7 @@ class _UserAddressesPanelState extends State<UserAddressesPanel> {
       ],
       expansionCallback: (panelIndex, isExpanded) {
         setState(() {
-          widget.isTripPreferencesPanelExpanded =
-              !widget.isTripPreferencesPanelExpanded;
+          isTripPreferencesPanelExpanded = !isTripPreferencesPanelExpanded;
         });
       },
     );
@@ -106,10 +105,9 @@ class _UserAddressesPanelState extends State<UserAddressesPanel> {
 }
 
 class TripPreferencesPanel extends StatefulWidget {
-  late TripPreferences tripPreferences;
   final Function changeExpandedState;
 
-  TripPreferencesPanel({
+  const TripPreferencesPanel({
     Key? key,
     required Function this.changeExpandedState,
   }) : super(key: key);
@@ -119,13 +117,14 @@ class TripPreferencesPanel extends StatefulWidget {
 }
 
 class _TripPreferencesPanelState extends State<TripPreferencesPanel> {
+  late TripPreferences tripPreferences;
+
   @override
   Widget build(BuildContext context) {
-    widget.tripPreferences =
-        Provider.of<TripPreferences>(context, listen: true);
+    tripPreferences = Provider.of<TripPreferences>(context, listen: true);
 
     return SizedBox(
-      height: 350,
+      height: 280,
       child: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 32),
         shrinkWrap: true,
@@ -142,11 +141,11 @@ class _TripPreferencesPanelState extends State<TripPreferencesPanel> {
           const SizedBox(
             height: 8,
           ),
-          TimePreferenceRow(),
+          const TimePreferenceRow(),
           const SizedBox(
             height: 8,
           ),
-          DistancePreferenceRow(),
+          const DistancePreferenceRow(),
           const SizedBox(
             height: 16,
           ),
@@ -162,7 +161,7 @@ class _TripPreferencesPanelState extends State<TripPreferencesPanel> {
             height: 8,
           ),
           //  TODO вернуть виджет
-          SortingPreference(),
+          const SortingPreference(),
           const SizedBox(
             height: 16,
           ),
@@ -172,7 +171,7 @@ class _TripPreferencesPanelState extends State<TripPreferencesPanel> {
                 onPressed: () {
                   setState(() {
                     widget.changeExpandedState();
-                    widget.tripPreferences.notifyPreferences();
+                    tripPreferences.notifyPreferences();
                   });
                 },
                 child: const Text('Применить')),
@@ -184,7 +183,7 @@ class _TripPreferencesPanelState extends State<TripPreferencesPanel> {
 }
 
 class TimePreferenceRow extends StatefulWidget {
-  TimePreferenceRow({
+  const TimePreferenceRow({
     Key? key,
   }) : super(key: key);
 
@@ -226,26 +225,33 @@ class _TimePreferenceRowState extends State<TimePreferenceRow> {
 }
 
 class DistancePreferenceRow extends StatefulWidget {
-  var distanceController = TextEditingController();
-
-  DistancePreferenceRow({Key? key}) : super(key: key);
+  const DistancePreferenceRow({Key? key}) : super(key: key);
 
   @override
   State<DistancePreferenceRow> createState() => _DistancePreferenceRowState();
 }
 
 class _DistancePreferenceRowState extends State<DistancePreferenceRow> {
+  late TripPreferences tripPreferences;
+  final TextEditingController distanceController = TextEditingController();
+
+  @override
+  void dispose() {
+    distanceController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final tripPreferences =
-        Provider.of<TripPreferences>(context, listen: false);
+    tripPreferences = Provider.of<TripPreferences>(context, listen: false);
 
-    widget.distanceController.text =
+    distanceController.text =
         tripPreferences.distanceMetersPreference.toString();
-    widget.distanceController.addListener(() {
-      if (widget.distanceController.text.length != 0) {
+
+    distanceController.addListener(() {
+      if (distanceController.text.length != 0) {
         tripPreferences.distanceMetersPreference =
-            int.parse(widget.distanceController.text);
+            int.parse(distanceController.text);
       }
     });
 
@@ -259,7 +265,7 @@ class _DistancePreferenceRowState extends State<DistancePreferenceRow> {
         SizedBox(
           width: 85,
           child: DigitsOnlyFormField(
-            controller: widget.distanceController,
+            controller: distanceController,
             hint: 'Метров',
             ifEmptyOrNull: 'Больше 0',
           ),
