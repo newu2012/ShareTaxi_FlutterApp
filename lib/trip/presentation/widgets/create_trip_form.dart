@@ -24,9 +24,22 @@ class _CreateTripFormState extends State<CreateTripForm> {
   var _companionTypeSwitch = false;
   var _companionType = CompanionType.passenger;
   var _maximumCompanions = 4;
-  var _departureTime = DateTime.now().add(
-    const Duration(minutes: 30),
-  );
+  var _departureDateTime =
+      currentTimeWithoutSeconds().add(const Duration(minutes: 30));
+
+  static DateTime currentTimeWithoutSeconds() {
+    final now = DateTime.now();
+    final nowFormatted =
+        DateTime(now.year, now.month, now.day, now.hour, now.minute);
+
+    return nowFormatted;
+  }
+
+  void updateDepartureDateTime(DateTime dateTime) {
+    setState(() {
+      _departureDateTime = dateTime;
+    });
+  }
 
   @override
   void initState() {
@@ -165,30 +178,10 @@ class _CreateTripFormState extends State<CreateTripForm> {
                   fontSize: 16.0,
                 ),
               ),
-              GestureDetector(
-                onTap: () async {
-                  final pickedTime = await showTimePicker(
-                    context: context,
-                    initialEntryMode: TimePickerEntryMode.input,
-                    initialTime: TimeOfDay(
-                      hour: _departureTime.hour,
-                      minute: _departureTime.minute,
-                    ),
-                  );
-                  if (pickedTime != null) {
-                    setState(() {
-                      final time = DateTime.now();
-                      _departureTime = DateTime(
-                        time.year,
-                        time.month,
-                        time.day,
-                        pickedTime.hour,
-                        pickedTime.minute,
-                      );
-                    });
-                  }
-                },
-                child: DepartureTimeCard(departureTime: _departureTime),
+              DepartureDateTimeCard(
+                departureDateTime: _departureDateTime,
+                updateDepartureDateTime:
+                    updateDepartureDateTime,
               ),
             ],
           ),
@@ -225,46 +218,11 @@ class _CreateTripFormState extends State<CreateTripForm> {
             costController: _costController,
             companionType: _companionType,
             maximumCompanions: _maximumCompanions,
-            departureTime: _departureTime,
+            departureTime: _departureDateTime,
             tripDao: _tripDao,
             fireUserDao: _fireUserDao,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class DepartureTimeCard extends StatelessWidget {
-  const DepartureTimeCard({
-    Key? key,
-    required DateTime departureTime,
-  })  : _departureTime = departureTime,
-        super(key: key);
-
-  final DateTime _departureTime;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 85,
-      child: Card(
-        color: const Color.fromRGBO(111, 108, 217, 35),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-          child: Text(
-            '${_departureTime.hour}:'
-            '${_departureTime.minute.toString().padLeft(2, '0')}',
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ),
       ),
     );
   }
