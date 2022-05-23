@@ -15,8 +15,6 @@ class TripPreferences extends ChangeNotifier {
 
   SortPreference sortPreference = SortPreference.time;
 
-  bool isApplyingNow = false;
-
   TripPreferences();
 
   TripPreferences.full({
@@ -33,18 +31,11 @@ class TripPreferences extends ChangeNotifier {
 
   Future<List<Trip>?> applyTripPreferences(
       List<Trip> trips, MapController mapController) async {
-    if (!isApplyingNow) {
-      print('started applying');
-      isApplyingNow = true;
-      final newTrips = trips;
-      final filteredTrips = await filterTrips(newTrips, mapController);
-      final sortedTrips = await sortTrips(filteredTrips, mapController);
-      isApplyingNow = false;
+    final newTrips = trips;
+    final filteredTrips = await filterTrips(newTrips, mapController);
+    final sortedTrips = await sortTrips(filteredTrips, mapController);
 
-      return sortedTrips;
-    }
-
-    return trips;
+    return sortedTrips;
   }
 
   Future<List<Trip>> filterTrips(
