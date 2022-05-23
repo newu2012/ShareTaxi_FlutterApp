@@ -12,7 +12,6 @@ class TripPreferences extends ChangeNotifier {
       DateTime.now().add(const Duration(days: 1));
   int distanceMetersPreference = 2000;
   int costPreference = 2500;
-
   SortPreference sortPreference = SortPreference.time;
 
   TripPreferences();
@@ -21,12 +20,18 @@ class TripPreferences extends ChangeNotifier {
     required this.departureDateTimePreference,
     required this.distanceMetersPreference,
     required this.costPreference,
+    required this.sortPreference,
   });
+
+  void notifyPreferences() {
+    notifyListeners();
+  }
 
   void copyFrom(TripPreferences from) {
     departureDateTimePreference = from.departureDateTimePreference;
     distanceMetersPreference = from.distanceMetersPreference;
     costPreference = from.costPreference;
+    sortPreference = from.sortPreference;
   }
 
   Future<List<Trip>?> applyTripPreferences(
@@ -34,6 +39,10 @@ class TripPreferences extends ChangeNotifier {
     final newTrips = trips;
     final filteredTrips = await filterTrips(newTrips, mapController);
     final sortedTrips = await sortTrips(filteredTrips, mapController);
+    print(sortPreference.name);
+    trips.forEach((e) {
+      print('${e.departureTime.day} ${e.departureTime.minute}');
+    });
 
     return sortedTrips;
   }
