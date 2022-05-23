@@ -63,7 +63,7 @@ class CreateTripButton extends StatelessWidget {
                     .locationFromAddress(_toPointAddress))
                 .map((e) => LatLng(e.latitude, e.longitude))
                 .first,
-            costOverall: int.parse(_costController.text),
+            cost: int.parse(_costController.text),
             departureDateTime: _departureTime,
             currentCompanions: [
               Companion(
