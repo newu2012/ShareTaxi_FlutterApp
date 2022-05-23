@@ -16,8 +16,8 @@ class DepartureDateTimeCard extends StatelessWidget {
       onTap: () async {
         final pickedDate = await showDatePicker(
           context: context,
-          initialDate: departureDateTime,
-          firstDate: departureDateTime,
+          initialDate: DateTime.now(),
+          firstDate: DateTime.now(),
           lastDate: DateTime.now().add(const Duration(days: 14)),
         );
         final pickedTime = await showTimePicker(
