@@ -269,7 +269,7 @@ class CostCard extends StatelessWidget {
                 width: 12,
               ),
               Text(
-                '${trip.oneUserCost}/\n ${trip.cost}',
+                '${trip.cost}',
                 style: Theme.of(context).textTheme.headline6,
               ),
             ],
