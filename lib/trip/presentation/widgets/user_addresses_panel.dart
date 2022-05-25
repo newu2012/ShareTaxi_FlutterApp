@@ -14,7 +14,7 @@ class UserAddressesPanel extends StatefulWidget {
 }
 
 class _UserAddressesPanelState extends State<UserAddressesPanel> {
-  var isTripPreferencesPanelExpanded = true;
+  var isTripPreferencesPanelExpanded = false;
 
   void changeExpandedState() {
     setState(() {
