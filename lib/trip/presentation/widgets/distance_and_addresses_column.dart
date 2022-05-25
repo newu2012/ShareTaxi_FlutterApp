@@ -41,19 +41,25 @@ class DistanceAndAddressesColumn extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Text(
-                trip.fromPointAddress,
+            SizedBox(
+              width: 290,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  trip.fromPointAddress,
+                ),
               ),
             ),
             const SizedBox(
               height: 8,
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Text(
-                trip.toPointAddress,
+            SizedBox(
+              width: 290,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  trip.toPointAddress,
+                ),
               ),
             ),
           ],
