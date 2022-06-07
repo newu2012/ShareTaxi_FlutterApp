@@ -142,6 +142,9 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ),
                       onChanged: (val) {
+                        if (val == '')
+                          fromPointMarker = null;
+
                         setState(() {
                           fromPointAddress = val;
                         });
@@ -192,6 +195,9 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ),
                       onChanged: (val) {
+                        if (val == '')
+                          toPointMarker = null;
+
                         setState(() {
                           toPointAddress = val;
                         });
@@ -223,13 +229,22 @@ class _MainPageState extends State<MainPage> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        if (fromPointMarker == null || toPointMarker == null)
+                        if (fromPointController.text == '' ||
+                            toPointController.text == '') {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
                             content: Text('Введите оба адреса'),
                           ));
-                        else
-                          Navigator.pushNamed(context, '/trips');
+
+                          return;
+                        }
+
+                        if (fromPointMarker == null)
+                          searchAndNavigate(fromPointAddress, 'fromPoint');
+                        if (toPointMarker == null)
+                          searchAndNavigate(toPointAddress, 'toPoint');
+
+                        Navigator.pushNamed(context, '/trips');
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -252,13 +267,18 @@ class _MainPageState extends State<MainPage> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        if (fromPointMarker == null || toPointMarker == null)
+                        if (fromPointController.text == '' ||
+                            toPointController.text == '') {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
                             content: Text('Введите оба адреса'),
                           ));
-                        else
-                          Navigator.pushNamed(context, '/createTrip');
+
+                          return;
+                        }
+                        searchAndNavigate(fromPointAddress, 'fromPoint');
+                        searchAndNavigate(toPointAddress, 'toPoint');
+                        Navigator.pushNamed(context, '/createTrip');
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -330,7 +350,7 @@ class _MainPageState extends State<MainPage> {
     return Geolocator.getCurrentPosition();
   }
 
-  void searchAndNavigate(String address, String pointName) async {
+  Future<bool> searchAndNavigate(String address, String pointName) async {
     var coordinatesFromAddress;
     var finalAddress;
     try {
@@ -354,7 +374,8 @@ class _MainPageState extends State<MainPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Не удалось найти адрес')),
       );
-      return;
+
+      return false;
     }
 
     setState(() {
@@ -379,6 +400,8 @@ class _MainPageState extends State<MainPage> {
       Provider.of<MapController>(context, listen: false).markers = _markers;
       _moveCamera();
     });
+
+    return true;
   }
 
   String getAddressFromPlacemark(Placemark pl) {
