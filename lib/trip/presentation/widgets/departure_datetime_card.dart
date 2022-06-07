@@ -40,7 +40,7 @@ class DepartureDateTimeCard extends StatelessWidget {
         }
       },
       child: SizedBox(
-        width: 120,
+        width: 130,
         child: Card(
           color: const Color.fromRGBO(111, 108, 217, 35),
           shape: RoundedRectangleBorder(
@@ -48,7 +48,7 @@ class DepartureDateTimeCard extends StatelessWidget {
           ),
           child: Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                const EdgeInsets.symmetric(vertical: 4.0),
             child: Text(
               '${departureDateTime.day.toString().padLeft(2, '0')}.'
               '${departureDateTime.month.toString().padLeft(2, '0')} '
