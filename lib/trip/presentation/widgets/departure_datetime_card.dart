@@ -48,12 +48,12 @@ class DepartureDateTimeCard extends StatelessWidget {
           ),
           child: Padding(
             padding:
-                const EdgeInsets.symmetric(vertical: 4.0),
+            const EdgeInsets.symmetric(vertical: 4.0),
             child: Text(
               '${departureDateTime.day.toString().padLeft(2, '0')}.'
-              '${departureDateTime.month.toString().padLeft(2, '0')} '
-              '${departureDateTime.hour}:'
-              '${departureDateTime.minute.toString().padLeft(2, '0')}',
+                  '${departureDateTime.month.toString().padLeft(2, '0')} '
+                  '${departureDateTime.hour}:'
+                  '${departureDateTime.minute.toString().padLeft(2, '0')}',
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 16,
