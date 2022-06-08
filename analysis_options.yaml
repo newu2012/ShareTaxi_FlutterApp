@@ -68,10 +68,11 @@ dart_code_metrics:
     - prefer-conditional-expressions
     - prefer-first
     - prefer-last
+    - prefer-trailing-comma
+
     - prefer-match-file-name:
         exclude:
           - test/**
-    - prefer-trailing-comma
 
 linter:
   rules:
