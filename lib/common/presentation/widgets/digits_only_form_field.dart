@@ -25,6 +25,7 @@ class DigitsOnlyFormField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: _hint,
       ),
+      textAlign: TextAlign.center,
       keyboardType: TextInputType.number,
       inputFormatters: <TextInputFormatter>[
         FilteringTextInputFormatter.digitsOnly,

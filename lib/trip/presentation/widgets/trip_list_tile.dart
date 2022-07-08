@@ -18,7 +18,7 @@ class TripListTile extends StatelessWidget {
       ),
       elevation: 4.0,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -26,11 +26,22 @@ class TripListTile extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: Text(
                 trip.title,
-                style: const TextStyle(fontSize: 19),
-                overflow: TextOverflow.fade,
+                style: const TextStyle(
+                  fontSize: 18,
+                  overflow: TextOverflow.fade,
+                ),
               ),
             ),
-            DistanceAndAddressesRow(trip: trip),
+            const SizedBox(
+              height: 4,
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DistanceAndAddressesColumn(trip: trip),
+            ),
+            const SizedBox(
+              height: 4,
+            ),
             TripMainInfoRow(trip: trip),
           ],
         ),

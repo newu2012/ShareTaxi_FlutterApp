@@ -50,9 +50,9 @@ class _LoginFormState extends State<LoginForm> {
         children: [
           const Center(
             child: Text(
-              'Share Taxi',
+              'Carpooling Helper',
               style: TextStyle(
-                fontSize: 36,
+                fontSize: 32,
                 fontWeight: FontWeight.bold,
               ),
             ),

@@ -13,16 +13,25 @@ class TripMainInfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final costOverall = trip.costOverall >= 1000
-        ? '${(trip.costOverall / 1000).toStringAsFixed(1)} к'
-        : '${trip.costOverall}';
-    final costOneUser = trip.oneUserCost >= 1000
-        ? '${(trip.oneUserCost / 1000).toStringAsFixed(1)} к'
-        : '${trip.oneUserCost}';
-    final costText = costOverall.endsWith('к') && costOneUser.endsWith('к')
-        ? Text('$costOneUser/$costOverall')
-        : Text('$costOneUser/$costOverall руб.');
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        DepartureDateTimeRow(trip: trip),
+        CurrentCompanionsRow(trip: trip),
+        CostRow(trip: trip),
+      ],
+    );
+  }
+}
 
+class DepartureDateTimeRow extends StatelessWidget {
+  final Trip trip;
+
+  const DepartureDateTimeRow({Key? key, required Trip this.trip})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
         Icon(
@@ -32,10 +41,22 @@ class TripMainInfoRow extends StatelessWidget {
         const SizedBox(
           width: 4,
         ),
-        Text('${DateFormat('HH:mm').format(trip.departureTime)} выезд'),
-        const SizedBox(
-          width: 12,
-        ),
+        Text('${DateFormat('dd.MM HH:mm').format(trip.departureDateTime)}'),
+      ],
+    );
+  }
+}
+
+class CurrentCompanionsRow extends StatelessWidget {
+  final Trip trip;
+
+  const CurrentCompanionsRow({Key? key, required Trip this.trip})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
         Icon(
           Icons.people,
           color: Theme.of(context).primaryColor,
@@ -46,9 +67,24 @@ class TripMainInfoRow extends StatelessWidget {
         Text(
           '${trip.currentCompanions.length}/${trip.maximumCompanions}',
         ),
-        const SizedBox(
-          width: 12,
-        ),
+      ],
+    );
+  }
+}
+
+class CostRow extends StatelessWidget {
+  final Trip trip;
+
+  const CostRow({Key? key, required Trip this.trip}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final cost = trip.cost >= 1000
+        ? '${(trip.cost / 1000).toStringAsFixed(1)}к руб.'
+        : '${trip.cost} руб.';
+
+    return Row(
+      children: [
         Icon(
           Icons.payments,
           color: Theme.of(context).primaryColor,
@@ -56,7 +92,7 @@ class TripMainInfoRow extends StatelessWidget {
         const SizedBox(
           width: 4,
         ),
-        costText,
+        Text(cost),
       ],
     );
   }

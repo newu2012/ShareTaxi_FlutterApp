@@ -1,0 +1,1 @@
+enum CompanionType { driver, passenger }

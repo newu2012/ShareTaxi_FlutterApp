@@ -24,7 +24,7 @@ class ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollToBottom());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
     final messageDao = Provider.of<MessageDao>(context, listen: false);
     final fireUserDao = Provider.of<FireUserDao>(context, listen: false);
     final tripDao = Provider.of<TripDao>(context, listen: false);

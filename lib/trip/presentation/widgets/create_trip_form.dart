@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/data.dart';
 import '../../logic/map_controller.dart';
 import '../../../common/presentation/widgets/widgets.dart';
 import 'widgets.dart';
-import '../../data/trip_dao.dart';
 import '../../../common/data/fire_user_dao.dart';
 
 class CreateTripForm extends StatefulWidget {
@@ -21,18 +21,34 @@ class _CreateTripFormState extends State<CreateTripForm> {
   final _toPointController = TextEditingController();
   final _costController = TextEditingController();
 
+  var _companionTypeSwitch = false;
+  var _companionType = CompanionType.passenger;
   var _maximumCompanions = 4;
-  var _departureTime = DateTime.now().add(
-    const Duration(minutes: 30),
-  );
+  var _departureDateTime =
+      currentTimeWithoutSeconds().add(const Duration(minutes: 30));
+
+  static DateTime currentTimeWithoutSeconds() {
+    final now = DateTime.now();
+    final nowFormatted =
+        DateTime(now.year, now.month, now.day, now.hour, now.minute);
+
+    return nowFormatted;
+  }
+
+  void updateDepartureDateTime(DateTime dateTime) {
+    setState(() {
+      _departureDateTime = dateTime;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     _fromPointController.text =
-        Provider.of<MapController>(context, listen: false).fromPointAddress;
+        Provider.of<MapController>(context, listen: false).fromPointAddress ??
+            '';
     _toPointController.text =
-        Provider.of<MapController>(context, listen: false).toPointAddress;
+        Provider.of<MapController>(context, listen: false).toPointAddress ?? '';
   }
 
   @override
@@ -42,6 +58,19 @@ class _CreateTripFormState extends State<CreateTripForm> {
     _toPointController.dispose();
     _costController.dispose();
     super.dispose();
+  }
+
+  void refresh(bool value) {
+    setState(() {
+      switch (value) {
+        case true:
+          _companionType = CompanionType.driver;
+          break;
+        case false:
+          _companionType = CompanionType.passenger;
+      }
+      _companionTypeSwitch = value;
+    });
   }
 
   @override
@@ -94,11 +123,19 @@ class _CreateTripFormState extends State<CreateTripForm> {
           const SizedBox(
             height: 8,
           ),
+          CompanionTypeSwitch(
+            updateSwitchState: refresh,
+            companionTypeSwitch: _companionTypeSwitch,
+            companionType: _companionType,
+          ),
+          const SizedBox(
+            height: 8,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'Количество человек',
+                'Максимум человек',
                 style: TextStyle(
                   fontSize: 16.0,
                 ),
@@ -141,40 +178,34 @@ class _CreateTripFormState extends State<CreateTripForm> {
                   fontSize: 16.0,
                 ),
               ),
-              GestureDetector(
-                onTap: () async {
-                  final pickedTime = await showTimePicker(
-                    context: context,
-                    initialEntryMode: TimePickerEntryMode.input,
-                    initialTime: TimeOfDay(
-                      hour: _departureTime.hour,
-                      minute: _departureTime.minute,
-                    ),
-                  );
-                  if (pickedTime != null) {
-                    setState(() {
-                      final time = DateTime.now();
-                      _departureTime = DateTime(
-                        time.year,
-                        time.month,
-                        time.day,
-                        pickedTime.hour,
-                        pickedTime.minute,
-                      );
-                    });
-                  }
-                },
-                child: DepartureTimeCard(departureTime: _departureTime),
+              DepartureDateTimeCard(
+                departureDateTime: _departureDateTime,
+                updateDepartureDateTime:
+                    updateDepartureDateTime,
               ),
             ],
           ),
           const SizedBox(
             height: 8,
           ),
-          DigitsOnlyFormField(
-            controller: _costController,
-            hint: 'Сколько стоит',
-            ifEmptyOrNull: 'Ожидаемая стоимость поездки',
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Стоимость поездки',
+                style: TextStyle(
+                  fontSize: 16.0,
+                ),
+              ),
+              SizedBox(
+                width: 85,
+                child: DigitsOnlyFormField(
+                  controller: _costController,
+                  hint: 'Стоимость',
+                  ifEmptyOrNull: 'Больше 0',
+                ),
+              ),
+            ],
           ),
           const SizedBox(
             height: 8,
@@ -185,44 +216,13 @@ class _CreateTripFormState extends State<CreateTripForm> {
             fromPointAddress: _fromPointController.text,
             toPointAddress: _toPointController.text,
             costController: _costController,
+            companionType: _companionType,
             maximumCompanions: _maximumCompanions,
-            departureTime: _departureTime,
+            departureTime: _departureDateTime,
             tripDao: _tripDao,
             fireUserDao: _fireUserDao,
           ),
         ],
-      ),
-    );
-  }
-}
-
-class DepartureTimeCard extends StatelessWidget {
-  const DepartureTimeCard({
-    Key? key,
-    required DateTime departureTime,
-  })  : _departureTime = departureTime,
-        super(key: key);
-
-  final DateTime _departureTime;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: const Color.fromRGBO(111, 108, 217, 35),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.0),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-        child: Text(
-          '${_departureTime.hour}:'
-          '${_departureTime.minute.toString().padLeft(2, '0')}',
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
       ),
     );
   }

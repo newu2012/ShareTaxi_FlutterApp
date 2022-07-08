@@ -28,13 +28,20 @@ class TripDao extends ChangeNotifier {
 
   void updateTrip({required String id, required Trip trip}) async {
     await collection.doc(id).update({
+      'title': trip.title,
       'currentCompanions': trip.currentCompanions,
+    });
+  }
+
+  void updateTripCompanions({required String id, required Trip trip}) async {
+    await collection.doc(id).update({
+      'currentCompanions': trip.CompanionsToJson(),
     });
   }
 
   Stream<QuerySnapshot> getTripStream() {
     return collection
-        .where('departureTime', isGreaterThanOrEqualTo: DateTime.now())
+        .where('departureDateTime', isGreaterThanOrEqualTo: DateTime.now())
         .snapshots();
   }
 
@@ -43,8 +50,15 @@ class TripDao extends ChangeNotifier {
   }
 
   Stream<QuerySnapshot> getTripsByUserId(String userId) {
-    return collection
-        .where('currentCompanions', arrayContains: userId)
-        .snapshots();
+    return collection.where('currentCompanions', arrayContainsAny: [
+      {
+        'userId': userId,
+        'companionType': 'driver',
+      },
+      {
+        'userId': userId,
+        'companionType': 'passenger',
+      },
+    ]).snapshots();
   }
 }

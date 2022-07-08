@@ -5,8 +5,8 @@ import '../../data/trip.dart';
 import '../../logic/map_controller.dart';
 import 'widgets.dart';
 
-class DistanceAndAddressesRow extends StatelessWidget {
-  const DistanceAndAddressesRow({
+class DistanceAndAddressesColumn extends StatelessWidget {
+  const DistanceAndAddressesColumn({
     Key? key,
     required this.trip,
   }) : super(key: key);
@@ -22,13 +22,13 @@ class DistanceAndAddressesRow extends StatelessWidget {
           children: [
             DistanceBetweenPointsRow(
               fromPoint: Provider.of<MapController>(context, listen: false)
-                  .fromPointLatLng,
+                  .fromPointLatLng!,
               toPoint: trip.fromPointLatLng,
               fromUser: true,
             ),
             DistanceBetweenPointsRow(
               fromPoint: Provider.of<MapController>(context, listen: false)
-                  .toPointLatLng,
+                  .toPointLatLng!,
               toPoint: trip.toPointLatLng,
               fromUser: false,
             ),
@@ -41,19 +41,25 @@ class DistanceAndAddressesRow extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Text(
-                trip.fromPointAddress,
+            SizedBox(
+              width: 290,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  trip.fromPointAddress,
+                ),
               ),
             ),
             const SizedBox(
               height: 8,
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Text(
-                trip.toPointAddress,
+            SizedBox(
+              width: 290,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  trip.toPointAddress,
+                ),
               ),
             ),
           ],

@@ -21,10 +21,20 @@ class _MainPageState extends State<MainPage> {
   late GoogleMapController mapController;
   var userDeniedGps = false;
 
+  final TextEditingController fromPointController = TextEditingController();
+  final TextEditingController toPointController = TextEditingController();
   late String fromPointAddress;
   late String toPointAddress;
   Marker? fromPointMarker;
   Marker? toPointMarker;
+
+  @override
+  void dispose() {
+    fromPointController.dispose();
+    toPointController.dispose();
+    super.dispose();
+  }
+
   Set<Marker> get _markers {
     final markers = <Marker>{};
     if (fromPointMarker != null) markers.add(fromPointMarker!);
@@ -91,7 +101,11 @@ class _MainPageState extends State<MainPage> {
                 child: Column(
                   children: [
                     TextField(
-                      onSubmitted: (value) => searchAndNavigate,
+                      controller: fromPointController,
+                      onSubmitted: (value) => {
+                        FocusManager.instance.primaryFocus?.unfocus(),
+                        searchAndNavigate(fromPointAddress, 'fromPoint'),
+                      },
                       onEditingComplete: () =>
                           searchAndNavigate(fromPointAddress, 'fromPoint'),
                       textInputAction: TextInputAction.search,
@@ -120,12 +134,17 @@ class _MainPageState extends State<MainPage> {
                             Icons.search,
                             color: Theme.of(context).primaryColor,
                           ),
-                          onPressed: () =>
-                              searchAndNavigate(fromPointAddress, 'fromPoint'),
+                          onPressed: () => {
+                            FocusManager.instance.primaryFocus?.unfocus(),
+                            searchAndNavigate(fromPointAddress, 'fromPoint'),
+                          },
                           iconSize: 30.0,
                         ),
                       ),
                       onChanged: (val) {
+                        if (val == '')
+                          fromPointMarker = null;
+
                         setState(() {
                           fromPointAddress = val;
                         });
@@ -135,7 +154,11 @@ class _MainPageState extends State<MainPage> {
                       height: 1,
                     ),
                     TextField(
-                      onSubmitted: (value) => searchAndNavigate,
+                      controller: toPointController,
+                      onSubmitted: (value) => {
+                        FocusManager.instance.primaryFocus?.unfocus(),
+                        searchAndNavigate(toPointAddress, 'toPoint'),
+                      },
                       onEditingComplete: () =>
                           searchAndNavigate(toPointAddress, 'toPoint'),
                       textInputAction: TextInputAction.search,
@@ -164,12 +187,17 @@ class _MainPageState extends State<MainPage> {
                             Icons.search,
                             color: Theme.of(context).primaryColor,
                           ),
-                          onPressed: () =>
-                              searchAndNavigate(toPointAddress, 'toPoint'),
+                          onPressed: () => {
+                            FocusManager.instance.primaryFocus?.unfocus(),
+                            searchAndNavigate(toPointAddress, 'toPoint'),
+                          },
                           iconSize: 30.0,
                         ),
                       ),
                       onChanged: (val) {
+                        if (val == '')
+                          toPointMarker = null;
+
                         setState(() {
                           toPointAddress = val;
                         });
@@ -201,13 +229,22 @@ class _MainPageState extends State<MainPage> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        if (fromPointMarker == null || toPointMarker == null)
+                        if (fromPointController.text == '' ||
+                            toPointController.text == '') {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
                             content: Text('Введите оба адреса'),
                           ));
-                        else
-                          Navigator.pushNamed(context, '/trips');
+
+                          return;
+                        }
+
+                        if (fromPointMarker == null)
+                          searchAndNavigate(fromPointAddress, 'fromPoint');
+                        if (toPointMarker == null)
+                          searchAndNavigate(toPointAddress, 'toPoint');
+
+                        Navigator.pushNamed(context, '/trips');
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -230,13 +267,18 @@ class _MainPageState extends State<MainPage> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        if (fromPointMarker == null || toPointMarker == null)
+                        if (fromPointController.text == '' ||
+                            toPointController.text == '') {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(const SnackBar(
                             content: Text('Введите оба адреса'),
                           ));
-                        else
-                          Navigator.pushNamed(context, '/createTrip');
+
+                          return;
+                        }
+                        searchAndNavigate(fromPointAddress, 'fromPoint');
+                        searchAndNavigate(toPointAddress, 'toPoint');
+                        Navigator.pushNamed(context, '/createTrip');
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -308,39 +350,64 @@ class _MainPageState extends State<MainPage> {
     return Geolocator.getCurrentPosition();
   }
 
-  void searchAndNavigate(String address, String pointName) async {
-    var locations;
+  Future<bool> searchAndNavigate(String address, String pointName) async {
+    var coordinatesFromAddress;
+    var finalAddress;
     try {
-      locations =
-          (await GeocodingPlatform.instance.locationFromAddress(address))
-              .map((e) => LatLng(e.latitude, e.longitude));
+      final locationsFromAddress =
+          await GeocodingPlatform.instance.locationFromAddress(
+        address,
+      );
+      coordinatesFromAddress = LatLng(
+        locationsFromAddress.first.latitude,
+        locationsFromAddress.first.longitude,
+      );
+      final addressPlacemark =
+          await GeocodingPlatform.instance.placemarkFromCoordinates(
+        coordinatesFromAddress.latitude,
+        coordinatesFromAddress.longitude,
+        localeIdentifier: 'ru_RU',
+      );
+      finalAddress = getAddressFromPlacemark(addressPlacemark.first);
     } on Exception catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Не удалось найти адрес')),
       );
 
-      return;
+      return false;
     }
 
     setState(() {
       if (pointName == 'fromPoint') {
-        fromPointMarker = _createMarker(locations.first, pointName);
+        fromPointMarker = _createMarker(coordinatesFromAddress, pointName);
+        fromPointAddress = finalAddress;
+        fromPointController.text = finalAddress;
         Provider.of<MapController>(context, listen: false).fromPointAddress =
-            address;
+            finalAddress;
         Provider.of<MapController>(context, listen: false).fromPointLatLng =
-            locations.first;
+            coordinatesFromAddress;
       } else if (pointName == 'toPoint') {
-        toPointMarker = _createMarker(locations.first, pointName);
+        toPointMarker = _createMarker(coordinatesFromAddress, pointName);
+        toPointAddress = finalAddress;
+        toPointController.text = finalAddress;
         Provider.of<MapController>(context, listen: false).toPointAddress =
-            address;
+            finalAddress;
         Provider.of<MapController>(context, listen: false).toPointLatLng =
-            locations.first;
+            coordinatesFromAddress;
       }
+
+      Provider.of<MapController>(context, listen: false).markers = _markers;
+      _moveCamera();
     });
 
-    Provider.of<MapController>(context, listen: false).markers = _markers;
-    _moveCamera();
+    return true;
+  }
+
+  String getAddressFromPlacemark(Placemark pl) {
+    final finalAddress = '${pl.street}, ${pl.name}, ${pl.locality}';
+
+    return finalAddress;
   }
 
   void _moveCamera() {

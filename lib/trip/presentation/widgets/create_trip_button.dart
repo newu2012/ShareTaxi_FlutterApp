@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../data/trip.dart';
+import '../../data/data.dart';
 import '../../../common/data/fire_user_dao.dart';
-import '../../data/trip_dao.dart';
 
 class CreateTripButton extends StatelessWidget {
   const CreateTripButton({
@@ -14,6 +13,7 @@ class CreateTripButton extends StatelessWidget {
     required String fromPointAddress,
     required String toPointAddress,
     required TextEditingController costController,
+    required CompanionType companionType,
     required int maximumCompanions,
     required DateTime departureTime,
     required TripDao tripDao,
@@ -23,6 +23,7 @@ class CreateTripButton extends StatelessWidget {
         _fromPointAddress = fromPointAddress,
         _toPointAddress = toPointAddress,
         _costController = costController,
+        _companionType = companionType,
         _maximumCompanions = maximumCompanions,
         _departureTime = departureTime,
         _tripDao = tripDao,
@@ -37,6 +38,7 @@ class CreateTripButton extends StatelessWidget {
   final String _fromPointAddress;
   final String _toPointAddress;
   final TextEditingController _costController;
+  final CompanionType _companionType;
   final int _maximumCompanions;
   final DateTime _departureTime;
 
@@ -48,28 +50,30 @@ class CreateTripButton extends StatelessWidget {
         Future<String> tripId;
 
         if (_formKey.currentState!.validate()) {
-          tripId = _tripDao.saveTrip(
-            Trip(
-              creatorId: _fireUserDao.userId(),
-              title: _titleController.text,
-              fromPointAddress: _fromPointAddress,
-              fromPointLatLng: (await GeocodingPlatform.instance
-                      .locationFromAddress(_fromPointAddress))
-                  .map((e) => LatLng(e.latitude, e.longitude))
-                  .first,
-              toPointAddress: _toPointAddress,
-              toPointLatLng: (await GeocodingPlatform.instance
-                      .locationFromAddress(_toPointAddress))
-                  .map((e) => LatLng(e.latitude, e.longitude))
-                  .first,
-              costOverall: int.parse(_costController.text),
-              departureTime: _departureTime,
-              currentCompanions: [
-                _fireUserDao.userId()!,
-              ],
-              maximumCompanions: _maximumCompanions,
-            ),
+          final newTrip = Trip(
+            creatorId: _fireUserDao.userId(),
+            title: _titleController.text,
+            fromPointAddress: _fromPointAddress,
+            fromPointLatLng: (await GeocodingPlatform.instance
+                    .locationFromAddress(_fromPointAddress))
+                .map((e) => LatLng(e.latitude, e.longitude))
+                .first,
+            toPointAddress: _toPointAddress,
+            toPointLatLng: (await GeocodingPlatform.instance
+                    .locationFromAddress(_toPointAddress))
+                .map((e) => LatLng(e.latitude, e.longitude))
+                .first,
+            cost: int.parse(_costController.text),
+            departureDateTime: _departureTime,
+            currentCompanions: [
+              Companion(
+                userId: _fireUserDao.userId()!,
+                companionType: _companionType,
+              ),
+            ],
+            maximumCompanions: _maximumCompanions,
           );
+          tripId = _tripDao.saveTrip(newTrip);
 
           tripId.then(
             (value) => Navigator.pushReplacementNamed(
