@@ -1,5 +1,3 @@
-# carpooling_helper
+## App for finding and managing trips
 
-A new Flutter project.
-
-## Getting Started
+Video example of work - https://drive.google.com/file/d/1E44JNIgFRzR-INUHZCdPogjfBB6eEVCo/view?usp=sharing
